@@ -547,6 +547,25 @@
         /* Credits panel pw step */
         #credits-pw-step, #credits-main-step { display: none; }
         #credits-pw-step.active, #credits-main-step.active { display: block; animation: fadeIn 0.3s; }
+
+        /* ── BARRA DE BÚSQUEDA DE USUARIOS (NUEVO) ── */
+        .users-search-wrap {
+            position: relative; margin-bottom: 14px;
+        }
+        .users-search-input {
+            width: 100%; padding: 10px 16px 10px 38px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: white; font-size: 13px;
+            transition: 0.3s; font-family: inherit;
+            user-select: text; -webkit-user-select: text;
+        }
+        .users-search-input::placeholder { color: var(--text-muted); }
+        .users-search-input:focus { border-color: var(--warning); background: rgba(0,0,0,0.4); outline: none; }
+        .users-search-icon {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 13px; pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -860,6 +879,15 @@
             <div style="font-size:13px;font-weight:bold;color:var(--text-muted);margin-bottom:12px;">
                 <i class="fas fa-users"></i> Usuarios registrados
             </div>
+
+            <!-- ── BARRA DE BÚSQUEDA DE USUARIOS (NUEVO) ── -->
+            <div class="users-search-wrap">
+                <i class="fas fa-magnifying-glass users-search-icon"></i>
+                <input type="text" class="users-search-input" id="users-search-input"
+                    placeholder="Buscar por ID de usuario..."
+                    oninput="creditsPanel.filterUsers(this.value)">
+            </div>
+
             <div id="users-list-container">
                 <div style="text-align:center;color:var(--text-muted);padding:20px;">
                     <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
@@ -1005,7 +1033,6 @@
     const abManager = {
         _myAB: 0,
 
-        // Registra al usuario en Firebase si no existe y escucha sus AB en tiempo real
         async init(userId) {
             if (!window._fbReady) {
                 window.addEventListener('firebaseReady', () => this.init(userId), { once: true });
@@ -1013,19 +1040,16 @@
             }
             const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
 
-            // Crear usuario si no existe
             const snap = await window._fbGet(userRef);
             if (!snap.exists()) {
                 await window._fbSet(userRef, { ab: 0, joined: Date.now(), id: userId });
             }
 
-            // Escucha en tiempo real
             window._fbOnValue(userRef, snap => {
                 const data = snap.val();
                 this._myAB = data ? (data.ab || 0) : 0;
                 document.getElementById('ab-amount-display').textContent = this._myAB;
                 document.getElementById('my-ab-display') && (document.getElementById('my-ab-display').textContent = this._myAB);
-                // Refrescar actualizaciones para actualizar botones de pago
                 const cached = Object.values(updatesManager._cache);
                 if (cached.length) updatesManager.render(cached);
             });
@@ -1055,6 +1079,7 @@
     ====================================================== */
     const creditsPanel = {
         _targetUserId: null,
+        _allUsers: [],
 
         open() {
             document.getElementById('credits-panel').classList.add('active');
@@ -1080,12 +1105,44 @@
                 document.getElementById('credits-pw-step').classList.remove('active');
                 document.getElementById('credits-main-step').classList.add('active');
                 document.getElementById('my-id-display').textContent = deviceStore._id || '—';
+                const searchInput = document.getElementById('users-search-input');
+                if (searchInput) searchInput.value = '';
                 this.loadUsers();
             } else {
                 document.getElementById('credits-pw-error').textContent = '❌ Contraseña incorrecta.';
                 document.getElementById('credits-password').style.borderColor = 'var(--danger)';
                 setTimeout(() => document.getElementById('credits-password').style.borderColor = '', 1500);
             }
+        },
+
+        renderUserRows(users) {
+            const container = document.getElementById('users-list-container');
+            if (!users || users.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No se encontraron usuarios.</div>';
+                return;
+            }
+            container.innerHTML = users.map(u => {
+                const isMe = u.id === deviceStore._id;
+                return `<div class="user-row">
+                    <div>
+                        <div style="font-size:11px;font-weight:bold;color:${isMe ? 'var(--accent)' : 'white'};margin-bottom:2px;">
+                            ${isMe ? '👤 Tú' : '🙍 Usuario'}
+                        </div>
+                        <div class="user-row-id">${u.id}</div>
+                    </div>
+                    <div class="user-row-ab">${u.ab || 0} <span>AB</span></div>
+                    <button class="give-ab-btn" onclick="creditsPanel.openGiveAB('${u.id}')">
+                        <i class="fas fa-plus"></i> Dar AB
+                    </button>
+                </div>`;
+            }).join('');
+        },
+
+        filterUsers(query) {
+            const q = query.trim().toLowerCase();
+            if (!q) { this.renderUserRows(this._allUsers); return; }
+            const filtered = this._allUsers.filter(u => u.id.toLowerCase().includes(q));
+            this.renderUserRows(filtered);
         },
 
         loadUsers() {
@@ -1095,27 +1152,14 @@
                 const data = snap.val();
                 const container = document.getElementById('users-list-container');
                 if (!data) {
+                    this._allUsers = [];
                     container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No hay usuarios registrados aún.</div>';
                     return;
                 }
-                const users = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-                users.sort((a, b) => (b.ab || 0) - (a.ab || 0));
-
-                container.innerHTML = users.map(u => {
-                    const isMe = u.id === deviceStore._id;
-                    return `<div class="user-row">
-                        <div>
-                            <div style="font-size:11px;font-weight:bold;color:${isMe ? 'var(--accent)' : 'white'};margin-bottom:2px;">
-                                ${isMe ? '👤 Tú' : '🙍 Usuario'}
-                            </div>
-                            <div class="user-row-id">${u.id}</div>
-                        </div>
-                        <div class="user-row-ab">${u.ab || 0} <span>AB</span></div>
-                        <button class="give-ab-btn" onclick="creditsPanel.openGiveAB('${u.id}')">
-                            <i class="fas fa-plus"></i> Dar AB
-                        </button>
-                    </div>`;
-                }).join('');
+                this._allUsers = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                this._allUsers.sort((a, b) => (b.ab || 0) - (a.ab || 0));
+                const q = document.getElementById('users-search-input')?.value || '';
+                this.filterUsers(q);
             });
         },
 
@@ -1715,10 +1759,8 @@
         const userId = await deviceStore.getOrCreateId();
         await updatesManager.loadApplied();
 
-        // Mostrar ID corto en el widget
         document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
 
-        // Iniciar Firebase y AB manager
         abManager.init(userId);
 
         browser.init();
