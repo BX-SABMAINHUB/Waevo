@@ -1,0 +1,26 @@
+/* Forzar aceleración por hardware en toda la UI */
+.browser-chrome, .tab, .overlay-panel, .icon-btn {
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* Optimización de scroll suave sin tirones */
+.panel-content, .tabs-bar {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Eliminar parpadeos en animaciones */
+* {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Renderizado de texto de alta calidad */
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
