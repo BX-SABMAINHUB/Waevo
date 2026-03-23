@@ -20,6 +20,12 @@
             margin: 0;
         }
 
+        #reloj {
+            margin-top: 20px;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
         p {
             margin-top: 20px;
             font-size: 18px;
@@ -30,7 +36,36 @@
 <body>
 
     <h1>En Mantenimiento</h1>
-    <p>Mañana a las 18:50 estara solucionado</p>
+    <div id="reloj"></div>
+    <p>A las 20:00 del dia 24 de marzo estara solucionado</p>
+
+    <script>
+        const reloj = document.getElementById("reloj");
+
+        // Fecha objetivo: 24 de marzo a las 20:00 en España
+        const fechaObjetivo = new Date("2026-03-24T20:00:00+01:00");
+
+        let intervalo = setInterval(() => {
+            const ahora = new Date();
+
+            // Hora en España
+            const opciones = {
+                timeZone: "Europe/Madrid",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            };
+
+            const horaEspaña = ahora.toLocaleTimeString("es-ES", opciones);
+            reloj.textContent = horaEspaña;
+
+            // Si llega a la hora objetivo, parar el reloj
+            if (ahora >= fechaObjetivo) {
+                clearInterval(intervalo);
+            }
+
+        }, 1000);
+    </script>
 
 </body>
 </html>
