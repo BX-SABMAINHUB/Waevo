@@ -2,70 +2,1787 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>En mantenimiento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waevo | Pro Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        :root {
+            --bg-app: #050505;
+            --bg-panel: rgba(20, 20, 25, 0.85);
+            --bg-input: rgba(30, 30, 35, 0.7);
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.5);
+            --accent-secondary: #bd00ff;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --danger: #ff0055;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --anim-speed: 0.3s;
+        }
+
+        * { box-sizing: border-box; user-select: none; outline: none; }
+
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            margin: 0; padding: 0;
+            background: linear-gradient(-45deg, #050505, #111, #1a1025, #0a192f);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column;
         }
 
-        h1 {
-            font-size: 60px;
-            margin: 0;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        #reloj {
-            margin-top: 20px;
-            font-size: 30px;
-            font-weight: bold;
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .browser-chrome {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.8);
+            z-index: 100;
         }
 
-        p {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #555;
+        .tabs-bar {
+            height: 45px; display: flex; align-items: flex-end;
+            padding: 0 10px; gap: 8px; background: rgba(0,0,0,0.5); overflow-x: auto;
+        }
+
+        .tab {
+            background: rgba(255,255,255,0.05); color: var(--text-muted);
+            padding: 12px 20px; border-radius: 14px 14px 0 0;
+            font-size: 13px; font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; transition: all var(--anim-speed);
+            max-width: 220px; min-width: 140px; position: relative;
+        }
+        .tab:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
+        .tab.active {
+            background: var(--bg-panel); color: var(--text-main);
+            border-top: 2px solid var(--accent);
+            box-shadow: 0 -5px 15px rgba(0,229,255,0.15);
+            font-weight: bold; z-index: 2;
+        }
+        .tab-close {
+            margin-left: auto; width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s; font-size: 14px;
+        }
+        .tab-close:hover { background: var(--danger); color: white; box-shadow: 0 0 10px var(--danger); }
+        .new-tab-btn {
+            padding: 10px; color: var(--text-muted); cursor: pointer; transition: 0.3s;
+            border-radius: 10px; margin-bottom: 2px;
+        }
+        .new-tab-btn:hover { color: var(--accent); background: rgba(255,255,255,0.1); }
+
+        .nav-toolbar {
+            height: 60px; display: flex; align-items: center; padding: 0 15px; gap: 12px;
+        }
+        .nav-controls { display: flex; gap: 5px; }
+        .icon-btn {
+            width: 38px; height: 38px; border-radius: 10px; background: transparent; border: 1px solid transparent;
+            color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; transition: 0.2s;
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--accent); transform: translateY(-2px); }
+        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+        .omnibox-container { flex: 1; position: relative; display: flex; align-items: center; }
+        .omnibox {
+            width: 100%; height: 42px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 21px; padding: 0 50px 0 45px; color: var(--text-main);
+            font-size: 14px; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .omnibox:focus { border-color: var(--accent); background: rgba(0,0,0,0.8); box-shadow: 0 0 20px var(--accent-glow); }
+        .site-info-icon { position: absolute; left: 15px; color: var(--success); font-size: 14px; cursor: pointer; }
+        .search-action-icon { position: absolute; right: 15px; color: var(--accent); cursor: pointer; transition: 0.2s; }
+        .search-action-icon:hover { transform: scale(1.2); text-shadow: 0 0 10px var(--accent); }
+
+        .search-tools-bar {
+            height: 35px; display: flex; align-items: center; padding: 0 60px; gap: 20px;
+            background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border);
+            font-size: 13px; font-weight: 500;
+        }
+        .search-tool {
+            color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .search-tool:hover { color: var(--accent); transform: translateY(-1px); }
+
+        .viewport-container { flex: 1; position: relative; background: #fff; }
+        iframe.browser-view { width: 100%; height: 100%; border: none; display: none; background: white; }
+        iframe.browser-view.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .alex-start-page {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at center, rgba(30,30,40,0.9), #000);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 50;
+        }
+        .alex-start-page.active { display: flex; }
+        .start-logo {
+            font-size: 5.5rem; font-weight: 900;
+            background: linear-gradient(to right, #00e5ff, #bd00ff, #ff0055);
+            -webkit-background-clip: text; color: transparent;
+            margin-bottom: 40px; letter-spacing: -2px;
+            filter: drop-shadow(0 0 15px rgba(189,0,255,0.4));
+        }
+        .start-search {
+            width: 650px; max-width: 90%; height: 65px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 35px; padding: 0 35px; color: white; font-size: 18px;
+            backdrop-filter: blur(10px); transition: 0.3s; text-align: center;
+        }
+        .start-search:focus { background: rgba(0,0,0,0.8); border-color: var(--accent); transform: scale(1.02); }
+        .quick-links { display: flex; gap: 20px; margin-top: 50px; flex-wrap: wrap; justify-content: center; }
+        .q-link {
+            width: 90px; height: 90px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; color: var(--text-muted); backdrop-filter: blur(5px);
+        }
+        .q-link:hover { background: rgba(255,255,255,0.1); color: white; transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .q-icon { font-size: 30px; margin-bottom: 10px; }
+        .q-text { font-size: 12px; font-weight: bold; }
+
+        /* AB CREDITS WIDGET */
+        #ab-credits-widget {
+            position: fixed; top: 150px; left: 16px;
+            background: rgba(15,15,22,0.92); border: 1px solid rgba(255,170,0,0.3);
+            border-radius: 16px; padding: 10px 16px;
+            z-index: 300; backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,170,0,0.1);
+            min-width: 80px;
+        }
+        #ab-credits-widget .ab-label {
+            font-size: 9px; color: var(--text-muted); letter-spacing: 2px; font-weight: bold;
+        }
+        #ab-credits-widget .ab-amount {
+            font-size: 22px; font-weight: 900;
+            background: linear-gradient(135deg, #ffaa00, #ffdd55);
+            -webkit-background-clip: text; color: transparent;
+            line-height: 1;
+        }
+        #ab-credits-widget .ab-coin {
+            font-size: 10px; color: rgba(255,170,0,0.6);
+        }
+        #ab-credits-widget .ab-id {
+            font-size: 8px; color: rgba(255,255,255,0.2);
+            margin-top: 4px; font-family: monospace;
+        }
+
+        .overlay-panel {
+            position: fixed; top: 140px; right: 0; bottom: 0; width: 420px;
+            background: rgba(15,15,20,0.97); backdrop-filter: blur(25px);
+            border-left: 1px solid var(--border);
+            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1);
+            z-index: 200; display: flex; flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+        }
+        .overlay-panel.open { transform: translateX(0); }
+        .panel-header {
+            padding: 20px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.5);
+        }
+        .panel-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .panel-content { flex: 1; overflow-y: auto; padding: 20px; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .menu-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 5px; border-radius: 12px; color: white; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            transition: 0.2s; font-size: 11px; text-align: center;
+        }
+        .menu-btn:hover { background: rgba(0,229,255,0.1); border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+        .menu-btn i { font-size: 20px; }
+
+        .setting-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px;
+        }
+        .toggle-switch {
+            width: 40px; height: 22px; background: rgba(255,255,255,0.1);
+            border-radius: 11px; position: relative; cursor: pointer; transition: 0.3s; flex-shrink: 0;
+        }
+        .toggle-switch::after {
+            content: ''; position: absolute; left: 3px; top: 3px;
+            width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s;
+        }
+        .toggle-switch.active { background: var(--success); box-shadow: 0 0 10px rgba(0,255,136,0.4); }
+        .toggle-switch.active::after { left: 21px; }
+
+        .history-item {
+            padding: 12px; border-radius: 10px; margin-bottom: 8px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;
+        }
+        .history-item:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+        .h-time { font-size: 10px; color: var(--accent); background: rgba(0,229,255,0.1); padding: 4px 6px; border-radius: 6px; }
+
+        .toast {
+            position: fixed; bottom: 40px; left: 50%;
+            transform: translateX(-50%) translateY(150px);
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            color: white; padding: 15px 30px; border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+            opacity: 0; font-weight: bold; z-index: 9999;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* CORNER BUTTONS */
+        .corner-buttons {
+            position: fixed; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 10px; z-index: 500;
+        }
+        .corner-btn {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1px solid var(--border); background: rgba(15,15,20,0.9);
+            backdrop-filter: blur(10px); color: var(--text-muted);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; transition: 0.3s; position: relative;
+        }
+        .corner-btn:hover { transform: scale(1.15); }
+        .corner-btn.updates-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .corner-btn.power-btn:hover { color: var(--danger); border-color: var(--danger); box-shadow: 0 0 15px rgba(255,0,85,0.5); }
+        .corner-btn.admin-btn { font-size: 20px; font-weight: 900; color: rgba(255,255,255,0.12); border-color: transparent; background: transparent; }
+        .corner-btn.admin-btn:hover { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.15); transform: scale(1.1); }
+        .corner-btn.credits-btn { font-size: 13px; font-weight: 900; color: rgba(255,170,0,0.2); border-color: transparent; background: transparent; letter-spacing: -1px; }
+        .corner-btn.credits-btn:hover { color: rgba(255,170,0,0.6); border-color: rgba(255,170,0,0.2); box-shadow: 0 0 12px rgba(255,170,0,0.2); }
+        .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
+        .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
+
+        /* PANEL CRÃDITOS DEL NAVEGADOR */
+        #creditos-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(15px); z-index: 4000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #creditos-modal.active { display: flex; animation: fadeIn 0.3s; }
+        .creditos-box {
+            background: rgba(15,15,22,0.99); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px; padding: 44px 55px; text-align: center;
+            box-shadow: 0 0 80px rgba(0,0,0,0.9);
+            animation: slideUp 0.3s cubic-bezier(0.2,0.8,0.2,1); min-width: 320px;
+        }
+        .creditos-logo {
+            font-size: 3rem; font-weight: 900;
+            background: linear-gradient(to right, #00e5ff, #bd00ff, #ff0055);
+            -webkit-background-clip: text; color: transparent;
+            margin-bottom: 4px; filter: drop-shadow(0 0 10px rgba(189,0,255,0.4));
+        }
+        .creditos-tag {
+            font-size: 10px; color: var(--text-muted); letter-spacing: 3px;
+            text-transform: uppercase; margin-bottom: 28px;
+        }
+        .creditos-divider {
+            width: 50px; height: 2px; margin: 0 auto 28px;
+            background: linear-gradient(to right, var(--accent-secondary), var(--accent));
+            border-radius: 10px;
+        }
+        .credito-item { margin-bottom: 22px; }
+        .credito-role {
+            font-size: 10px; color: var(--accent); letter-spacing: 2px;
+            text-transform: uppercase; font-weight: bold; margin-bottom: 5px;
+        }
+        .credito-name { font-size: 19px; font-weight: 800; color: white; }
+        .creditos-close {
+            margin-top: 28px; padding: 11px 32px; border-radius: 30px;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            color: var(--text-muted); font-size: 13px; cursor: pointer; transition: 0.2s;
+        }
+        .creditos-close:hover { background: rgba(255,255,255,0.14); color: white; }
+
+        .update-badge {
+            position: absolute; top: -4px; right: -4px;
+            background: var(--danger); color: white; font-size: 9px;
+            width: 16px; height: 16px; border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            font-weight: bold; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* UPDATES PANEL */
+        .update-card {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 16px; margin-bottom: 14px; transition: 0.2s;
+        }
+        .update-card:hover { border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.04); }
+        .update-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .update-version {
+            font-size: 10px; background: rgba(0,229,255,0.15); color: var(--accent);
+            padding: 3px 8px; border-radius: 20px; font-weight: bold;
+        }
+        .update-price-tag {
+            font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: bold;
+        }
+        .update-price-tag.free { background: rgba(0,255,136,0.15); color: var(--success); }
+        .update-price-tag.paid { background: rgba(255,170,0,0.15); color: var(--warning); }
+        .update-title { font-size: 14px; font-weight: bold; margin-bottom: 6px; color: white; }
+        .update-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+        .install-btn {
+            width: 100%; padding: 10px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            border: none; color: white; font-weight: bold; font-size: 13px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .install-btn:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent-glow); }
+        .install-btn.paid-btn {
+            background: linear-gradient(135deg, #b8860b, var(--warning));
+            color: #000;
+        }
+        .install-btn.paid-btn:hover { box-shadow: 0 5px 15px rgba(255,170,0,0.4); }
+        .install-btn.locked-btn {
+            background: rgba(255,255,255,0.07); color: var(--text-muted);
+            cursor: not-allowed; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .install-btn.locked-btn:hover { transform: none; box-shadow: none; opacity: 1; }
+        .update-date { font-size: 10px; color: var(--text-muted); }
+
+        .update-admin-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .update-admin-btn {
+            flex: 1; padding: 7px; border-radius: 8px; border: none;
+            font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .update-admin-btn.edit { background: rgba(255,170,0,0.15); color: var(--warning); border: 1px solid rgba(255,170,0,0.3); }
+        .update-admin-btn.edit:hover { background: rgba(255,170,0,0.3); }
+        .update-admin-btn.del { background: rgba(255,0,85,0.12); color: var(--danger); border: 1px solid rgba(255,0,85,0.25); }
+        .update-admin-btn.del:hover { background: rgba(255,0,85,0.28); }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
+        .modal-box {
+            background: rgba(20,20,28,0.99); border: 1px solid var(--border);
+            border-radius: 20px; padding: 35px; max-width: 440px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            animation: slideUp 0.3s cubic-bezier(0.2,0.8,0.2,1);
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-icon { font-size: 48px; text-align: center; margin-bottom: 20px; }
+        .modal-title { font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px; }
+        .modal-desc { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 25px; line-height: 1.6; }
+        .modal-btns { display: flex; gap: 12px; }
+        .modal-btn {
+            flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold;
+            font-size: 14px; cursor: pointer; transition: 0.2s;
+        }
+        .modal-btn.confirm { background: var(--danger); color: white; }
+        .modal-btn.confirm:hover { background: #ff2266; box-shadow: 0 5px 15px rgba(255,0,85,0.4); }
+        .modal-btn.confirm.green { background: linear-gradient(135deg, #00c85a, var(--success)); color: #000; }
+        .modal-btn.confirm.green:hover { box-shadow: 0 5px 15px rgba(0,255,136,0.3); }
+        .modal-btn.confirm.gold { background: linear-gradient(135deg, #b8860b, var(--warning)); color: #000; }
+        .modal-btn.confirm.gold:hover { box-shadow: 0 5px 15px rgba(255,170,0,0.4); }
+        .modal-btn.cancel { background: rgba(255,255,255,0.1); color: white; }
+        .modal-btn.cancel:hover { background: rgba(255,255,255,0.18); }
+
+        /* UPDATE INSTALL SCREEN */
+        #update-screen {
+            position: fixed; inset: 0; background: #000; z-index: 5000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #update-screen.active { display: flex; }
+        .update-install-logo {
+            font-size: 4rem; font-weight: 900;
+            background: linear-gradient(to right, #00e5ff, #bd00ff);
+            -webkit-background-clip: text; color: transparent;
+            margin-bottom: 30px; animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes glowPulse {
+            from { filter: drop-shadow(0 0 10px rgba(0,229,255,0.3)); }
+            to { filter: drop-shadow(0 0 35px rgba(189,0,255,0.9)); }
+        }
+        .update-progress-bar {
+            width: 400px; max-width: 80%; height: 4px;
+            background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px;
+        }
+        .update-progress-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent));
+            border-radius: 10px; transition: width 1s ease;
+        }
+        .update-status { color: var(--text-muted); font-size: 13px; text-align: center; }
+        .update-step { color: var(--accent); font-weight: bold; font-size: 15px; margin-bottom: 8px; }
+
+        /* SHUTDOWN SCREEN */
+        #shutdown-screen {
+            position: fixed; inset: 0; background: #000; z-index: 5000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #shutdown-screen.active { display: flex; }
+        .shutdown-logo {
+            font-size: 6rem; font-weight: 900;
+            background: linear-gradient(to right, #00e5ff, #bd00ff, #ff0055);
+            -webkit-background-clip: text; color: transparent;
+            animation: breathe 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(189,0,255,0.5));
+        }
+        @keyframes breathe {
+            0%,100% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+        .shutdown-text { color: rgba(255,255,255,0.3); font-size: 14px; margin-top: 30px; letter-spacing: 3px; }
+
+        /* ADMIN PANEL */
+        #admin-panel {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(15px); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #admin-panel.active { display: flex; animation: fadeIn 0.3s; }
+        .admin-box {
+            background: rgba(15,15,22,0.99); border: 1px solid rgba(0,229,255,0.25);
+            border-radius: 20px; padding: 35px; width: 480px; max-width: 95%;
+            box-shadow: 0 0 60px rgba(0,229,255,0.1); max-height: 90vh; overflow-y: auto;
+        }
+        .admin-title { font-size: 20px; font-weight: bold; color: var(--accent); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .admin-subtitle { color: var(--text-muted); font-size: 12px; margin-bottom: 25px; }
+        .admin-input {
+            width: 100%; padding: 13px 16px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            color: white; font-size: 14px; margin-bottom: 14px; transition: 0.3s;
+            font-family: inherit; resize: vertical;
+        }
+        .admin-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.5); }
+        .admin-input.code-input { font-family: 'Courier New', monospace; font-size: 12px; min-height: 100px; }
+        .admin-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; }
+        .admin-submit {
+            width: 100%; padding: 14px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            border: none; color: white; font-weight: bold; font-size: 15px;
+            cursor: pointer; transition: 0.3s; margin-top: 8px;
+        }
+        .admin-submit:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-glow); }
+        .admin-cancel {
+            width: 100%; padding: 11px; border-radius: 12px;
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted); font-size: 13px; cursor: pointer; transition: 0.2s; margin-top: 8px;
+        }
+        .admin-cancel:hover { border-color: var(--danger); color: var(--danger); }
+        .admin-step { display: none; }
+        .admin-step.active { display: block; animation: fadeIn 0.3s; }
+        .password-input-wrap { position: relative; }
+        .password-eye { position: absolute; right: 14px; top: 14px; color: var(--text-muted); cursor: pointer; font-size: 14px; }
+
+        /* CREDITS MANAGER PANEL */
+        #credits-panel {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(15px); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #credits-panel.active { display: flex; animation: fadeIn 0.3s; }
+        .credits-box {
+            background: rgba(15,15,22,0.99); border: 1px solid rgba(255,170,0,0.3);
+            border-radius: 20px; padding: 35px; width: 500px; max-width: 95%;
+            box-shadow: 0 0 60px rgba(255,170,0,0.08); max-height: 85vh; overflow-y: auto;
+        }
+        .credits-title { font-size: 20px; font-weight: bold; color: var(--warning); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .credits-subtitle { color: var(--text-muted); font-size: 12px; margin-bottom: 25px; }
+
+        .user-row {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px; transition: 0.2s;
+        }
+        .user-row:hover { border-color: rgba(255,170,0,0.25); background: rgba(255,170,0,0.03); }
+        .user-row-id { font-size: 10px; color: var(--text-muted); font-family: monospace; flex: 1; word-break: break-all; }
+        .user-row-ab {
+            font-size: 16px; font-weight: 900; color: var(--warning);
+            min-width: 60px; text-align: right;
+        }
+        .user-row-ab span { font-size: 10px; color: rgba(255,170,0,0.5); }
+        .give-ab-btn {
+            padding: 7px 14px; border-radius: 8px;
+            background: rgba(255,170,0,0.15); border: 1px solid rgba(255,170,0,0.3);
+            color: var(--warning); font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .give-ab-btn:hover { background: rgba(255,170,0,0.3); transform: scale(1.05); }
+
+        /* Give AB modal inner */
+        .give-ab-form { margin-top: 16px; }
+        .give-ab-form input {
+            width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,170,0,0.2); border-radius: 10px;
+            color: white; font-size: 14px; margin-bottom: 10px;
+        }
+        .give-ab-form input:focus { border-color: var(--warning); outline: none; }
+        .give-ab-confirm {
+            width: 100%; padding: 12px; border-radius: 10px;
+            background: linear-gradient(135deg, #b8860b, var(--warning));
+            border: none; color: #000; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s;
+        }
+        .give-ab-confirm:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        .section-title {
+            color: var(--accent); border-bottom: 1px solid var(--border);
+            padding-bottom: 10px; font-size: 14px; font-weight: bold; margin: 20px 0 12px;
+        }
+        .select-input {
+            background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+            color: white; padding: 8px 12px; border-radius: 8px; font-size: 13px; cursor: pointer;
+        }
+        .range-input { accent-color: var(--accent); width: 120px; cursor: pointer; }
+
+        /* Credits panel pw step */
+        #credits-pw-step, #credits-main-step { display: none; }
+        #credits-pw-step.active, #credits-main-step.active { display: block; animation: fadeIn 0.3s; }
+
+        /* ââ BARRA DE BÃSQUEDA DE USUARIOS (NUEVO) ââ */
+        .users-search-wrap {
+            position: relative; margin-bottom: 14px;
+        }
+        .users-search-input {
+            width: 100%; padding: 10px 16px 10px 38px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: white; font-size: 13px;
+            transition: 0.3s; font-family: inherit;
+            user-select: text; -webkit-user-select: text;
+        }
+        .users-search-input::placeholder { color: var(--text-muted); }
+        .users-search-input:focus { border-color: var(--warning); background: rgba(0,0,0,0.4); outline: none; }
+        .users-search-icon {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 13px; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <h1>En Mantenimiento</h1>
-    <div id="reloj"></div>
-    <p>A las 20:00 del dia 24 de marzo estara solucionado</p>
+<!-- BROWSER CHROME -->
+<div class="browser-chrome">
+    <div class="tabs-bar" id="tabs-container"></div>
 
-    <script>
-        const reloj = document.getElementById("reloj");
+    <div class="nav-toolbar">
+        <div class="nav-controls">
+            <button class="icon-btn" id="btn-back" onclick="browser.goBack()" title="AtrÃ¡s"><i class="fas fa-arrow-left"></i></button>
+            <button class="icon-btn" id="btn-forward" onclick="browser.goForward()" title="Adelante"><i class="fas fa-arrow-right"></i></button>
+            <button class="icon-btn" onclick="browser.reload()" title="Refrescar"><i class="fas fa-rotate-right"></i></button>
+            <button class="icon-btn" onclick="browser.goHome()" title="Inicio"><i class="fas fa-house"></i></button>
+        </div>
 
-        // Fecha objetivo: 24 de marzo a las 20:00 en España
-        const fechaObjetivo = new Date("2026-03-24T20:00:00+01:00");
+        <div class="omnibox-container">
+            <i class="fas fa-shield-check site-info-icon" id="security-icon" title="Seguridad Activada" onclick="ui.showToast('ConexiÃ³n segura establecida.')"></i>
+            <input type="text" class="omnibox" id="url-input" placeholder="Buscar o introducir una direcciÃ³n web...">
+            <i class="fas fa-magnifying-glass search-action-icon" onclick="browser.navigate()"></i>
+        </div>
 
-        let intervalo = setInterval(() => {
-            const ahora = new Date();
+        <div class="nav-controls">
+            <button class="icon-btn" onclick="ui.showToast('PÃ¡gina guardada en favoritos â­')" title="Favoritos"><i class="fas fa-star"></i></button>
+            <button class="icon-btn" onclick="ui.togglePanel('downloads')" title="Descargas"><i class="fas fa-download"></i></button>
+            <button class="icon-btn" onclick="ui.togglePanel('menu')" title="MÃ¡s opciones"><i class="fas fa-bars-staggered"></i></button>
+        </div>
+    </div>
 
-            // Hora en España
-            const opciones = {
-                timeZone: "Europe/Madrid",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            };
+    <div class="search-tools-bar">
+        <div class="search-tool" onclick="browser.quickSearch('web')"><i class="fas fa-globe"></i> Todo</div>
+        <div class="search-tool" onclick="browser.quickSearch('images')"><i class="fas fa-image"></i> ImÃ¡genes</div>
+        <div class="search-tool" onclick="browser.quickSearch('videos')"><i class="fas fa-video" style="color:#ff0055"></i> Videos</div>
+        <div class="search-tool" onclick="browser.quickSearch('news')"><i class="fas fa-newspaper" style="color:var(--accent)"></i> Noticias</div>
+        <div class="search-tool" onclick="browser.quickSearch('maps')"><i class="fas fa-map-marker-alt" style="color:var(--success)"></i> Mapas</div>
+        <div class="search-tool" onclick="browser.quickSearch('wiki')"><i class="fab fa-wikipedia-w"></i> Wikipedia</div>
+        <div class="search-tool" onclick="browser.quickSearch('shopping')"><i class="fas fa-shopping-bag" style="color:var(--warning)"></i> Compras</div>
+    </div>
+</div>
 
-            const horaEspaña = ahora.toLocaleTimeString("es-ES", opciones);
-            reloj.textContent = horaEspaña;
+<!-- AB CREDITS WIDGET -->
+<div id="ab-credits-widget">
+    <div class="ab-label">CRÃDITOS</div>
+    <div class="ab-amount" id="ab-amount-display">0</div>
+    <div class="ab-coin">â¬¡ AB</div>
+    <div class="ab-id" id="ab-id-display">cargando...</div>
+</div>
 
-            // Si llega a la hora objetivo, parar el reloj
-            if (ahora >= fechaObjetivo) {
-                clearInterval(intervalo);
+<!-- VIEWPORT -->
+<div class="viewport-container" id="viewport">
+    <div class="alex-start-page active" id="start-page">
+        <div class="start-logo">Waevo</div>
+        <input type="text" class="start-search" placeholder="Busca en la web sin lÃ­mites..." onkeypress="if(event.key==='Enter') browser.navigate(this.value)">
+        <div class="quick-links">
+            <a class="q-link" onclick="browser.navigate('youtube.com')">
+                <i class="fab fa-youtube q-icon" style="color:#ff0055"></i><span class="q-text">YouTube</span>
+            </a>
+            <a class="q-link" onclick="browser.navigate('instagram.com')">
+                <i class="fab fa-instagram q-icon" style="color:#e1306c"></i><span class="q-text">Instagram</span>
+            </a>
+            <a class="q-link" onclick="browser.navigate('x.com')">
+                <i class="fab fa-x-twitter q-icon"></i><span class="q-text">X (Twitter)</span>
+            </a>
+            <a class="q-link" onclick="browser.navigate('tiktok.com')">
+                <i class="fab fa-tiktok q-icon" style="color:#69C9D0"></i><span class="q-text">TikTok</span>
+            </a>
+            <a class="q-link" onclick="browser.navigate('amazon.es')">
+                <i class="fab fa-amazon q-icon" style="color:#FF9900"></i><span class="q-text">Amazon</span>
+            </a>
+            <a class="q-link" onclick="browser.navigate('github.com')">
+                <i class="fab fa-github q-icon"></i><span class="q-text">GitHub</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- PANEL MENÃ -->
+<div class="overlay-panel" id="panel-menu">
+    <div class="panel-header">
+        <h3><i class="fas fa-cog"></i> ConfiguraciÃ³n y Opciones</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content">
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="browser.newTab()"><i class="fas fa-plus"></i>Nueva PestaÃ±a</div>
+            <div class="menu-btn" onclick="ui.showToast('Modo IncÃ³gnito Activado ðµï¸')"><i class="fas fa-mask"></i>IncÃ³gnito</div>
+            <div class="menu-btn" onclick="ui.togglePanel('history')"><i class="fas fa-history"></i>Historial</div>
+            <div class="menu-btn" onclick="ui.togglePanel('downloads')"><i class="fas fa-download"></i>Descargas</div>
+            <div class="menu-btn" onclick="ui.showToast('PÃ¡gina guardada localmente')"><i class="fas fa-save"></i>Guardar Web</div>
+            <div class="menu-btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</div>
+            <div class="menu-btn" onclick="ui.showToast('Panel de Extensiones (PrÃ³ximamente)')"><i class="fas fa-puzzle-piece"></i>Extensiones</div>
+            <div class="menu-btn" onclick="ui.showToast('Traduciendo pÃ¡gina...')"><i class="fas fa-language"></i>Traducir</div>
+            <div class="menu-btn" onclick="browser.reload()"><i class="fas fa-rotate-right"></i>Recargar</div>
+            <div class="menu-btn" onclick="ui.togglePanel('updates')"><i class="fas fa-bolt"></i>Actualizaciones</div>
+            <div class="menu-btn" onclick="ui.showToast('Zoom al 110% â')"><i class="fas fa-magnifying-glass-plus"></i>Zoom +</div>
+            <div class="menu-btn" onclick="ui.showToast('Pantalla completa')"><i class="fas fa-expand"></i>Pantalla</div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-shield-halved"></i> Seguridad Avanzada</div>
+        <div class="setting-item">
+            <span>Motor Proxy Anti-Bloqueos <br><small style="color:var(--text-muted);font-size:10px;">Evita "ConexiÃ³n rechazada"</small></span>
+            <div class="toggle-switch active" id="proxy-toggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Bloquear Anuncios y Rastreadores</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Forzar NavegaciÃ³n Segura (HTTPS)</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Modo Sin CachÃ©</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>ProtecciÃ³n DNS</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Modo oscuro para webs</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active'); ui.showToast('Modo oscuro: ' + (this.classList.contains('active')?'ON':'OFF'))"></div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-sliders"></i> Preferencias</div>
+        <div class="setting-item">
+            <span>Motor de bÃºsqueda</span>
+            <select class="select-input" onchange="ui.showToast('Motor: '+this.value)">
+                <option>Google</option><option>Bing</option><option>DuckDuckGo</option><option>Ecosia</option>
+            </select>
+        </div>
+        <div class="setting-item">
+            <span>Zoom de pÃ¡gina</span>
+            <input type="range" class="range-input" min="80" max="130" value="100" oninput="ui.showToast('Zoom: '+this.value+'%')">
+        </div>
+        <div class="setting-item">
+            <span>Tema de la interfaz</span>
+            <select class="select-input" onchange="ui.changeTheme(this.value)">
+                <option value="dark">Oscuro</option><option value="blue">Azul profundo</option><option value="purple">PÃºrpura</option>
+            </select>
+        </div>
+        <div class="setting-item">
+            <span>Animaciones de UI</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Notificaciones web</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Autocompletar URLs</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Guardar contraseÃ±as</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <button style="width:100%;padding:15px;margin-top:20px;background:var(--danger);border:none;color:white;border-radius:12px;cursor:pointer;font-weight:bold;transition:0.3s;"
+            onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"
+            onclick="dataManager.clearAll()">
+            <i class="fas fa-trash-can"></i> LIMPIAR TODO EL HISTORIAL
+        </button>
+    </div>
+</div>
+
+<!-- PANEL HISTORIAL -->
+<div class="overlay-panel" id="panel-history">
+    <div class="panel-header">
+        <h3><i class="fas fa-clock-rotate-left"></i> Tu Historial</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" id="history-list"></div>
+</div>
+
+<!-- PANEL DESCARGAS -->
+<div class="overlay-panel" id="panel-downloads">
+    <div class="panel-header">
+        <h3><i class="fas fa-download"></i> Gestor de Descargas</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" style="text-align:center;color:var(--text-muted);padding-top:50px;">
+        <i class="fas fa-box-open" style="font-size:50px;margin-bottom:20px;"></i>
+        <p>No hay descargas activas en este momento.</p>
+    </div>
+</div>
+
+<!-- PANEL ACTUALIZACIONES -->
+<div class="overlay-panel" id="panel-updates">
+    <div class="panel-header">
+        <h3><i class="fas fa-bolt" style="color:var(--accent)"></i> Centro de Actualizaciones</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" id="updates-list">
+        <div style="text-align:center;color:var(--text-muted);padding-top:40px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:30px;margin-bottom:15px;display:block;"></i>
+            <p>Cargando actualizaciones...</p>
+        </div>
+    </div>
+</div>
+
+<!-- CORNER BUTTONS -->
+<div class="corner-buttons">
+    <div class="corner-btn updates-btn" onclick="ui.togglePanel('updates')" title="Actualizaciones">
+        <i class="fas fa-bolt"></i>
+        <span class="update-badge" id="update-badge">0</span>
+    </div>
+    <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
+        <i class="fas fa-power-off"></i>
+    </div>
+    <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
+    <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
+    <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="CrÃ©ditos">CrÃ©ditos</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">AcciÃ³n completada</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-icon" id="modal-icon">â¡</div>
+        <div class="modal-title" id="modal-title">Â¿EstÃ¡s seguro?</div>
+        <div class="modal-desc" id="modal-desc">Esta acciÃ³n no se puede deshacer.</div>
+        <div class="modal-btns">
+            <button class="modal-btn cancel" onclick="ui.closeModal()">Cancelar</button>
+            <button class="modal-btn confirm" id="modal-confirm-btn">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- UPDATE INSTALL SCREEN -->
+<div id="update-screen">
+    <div class="update-install-logo">Waevo</div>
+    <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Instalando actualizaciÃ³n...</div>
+    <div class="update-progress-bar">
+        <div class="update-progress-fill" id="update-progress-fill"></div>
+    </div>
+    <div class="update-step" id="update-step-text">Preparando archivos...</div>
+    <div class="update-status" id="update-status-text">Por favor, no cierres el navegador.</div>
+</div>
+
+<!-- SHUTDOWN SCREEN -->
+<div id="shutdown-screen">
+    <div class="shutdown-logo">Waevo</div>
+    <div class="shutdown-text">APAGANDO...</div>
+</div>
+
+<!-- ADMIN PANEL (actualizaciÃ³n) -->
+<div id="admin-panel">
+    <div class="admin-box">
+        <div class="admin-step active" id="admin-step-1">
+            <div class="admin-title"><i class="fas fa-lock"></i> Panel de AdministraciÃ³n</div>
+            <div class="admin-subtitle">Acceso restringido. Introduce la contraseÃ±a para continuar.</div>
+            <label class="admin-label">ContraseÃ±a</label>
+            <div class="password-input-wrap">
+                <input type="password" class="admin-input" id="admin-password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+                    onkeypress="if(event.key==='Enter') adminPanel.checkPassword()" style="margin-bottom:4px;">
+                <i class="fas fa-eye password-eye" onclick="adminPanel.togglePw(this)"></i>
+            </div>
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="admin-pw-error"></div>
+            <button class="admin-submit" onclick="adminPanel.checkPassword()"><i class="fas fa-arrow-right"></i> Continuar</button>
+            <button class="admin-cancel" onclick="adminPanel.close()">Cancelar</button>
+        </div>
+
+        <div class="admin-step" id="admin-step-2">
+            <div class="admin-title" id="admin-form-title"><i class="fas fa-plus-circle"></i> Nueva ActualizaciÃ³n</div>
+            <div class="admin-subtitle">Completa los campos y publica la actualizaciÃ³n para todos los usuarios.</div>
+            <label class="admin-label">TÃ­tulo de la actualizaciÃ³n *</label>
+            <input type="text" class="admin-input" id="admin-update-title" placeholder="Ej: v3.0 - Mejoras de rendimiento">
+            <label class="admin-label">DescripciÃ³n *</label>
+            <textarea class="admin-input" id="admin-update-desc" placeholder="Describe quÃ© cambia con esta actualizaciÃ³n..." rows="3"></textarea>
+            <label class="admin-label">CÃ³digo de programaciÃ³n (JS) â se ejecuta al instalar</label>
+            <textarea class="admin-input code-input" id="admin-update-code" placeholder="// CÃ³digo JS de la actualizaciÃ³n..." rows="5"></textarea>
+            <label class="admin-label">ð° Precio en AB (0 = gratis)</label>
+            <input type="number" class="admin-input" id="admin-update-price" placeholder="0" min="0" value="0" style="margin-bottom:6px;">
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:6px;" id="admin-form-error"></div>
+            <button class="admin-submit" id="admin-submit-btn" onclick="adminPanel.publishUpdate()"><i class="fas fa-rocket"></i> Publicar actualizaciÃ³n</button>
+            <button class="admin-cancel" onclick="adminPanel.close()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- CREDITS MANAGER PANEL (++) -->
+<div id="credits-panel">
+    <div class="credits-box">
+        <div id="credits-pw-step" class="active">
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de CrÃ©ditos AB</div>
+            <div class="credits-subtitle">Acceso restringido. Introduce la contraseÃ±a.</div>
+            <label class="admin-label">ContraseÃ±a</label>
+            <div class="password-input-wrap">
+                <input type="password" class="admin-input" id="credits-password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+                    onkeypress="if(event.key==='Enter') creditsPanel.checkPassword()" style="margin-bottom:4px;">
+                <i class="fas fa-eye password-eye" onclick="creditsPanel.togglePw(this)"></i>
+            </div>
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="credits-pw-error"></div>
+            <button class="admin-submit" style="background:linear-gradient(135deg,#b8860b,var(--warning));color:#000;" onclick="creditsPanel.checkPassword()"><i class="fas fa-arrow-right"></i> Continuar</button>
+            <button class="admin-cancel" onclick="creditsPanel.close()">Cancelar</button>
+        </div>
+
+        <div id="credits-main-step">
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de CrÃ©ditos AB</div>
+            <div class="credits-subtitle">Todos los usuarios conectados. Puedes aÃ±adir AB a cualquier usuario.</div>
+
+            <div style="background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.2);border-radius:12px;padding:14px;margin-bottom:20px;">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Tu ID</div>
+                <div style="font-size:12px;font-family:monospace;color:var(--warning);" id="my-id-display">â</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Tus AB: <span style="color:var(--warning);font-weight:bold;" id="my-ab-display">0</span></div>
+            </div>
+
+            <div style="font-size:13px;font-weight:bold;color:var(--text-muted);margin-bottom:12px;">
+                <i class="fas fa-users"></i> Usuarios registrados
+            </div>
+
+            <!-- ââ BARRA DE BÃSQUEDA DE USUARIOS (NUEVO) ââ -->
+            <div class="users-search-wrap">
+                <i class="fas fa-magnifying-glass users-search-icon"></i>
+                <input type="text" class="users-search-input" id="users-search-input"
+                    placeholder="Buscar por ID de usuario..."
+                    oninput="creditsPanel.filterUsers(this.value)">
+            </div>
+
+            <div id="users-list-container">
+                <div style="text-align:center;color:var(--text-muted);padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
+                </div>
+            </div>
+
+            <button class="admin-cancel" onclick="creditsPanel.close()" style="margin-top:16px;">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- GIVE AB MODAL -->
+<div class="modal-overlay" id="give-ab-modal">
+    <div class="modal-box" style="border-color:rgba(255,170,0,0.3);">
+        <div class="modal-icon">ðª</div>
+        <div class="modal-title">Dar AB al usuario</div>
+        <div class="modal-desc" id="give-ab-target-info">ID del usuario</div>
+        <div class="give-ab-form">
+            <input type="number" id="give-ab-amount" placeholder="Cantidad de AB a dar..." min="1" value="10">
+            <button class="give-ab-confirm" onclick="creditsPanel.confirmGiveAB()">
+                <i class="fas fa-coins"></i> Dar AB
+            </button>
+        </div>
+        <button class="admin-cancel" onclick="document.getElementById('give-ab-modal').classList.remove('active')" style="margin-top:10px;">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL CRÃDITOS DEL NAVEGADOR -->
+<div id="creditos-modal">
+    <div class="creditos-box">
+        <div class="creditos-logo">Waevo</div>
+        <div class="creditos-tag">Equipo de desarrollo</div>
+        <div class="creditos-divider"></div>
+        <div class="credito-item">
+            <div class="credito-role">Developer</div>
+            <div class="credito-name">Alex</div>
+        </div>
+        <div class="credito-item">
+            <div class="credito-role">Web Designer</div>
+            <div class="credito-name">Alex</div>
+        </div>
+        <button class="creditos-close" onclick="document.getElementById('creditos-modal').classList.remove('active')">Cerrar</button>
+    </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, set, remove, update, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
+        authDomain: "kahoot-8529e.firebaseapp.com",
+        databaseURL: "https://kahoot-8529e-default-rtdb.firebaseio.com",
+        projectId: "kahoot-8529e",
+        storageBucket: "kahoot-8529e.firebasestorage.app",
+        messagingSenderId: "313414356056",
+        appId: "1:313414356276:web:4aab4587f7df9393008e2d",
+        measurementId: "G-8T4CPC1BQ3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window._fbDB = db;
+    window._fbRef = ref;
+    window._fbPush = push;
+    window._fbOnValue = onValue;
+    window._fbSet = set;
+    window._fbRemove = remove;
+    window._fbUpdate = update;
+    window._fbGet = get;
+    window._fbReady = true;
+
+    window.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<script>
+    /* ======================================================
+       DEVICE STORE â IndexedDB permanente
+    ====================================================== */
+    const deviceStore = {
+        _id: null,
+        _DB_NAME: 'AlexBrowserDB',
+        _STORE: 'meta',
+
+        _openDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(deviceStore._DB_NAME, 1);
+                req.onupgradeneeded = e => e.target.result.createObjectStore(deviceStore._STORE);
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = reject;
+            });
+        },
+
+        async get(key) {
+            const db = await this._openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this._STORE, 'readonly');
+                const req = tx.objectStore(this._STORE).get(key);
+                req.onsuccess = e => resolve(e.target.result);
+                req.onerror = reject;
+            });
+        },
+
+        async set(key, value) {
+            const db = await this._openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this._STORE, 'readwrite');
+                tx.objectStore(this._STORE).put(value, key);
+                tx.oncomplete = resolve;
+                tx.onerror = reject;
+            });
+        },
+
+        async getOrCreateId() {
+            let id = await this.get('deviceId');
+            if (!id) {
+                id = 'usr_' + Math.random().toString(36).slice(2, 8).toUpperCase() + '_' + Date.now().toString(36).toUpperCase();
+                await this.set('deviceId', id);
+            }
+            this._id = id;
+            return id;
+        },
+
+        async getApplied() {
+            const raw = await this.get('appliedUpdates');
+            return raw ? JSON.parse(raw) : [];
+        },
+
+        async addApplied(updateId) {
+            const list = await this.getApplied();
+            if (!list.includes(updateId)) {
+                list.push(updateId);
+                await this.set('appliedUpdates', JSON.stringify(list));
+            }
+        }
+    };
+
+    /* ======================================================
+       AB CREDITS MANAGER â Firebase online
+    ====================================================== */
+    const abManager = {
+        _myAB: 0,
+
+        async init(userId) {
+            if (!window._fbReady) {
+                window.addEventListener('firebaseReady', () => this.init(userId), { once: true });
+                return;
+            }
+            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
+
+            const snap = await window._fbGet(userRef);
+            if (!snap.exists()) {
+                await window._fbSet(userRef, { ab: 0, joined: Date.now(), id: userId });
             }
 
-        }, 1000);
-    </script>
+            window._fbOnValue(userRef, snap => {
+                const data = snap.val();
+                this._myAB = data ? (data.ab || 0) : 0;
+                document.getElementById('ab-amount-display').textContent = this._myAB;
+                document.getElementById('my-ab-display') && (document.getElementById('my-ab-display').textContent = this._myAB);
+                const cached = Object.values(updatesManager._cache);
+                if (cached.length) updatesManager.render(cached);
+            });
+        },
+
+        getAB() { return this._myAB; },
+
+        async spendAB(userId, amount) {
+            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
+            const snap = await window._fbGet(userRef);
+            const current = snap.val()?.ab || 0;
+            if (current < amount) return false;
+            await window._fbUpdate(userRef, { ab: current - amount });
+            return true;
+        },
+
+        async giveAB(userId, amount) {
+            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
+            const snap = await window._fbGet(userRef);
+            const current = snap.val()?.ab || 0;
+            await window._fbUpdate(userRef, { ab: current + amount });
+        }
+    };
+
+    /* ======================================================
+       CREDITS PANEL (botÃ³n ++)
+    ====================================================== */
+    const creditsPanel = {
+        _targetUserId: null,
+        _allUsers: [],
+
+        open() {
+            document.getElementById('credits-panel').classList.add('active');
+            document.getElementById('credits-pw-step').classList.add('active');
+            document.getElementById('credits-main-step').classList.remove('active');
+            document.getElementById('credits-password').value = '';
+            document.getElementById('credits-pw-error').textContent = '';
+        },
+
+        close() {
+            document.getElementById('credits-panel').classList.remove('active');
+        },
+
+        togglePw(el) {
+            const input = document.getElementById('credits-password');
+            if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
+            else { input.type = 'password'; el.className = 'fas fa-eye password-eye'; }
+        },
+
+        checkPassword() {
+            const pw = document.getElementById('credits-password').value;
+            if (pw === 'vercel') {
+                document.getElementById('credits-pw-step').classList.remove('active');
+                document.getElementById('credits-main-step').classList.add('active');
+                document.getElementById('my-id-display').textContent = deviceStore._id || 'â';
+                const searchInput = document.getElementById('users-search-input');
+                if (searchInput) searchInput.value = '';
+                this.loadUsers();
+            } else {
+                document.getElementById('credits-pw-error').textContent = 'â ContraseÃ±a incorrecta.';
+                document.getElementById('credits-password').style.borderColor = 'var(--danger)';
+                setTimeout(() => document.getElementById('credits-password').style.borderColor = '', 1500);
+            }
+        },
+
+        renderUserRows(users) {
+            const container = document.getElementById('users-list-container');
+            if (!users || users.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No se encontraron usuarios.</div>';
+                return;
+            }
+            container.innerHTML = users.map(u => {
+                const isMe = u.id === deviceStore._id;
+                return `<div class="user-row">
+                    <div>
+                        <div style="font-size:11px;font-weight:bold;color:${isMe ? 'var(--accent)' : 'white'};margin-bottom:2px;">
+                            ${isMe ? 'ð¤ TÃº' : 'ð Usuario'}
+                        </div>
+                        <div class="user-row-id">${u.id}</div>
+                    </div>
+                    <div class="user-row-ab">${u.ab || 0} <span>AB</span></div>
+                    <button class="give-ab-btn" onclick="creditsPanel.openGiveAB('${u.id}')">
+                        <i class="fas fa-plus"></i> Dar AB
+                    </button>
+                </div>`;
+            }).join('');
+        },
+
+        filterUsers(query) {
+            const q = query.trim().toLowerCase();
+            if (!q) { this.renderUserRows(this._allUsers); return; }
+            const filtered = this._allUsers.filter(u => u.id.toLowerCase().includes(q));
+            this.renderUserRows(filtered);
+        },
+
+        loadUsers() {
+            if (!window._fbReady) return;
+            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            window._fbOnValue(usersRef, snap => {
+                const data = snap.val();
+                const container = document.getElementById('users-list-container');
+                if (!data) {
+                    this._allUsers = [];
+                    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No hay usuarios registrados aÃºn.</div>';
+                    return;
+                }
+                this._allUsers = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                this._allUsers.sort((a, b) => (b.ab || 0) - (a.ab || 0));
+                const q = document.getElementById('users-search-input')?.value || '';
+                this.filterUsers(q);
+            });
+        },
+
+        openGiveAB(userId) {
+            this._targetUserId = userId;
+            document.getElementById('give-ab-target-info').textContent = `Usuario: ${userId}`;
+            document.getElementById('give-ab-amount').value = 10;
+            document.getElementById('give-ab-modal').classList.add('active');
+        },
+
+        async confirmGiveAB() {
+            const amount = parseInt(document.getElementById('give-ab-amount').value) || 0;
+            if (amount <= 0) { ui.showToast('Introduce una cantidad vÃ¡lida'); return; }
+            if (!this._targetUserId) return;
+            await abManager.giveAB(this._targetUserId, amount);
+            document.getElementById('give-ab-modal').classList.remove('active');
+            ui.showToast(`â +${amount} AB enviados al usuario`);
+        }
+    };
+
+    /* ======== DATA MANAGER ======== */
+    const dataManager = {
+        saveHistory: (url, title) => {
+            if (!url || url === 'about:start' || url.includes('corsproxy.io')) return;
+            let history = JSON.parse(localStorage.getItem('ab_history') || '[]');
+            history.unshift({ url, title, time: new Date().toLocaleTimeString() });
+            if (history.length > 100) history.pop();
+            localStorage.setItem('ab_history', JSON.stringify(history));
+            ui.renderHistory();
+        },
+        getHistory: () => JSON.parse(localStorage.getItem('ab_history') || '[]'),
+        clearAll: () => {
+            localStorage.removeItem('ab_history');
+            ui.showToast("Historial eliminado. Las actualizaciones instaladas se conservan â");
+            ui.renderHistory();
+        }
+    };
+
+    /* ======== BROWSER ENGINE ======== */
+    class BrowserEngine {
+        constructor() {
+            this.tabs = [];
+            this.activeTabId = null;
+            this.idCounter = 0;
+            this.homeUrl = 'about:start';
+            this.lastSearchQuery = "";
+        }
+
+        init() {
+            this.newTab();
+            document.getElementById('url-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.navigate();
+            });
+            ui.renderHistory();
+        }
+
+        newTab(url = this.homeUrl) {
+            this.idCounter++;
+            const tabId = this.idCounter;
+            this.tabs.push({ id: tabId, title: 'Nueva PestaÃ±a', url: url, history: [url], historyIndex: 0 });
+            const iframe = document.createElement('iframe');
+            iframe.className = 'browser-view';
+            iframe.id = `view-${tabId}`;
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
+            iframe.setAttribute('allow', 'camera; microphone; geolocation; autoplay; clipboard-write;');
+            document.getElementById('viewport').appendChild(iframe);
+            this.switchTab(tabId);
+            if (url !== this.homeUrl) this.navigate(url);
+            ui.closePanels();
+        }
+
+        closeTab(e, id) {
+            e.stopPropagation();
+            if (this.tabs.length === 1) return;
+            this.tabs = this.tabs.filter(t => t.id !== id);
+            document.getElementById(`view-${id}`).remove();
+            if (this.activeTabId === id) this.switchTab(this.tabs[this.tabs.length - 1].id);
+            else this.renderTabs();
+        }
+
+        switchTab(id) {
+            this.activeTabId = id;
+            document.querySelectorAll('.browser-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('start-page').classList.remove('active');
+            const currentTab = this.tabs.find(t => t.id === id);
+            if (currentTab.url === 'about:start') {
+                document.getElementById('start-page').classList.add('active');
+                document.getElementById('url-input').value = "";
+                document.getElementById('security-icon').className = "fas fa-shield-halved site-info-icon";
+                document.getElementById('security-icon').style.color = "var(--text-muted)";
+            } else {
+                document.getElementById(`view-${id}`).classList.add('active');
+                let cleanUrl = currentTab.url;
+                if (cleanUrl.includes('corsproxy.io/?')) cleanUrl = decodeURIComponent(cleanUrl.split('corsproxy.io/?')[1]);
+                if (cleanUrl.includes('google.com/search?igu=1&q=')) cleanUrl = "BÃºsqueda: " + decodeURIComponent(cleanUrl.split('q=')[1].split('&')[0]);
+                document.getElementById('url-input').value = cleanUrl;
+                document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
+                document.getElementById('security-icon').style.color = "var(--success)";
+            }
+            this.renderTabs();
+            this.updateNavButtons();
+        }
+
+        navigate(inputVal = null) {
+            let query = inputVal || document.getElementById('url-input').value.trim();
+            if (!query) return;
+            const proxyEnabled = document.getElementById('proxy-toggle').classList.contains('active');
+            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
+            let finalUrl = "", title = "";
+            const isUrl = query.includes('.') && !query.includes(' ');
+            if (isUrl) {
+                let cleanUrl = query.startsWith('http') ? query : 'https://' + query;
+                title = query;
+                if (cleanUrl.includes('youtube.com/watch?v=')) {
+                    finalUrl = cleanUrl.replace('watch?v=', 'embed/');
+                    ui.showToast("Optimizando vÃ­deo de YouTube...");
+                } else if (proxyEnabled) {
+                    finalUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
+                    ui.showToast("Bypass de seguridad activado ð¡ï¸");
+                } else { finalUrl = cleanUrl; }
+            } else {
+                this.lastSearchQuery = query;
+                finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
+                title = `${query}`;
+            }
+            currentTab.history = currentTab.history.slice(0, currentTab.historyIndex + 1);
+            currentTab.history.push(finalUrl);
+            currentTab.historyIndex++;
+            this.loadUrlIntoFrame(finalUrl, title, query);
+        }
+
+        quickSearch(type) {
+            let query = this.lastSearchQuery || document.getElementById('url-input').value.trim();
+            if (!query || query.includes('http')) { ui.showToast("Escribe algo para buscar primero"); return; }
+            let finalUrl = "", title = "";
+            switch (type) {
+                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `ImÃ¡genes: ${query}`; break;
+                case 'videos': finalUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
+                case 'news': finalUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
+                case 'maps': finalUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
+                case 'wiki': finalUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(query)}`; title = `Wiki: ${query}`; break;
+                case 'shopping': finalUrl = `https://www.google.com/search?igu=1&tbm=shop&q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
+                default: finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`; title = `${query}`;
+            }
+            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
+            currentTab.history.push(finalUrl);
+            currentTab.historyIndex++;
+            this.loadUrlIntoFrame(finalUrl, title, query);
+        }
+
+        loadUrlIntoFrame(url, title, rawInput) {
+            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
+            currentTab.url = url; currentTab.title = title;
+            document.getElementById('start-page').classList.remove('active');
+            const frame = document.getElementById(`view-${this.activeTabId}`);
+            frame.classList.add('active');
+            frame.src = url;
+            document.getElementById('url-input').value = rawInput || title;
+            document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
+            document.getElementById('security-icon').style.color = "var(--success)";
+            this.renderTabs();
+            this.updateNavButtons();
+            let saveUrl = url;
+            if (url.includes('corsproxy.io/?')) saveUrl = decodeURIComponent(url.split('corsproxy.io/?')[1]);
+            dataManager.saveHistory(saveUrl, title);
+        }
+
+        goBack() {
+            const tab = this.tabs.find(t => t.id === this.activeTabId);
+            if (tab && tab.historyIndex > 0) {
+                tab.historyIndex--;
+                const prevUrl = tab.history[tab.historyIndex];
+                if (prevUrl === 'about:start') this.switchTab(tab.id);
+                else { document.getElementById(`view-${this.activeTabId}`).src = prevUrl; tab.url = prevUrl; this.switchTab(tab.id); }
+            }
+        }
+
+        goForward() {
+            const tab = this.tabs.find(t => t.id === this.activeTabId);
+            if (tab && tab.historyIndex < tab.history.length - 1) {
+                tab.historyIndex++;
+                const nextUrl = tab.history[tab.historyIndex];
+                document.getElementById(`view-${this.activeTabId}`).src = nextUrl;
+                tab.url = nextUrl;
+                this.switchTab(tab.id);
+            }
+        }
+
+        reload() {
+            const frame = document.getElementById(`view-${this.activeTabId}`);
+            if (frame.src) frame.src = frame.src;
+            ui.showToast("Recargando pÃ¡gina...");
+        }
+
+        goHome() {
+            const tab = this.tabs.find(t => t.id === this.activeTabId);
+            tab.history.push('about:start');
+            tab.historyIndex++;
+            tab.title = 'Inicio';
+            this.switchTab(tab.id);
+        }
+
+        updateNavButtons() {
+            const tab = this.tabs.find(t => t.id === this.activeTabId);
+            document.getElementById('btn-back').classList.toggle('disabled', tab.historyIndex <= 0);
+            document.getElementById('btn-forward').classList.toggle('disabled', tab.historyIndex >= tab.history.length - 1);
+        }
+
+        renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+            this.tabs.forEach(tab => {
+                const el = document.createElement('div');
+                el.className = `tab ${tab.id === this.activeTabId ? 'active' : ''}`;
+                el.onclick = () => this.switchTab(tab.id);
+                let icon = '<i class="fas fa-globe"></i>';
+                if (tab.url.includes('google.com')) icon = '<i class="fab fa-google" style="color:var(--accent)"></i>';
+                if (tab.url.includes('youtube.com')) icon = '<i class="fab fa-youtube" style="color:var(--danger)"></i>';
+                if (tab.url === 'about:start') icon = '<i class="fas fa-house"></i>';
+                el.innerHTML = `${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">Ã</div>`;
+                container.appendChild(el);
+            });
+            const newBtn = document.createElement('div');
+            newBtn.className = 'new-tab-btn';
+            newBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            newBtn.onclick = () => this.newTab();
+            container.appendChild(newBtn);
+        }
+    }
+
+    /* ======== UI ======== */
+    const ui = {
+        _toastTimer: null,
+
+        togglePanel: (id) => {
+            const panel = document.getElementById(`panel-${id}`);
+            const isOpen = panel.classList.contains('open');
+            ui.closePanels();
+            if (!isOpen) {
+                panel.classList.add('open');
+                if (id === 'history') ui.renderHistory();
+            }
+        },
+
+        closePanels: () => document.querySelectorAll('.overlay-panel').forEach(p => p.classList.remove('open')),
+
+        renderHistory: () => {
+            const list = dataManager.getHistory();
+            const container = document.getElementById('history-list');
+            if (!list.length) {
+                container.innerHTML = '<div style="text-align:center;color:#777;margin-top:50px;"><i class="fas fa-folder-open" style="font-size:40px;margin-bottom:15px;display:block;"></i>No hay historial</div>';
+                return;
+            }
+            container.innerHTML = list.map(item => {
+                let displayUrl = item.url.length > 40 ? item.url.substring(0, 40) + "..." : item.url;
+                let safeUrl = item.url.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                return `<div class="history-item" onclick="document.getElementById('url-input').value='${safeUrl}';browser.navigate();ui.closePanels()">
+                    <i class="fas fa-link" style="color:var(--accent);"></i>
+                    <div style="flex:1;overflow:hidden;">
+                        <div style="font-size:13px;font-weight:bold;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">${item.title}</div>
+                        <div style="font-size:11px;opacity:0.6;">${displayUrl}</div>
+                    </div>
+                    <span class="h-time">${item.time}</span>
+                </div>`;
+            }).join('');
+        },
+
+        showToast: (msg) => {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            clearTimeout(ui._toastTimer);
+            ui._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+        },
+
+        showModal: (icon, title, desc, confirmText, confirmClass, onConfirm) => {
+            document.getElementById('modal-icon').textContent = icon;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            const btn = document.getElementById('modal-confirm-btn');
+            btn.textContent = confirmText;
+            btn.className = `modal-btn confirm ${confirmClass || ''}`;
+            btn.onclick = () => { ui.closeModal(); onConfirm(); };
+            document.getElementById('modal-overlay').classList.add('active');
+        },
+
+        closeModal: () => document.getElementById('modal-overlay').classList.remove('active'),
+
+        confirmShutdown: () => {
+            ui.showModal('ð´', 'Apagar Waevo', 'Â¿De verdad quieres apagar el navegador? Se cerrarÃ¡ y se reiniciarÃ¡ despuÃ©s de 1 minuto.', 'SÃ­, apagar', '', () => {
+                const sc = document.getElementById('shutdown-screen');
+                sc.classList.add('active');
+                setTimeout(() => { sc.classList.remove('active'); ui.showToast("Â¡Bienvenido de nuevo a AlexBrowser! â"); }, 60000);
+            });
+        },
+
+        changeTheme: (theme) => {
+            if (theme === 'blue') { document.documentElement.style.setProperty('--accent', '#4da6ff'); document.documentElement.style.setProperty('--accent-secondary', '#0055ff'); }
+            else if (theme === 'purple') { document.documentElement.style.setProperty('--accent', '#cc66ff'); document.documentElement.style.setProperty('--accent-secondary', '#8800cc'); }
+            else { document.documentElement.style.setProperty('--accent', '#00e5ff'); document.documentElement.style.setProperty('--accent-secondary', '#bd00ff'); }
+            ui.showToast('Tema aplicado â');
+        }
+    };
+
+    /* ======== UPDATES MANAGER ======== */
+    const updatesManager = {
+        _cache: {},
+        _applied: [],
+        _adminUnlocked: false,
+
+        async loadApplied() {
+            this._applied = await deviceStore.getApplied();
+        },
+
+        isApplied(id) { return this._applied.includes(id); },
+
+        async render(updates) {
+            const container = document.getElementById('updates-list');
+            if (!updates || updates.length === 0) {
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding-top:50px;"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);margin-bottom:15px;display:block;"></i><p>Todo estÃ¡ actualizado</p></div>`;
+                document.getElementById('update-badge').style.display = 'none';
+                return;
+            }
+
+            updates.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            let pendingCount = 0;
+            const cards = [];
+            const myAB = abManager.getAB();
+
+            for (const u of updates) {
+                const isApplied = this.isApplied(u.id);
+                if (!isApplied) pendingCount++;
+                const dateStr = u.timestamp ? new Date(u.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+                const price = u.price || 0;
+                const isPaid = price > 0;
+                const canAfford = myAB >= price;
+
+                const priceTag = isPaid
+                    ? `<span class="update-price-tag paid">ðª ${price} AB</span>`
+                    : `<span class="update-price-tag free">Gratis</span>`;
+
+                let installBtn = '';
+                if (isApplied) {
+                    installBtn = `<div style="text-align:center;color:var(--success);font-size:13px;font-weight:bold;padding:8px 0;"><i class="fas fa-check-circle"></i> Instalada correctamente</div>`;
+                } else if (!isPaid) {
+                    installBtn = `<button class="install-btn" onclick="updatesManager.install('${u.id}')"><i class="fas fa-download"></i> Instalar ahora</button>`;
+                } else if (canAfford) {
+                    installBtn = `<button class="install-btn paid-btn" onclick="updatesManager.install('${u.id}')"><i class="fas fa-coins"></i> Instalar por ${price} AB</button>`;
+                } else {
+                    installBtn = `<button class="install-btn locked-btn" disabled><i class="fas fa-lock"></i> Necesitas ${price} AB (tienes ${myAB})</button>`;
+                }
+
+                const adminActions = this._adminUnlocked
+                    ? `<div class="update-admin-actions">
+                            <button class="update-admin-btn edit" onclick="adminPanel.editUpdate('${u.id}')"><i class="fas fa-pen"></i> Editar</button>
+                            <button class="update-admin-btn del" onclick="updatesManager.deleteUpdate('${u.id}', '${(u.title || '').replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Eliminar</button>
+                       </div>`
+                    : '';
+
+                cards.push(`<div class="update-card" id="card-${u.id}">
+                    <div class="update-card-header">
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <div class="update-version">${u.version || 'Update'}</div>
+                            ${priceTag}
+                        </div>
+                        <div class="update-date">${dateStr}</div>
+                    </div>
+                    <div class="update-title">${u.title || 'Sin tÃ­tulo'}</div>
+                    <div class="update-desc">${u.desc || ''}</div>
+                    ${installBtn}
+                    ${adminActions}
+                </div>`);
+            }
+
+            container.innerHTML = cards.join('');
+
+            const badge = document.getElementById('update-badge');
+            if (pendingCount > 0) { badge.style.display = 'flex'; badge.textContent = pendingCount; }
+            else { badge.style.display = 'none'; }
+        },
+
+        install(id) {
+            const u = this._cache[id];
+            if (!u) return;
+            const price = u.price || 0;
+            const isPaid = price > 0;
+            const myAB = abManager.getAB();
+
+            if (isPaid && myAB < price) {
+                ui.showToast(`â No tienes suficientes AB. Necesitas ${price}, tienes ${myAB}.`);
+                return;
+            }
+
+            const desc = isPaid
+                ? `Se descontarÃ¡n ${price} AB de tu saldo. Tienes ${myAB} AB. Â¿Instalar "${u.title}"?`
+                : `Â¿Seguro que quieres instalar "${u.title}"? TardarÃ¡ unos 3 minutos.`;
+
+            ui.showModal(isPaid ? 'ðª' : 'â¡', 'Â¿Instalar actualizaciÃ³n?', desc,
+                isPaid ? `SÃ­, gastar ${price} AB` : 'SÃ­, instalar',
+                isPaid ? 'gold' : 'green',
+                async () => {
+                    if (isPaid) {
+                        const ok = await abManager.spendAB(deviceStore._id, price);
+                        if (!ok) { ui.showToast('â AB insuficientes.'); return; }
+                    }
+                    this.runInstall(id, u.code || '', u.title || '');
+                }
+            );
+        },
+
+        runInstall(id, code, title) {
+            const screen = document.getElementById('update-screen');
+            const fill = document.getElementById('update-progress-fill');
+            const stepText = document.getElementById('update-step-text');
+            const statusText = document.getElementById('update-status-text');
+            screen.classList.add('active');
+
+            const steps = [
+                { pct: 8,  step: "Conectando con servidores de AlexBrowser...", status: "Estableciendo conexiÃ³n segura..." },
+                { pct: 18, step: "Descargando paquete de actualizaciÃ³n...", status: "0.0 MB / 12.4 MB" },
+                { pct: 32, step: "Verificando integridad de archivos...", status: "Comprobando firma digital SHA-256..." },
+                { pct: 46, step: "Aplicando parches del motor...", status: "Modificando nÃºcleo de navegaciÃ³n..." },
+                { pct: 59, step: "Actualizando mÃ³dulos de seguridad...", status: "Certificados SSL renovados..." },
+                { pct: 72, step: "Optimizando rendimiento...", status: "Ajustando configuraciÃ³n interna..." },
+                { pct: 84, step: "Instalando mejoras de interfaz...", status: "Compilando recursos visuales..." },
+                { pct: 93, step: "Finalizando instalaciÃ³n...", status: "Limpiando archivos temporales..." },
+                { pct: 100, step: "Â¡ActualizaciÃ³n completada!", status: "Aplicando cambios y reiniciando..." }
+            ];
+
+            const totalTime = 180000;
+            const stepInterval = totalTime / steps.length;
+            let currentStep = 0;
+
+            const tick = () => {
+                if (currentStep >= steps.length) {
+                    try { eval(code); } catch (err) { console.warn('Update code error:', err); }
+                    deviceStore.addApplied(id).then(() => {
+                        this._applied.push(id);
+                        setTimeout(() => {
+                            screen.classList.remove('active');
+                            ui.showToast(`â "${title}" instalada correctamente`);
+                            if (window._fbReady) this.load();
+                        }, 2000);
+                    });
+                    return;
+                }
+                const s = steps[currentStep];
+                fill.style.width = s.pct + '%';
+                stepText.textContent = s.step;
+                statusText.textContent = s.status;
+                currentStep++;
+                setTimeout(tick, stepInterval);
+            };
+            tick();
+        },
+
+        deleteUpdate(id, title) {
+            ui.showModal('ðï¸', 'Eliminar actualizaciÃ³n', `Â¿Seguro que quieres eliminar "${title}"?`, 'SÃ­, eliminar', '', () => {
+                if (!window._fbReady) return;
+                window._fbRemove(window._fbRef(window._fbDB, `alexbrowser_updates/${id}`))
+                    .then(() => ui.showToast(`ðï¸ ActualizaciÃ³n eliminada`))
+                    .catch(err => ui.showToast('Error: ' + err.message));
+            });
+        },
+
+        load() {
+            if (!window._fbReady) { window.addEventListener('firebaseReady', () => this.load(), { once: true }); return; }
+            const dbRef = window._fbRef(window._fbDB, 'alexbrowser_updates');
+            window._fbOnValue(dbRef, async (snapshot) => {
+                const data = snapshot.val();
+                this._cache = {};
+                if (data) {
+                    const updates = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                    updates.forEach(u => { this._cache[u.id] = u; });
+                    await this.render(updates);
+                    for (const u of updates) {
+                        if (this.isApplied(u.id) && u.code) { try { eval(u.code); } catch (e) {} }
+                    }
+                } else {
+                    this.seedDefaults();
+                    await this.render([]);
+                }
+            });
+        },
+
+        seedDefaults() {
+            if (!window._fbReady) return;
+            const defaults = [
+                {
+                    title: "v2.0 - Motor Anti-Bloqueos Mejorado",
+                    desc: "Nuevo sistema de bypass que permite cargar mÃ¡s sitios sin errores de conexiÃ³n rechazada.",
+                    code: "console.log('[AlexBrowser] Motor anti-bloqueos v2.0 aplicado.');",
+                    version: "v2.0", price: 0, timestamp: Date.now() - 86400000 * 3
+                },
+                {
+                    title: "v2.1 - Interfaz RediseÃ±ada",
+                    desc: "Nuevas animaciones, efectos visuales mejorados y barra de herramientas optimizada.",
+                    code: "document.querySelectorAll('.tab').forEach(t => t.style.transition = 'all 0.5s cubic-bezier(0.2,0.8,0.2,1)');",
+                    version: "v2.1", price: 0, timestamp: Date.now() - 86400000
+                }
+            ];
+            defaults.forEach(u => window._fbPush(window._fbRef(window._fbDB, 'alexbrowser_updates'), u));
+        }
+    };
+
+    /* ======== ADMIN PANEL ======== */
+    const adminPanel = {
+        _editingId: null,
+
+        open() {
+            this._editingId = null;
+            document.getElementById('admin-panel').classList.add('active');
+            document.getElementById('admin-step-1').classList.add('active');
+            document.getElementById('admin-step-2').classList.remove('active');
+            document.getElementById('admin-password').value = '';
+            document.getElementById('admin-pw-error').textContent = '';
+            document.getElementById('admin-form-error').textContent = '';
+            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva ActualizaciÃ³n';
+            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-rocket"></i> Publicar actualizaciÃ³n';
+            document.getElementById('admin-update-title').value = '';
+            document.getElementById('admin-update-desc').value = '';
+            document.getElementById('admin-update-code').value = '';
+            document.getElementById('admin-update-price').value = '0';
+        },
+
+        close() { document.getElementById('admin-panel').classList.remove('active'); this._editingId = null; },
+
+        togglePw(el) {
+            const input = document.getElementById('admin-password');
+            if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
+            else { input.type = 'password'; el.className = 'fas fa-eye password-eye'; }
+        },
+
+        checkPassword() {
+            const pw = document.getElementById('admin-password').value;
+            if (pw === 'vercel') {
+                updatesManager._adminUnlocked = true;
+                document.getElementById('admin-step-1').classList.remove('active');
+                document.getElementById('admin-step-2').classList.add('active');
+                const cached = Object.values(updatesManager._cache);
+                if (cached.length) updatesManager.render(cached);
+            } else {
+                document.getElementById('admin-pw-error').textContent = 'â ContraseÃ±a incorrecta.';
+                document.getElementById('admin-password').style.borderColor = 'var(--danger)';
+                setTimeout(() => document.getElementById('admin-password').style.borderColor = '', 1500);
+            }
+        },
+
+        editUpdate(id) {
+            const u = updatesManager._cache[id];
+            if (!u) return;
+            this._editingId = id;
+            document.getElementById('admin-panel').classList.add('active');
+            document.getElementById('admin-step-1').classList.remove('active');
+            document.getElementById('admin-step-2').classList.add('active');
+            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-pen"></i> Editar ActualizaciÃ³n';
+            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+            document.getElementById('admin-update-title').value = u.title || '';
+            document.getElementById('admin-update-desc').value = u.desc || '';
+            document.getElementById('admin-update-code').value = u.code || '';
+            document.getElementById('admin-update-price').value = u.price || 0;
+            document.getElementById('admin-form-error').textContent = '';
+        },
+
+        publishUpdate() {
+            const title = document.getElementById('admin-update-title').value.trim();
+            const desc = document.getElementById('admin-update-desc').value.trim();
+            const code = document.getElementById('admin-update-code').value.trim();
+            const price = parseInt(document.getElementById('admin-update-price').value) || 0;
+
+            if (!title || !desc) { document.getElementById('admin-form-error').textContent = 'â El tÃ­tulo y la descripciÃ³n son obligatorios.'; return; }
+            document.getElementById('admin-form-error').textContent = '';
+            if (!window._fbReady) { ui.showToast('Firebase no disponible.'); return; }
+
+            if (this._editingId) {
+                const existing = updatesManager._cache[this._editingId];
+                const updated = { ...existing, title, desc, code: code || '', price, editedAt: Date.now() };
+                window._fbSet(window._fbRef(window._fbDB, `alexbrowser_updates/${this._editingId}`), updated)
+                    .then(() => { this.close(); ui.showToast(`â ActualizaciÃ³n editada correctamente.`); })
+                    .catch(err => { document.getElementById('admin-form-error').textContent = 'â Error: ' + err.message; });
+            } else {
+                const count = Object.keys(updatesManager._cache).length;
+                const version = `v${2 + Math.floor(count / 10)}.${(count % 10) + 2}`;
+                const newUpdate = { title, desc, code: code || '', price, version, timestamp: Date.now() };
+                window._fbPush(window._fbRef(window._fbDB, 'alexbrowser_updates'), newUpdate)
+                    .then(() => { this.close(); ui.showToast(`â ActualizaciÃ³n publicada para todos.`); })
+                    .catch(err => { document.getElementById('admin-form-error').textContent = 'â Error: ' + err.message; });
+            }
+        }
+    };
+
+    /* ======== INIT ======== */
+    const browser = new BrowserEngine();
+    window.onload = async () => {
+        const userId = await deviceStore.getOrCreateId();
+        await updatesManager.loadApplied();
+
+        document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + 'â¦';
+
+        abManager.init(userId);
+
+        browser.init();
+        updatesManager.load();
+    };
+
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal-overlay')) ui.closeModal();
+    });
+    document.getElementById('admin-panel').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('admin-panel')) adminPanel.close();
+    });
+    document.getElementById('credits-panel').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('credits-panel')) creditsPanel.close();
+    });
+    document.getElementById('give-ab-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('give-ab-modal')) document.getElementById('give-ab-modal').classList.remove('active');
+    });
+    document.getElementById('creditos-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('creditos-modal')) document.getElementById('creditos-modal').classList.remove('active');
+    });
+</script>
 
 </body>
 </html>
