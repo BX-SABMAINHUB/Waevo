@@ -814,7 +814,7 @@
     <div class="shutdown-text">APAGANDO...</div>
 </div>
 
-<!-- ADMIN PANEL (actualización) -->
+<!-- ADMIN PANEL -->
 <div id="admin-panel">
     <div class="admin-box">
         <div class="admin-step active" id="admin-step-1">
@@ -849,7 +849,7 @@
     </div>
 </div>
 
-<!-- CREDITS MANAGER PANEL (++) -->
+<!-- CREDITS MANAGER PANEL -->
 <div id="credits-panel">
     <div class="credits-box">
         <div id="credits-pw-step" class="active">
@@ -880,7 +880,6 @@
                 <i class="fas fa-users"></i> Usuarios registrados
             </div>
 
-            <!-- ── BARRA DE BÚSQUEDA DE USUARIOS (NUEVO) ── -->
             <div class="users-search-wrap">
                 <i class="fas fa-magnifying-glass users-search-icon"></i>
                 <input type="text" class="users-search-input" id="users-search-input"
@@ -932,6 +931,71 @@
         <button class="creditos-close" onclick="document.getElementById('creditos-modal').classList.remove('active')">Cerrar</button>
     </div>
 </div>
+
+<!-- ====================== IMTGO / LAZARUS BYPASS ====================== -->
+<script>
+// Bypass automático para IMTGo (Lazarus) - Waevo Pro Edition
+(function() {
+    const BLOCK_KEYWORDS = [
+        "acceso denegado", "access denied", "blocked by", "imtlazarus", 
+        "imtgo", "lazarus", "conexión rechazada", "site blocked", 
+        "forbidden", "403 forbidden", "proxy blocked", "filtrado", "restringido"
+    ];
+
+    function isIMTBlocked() {
+        const bodyText = (document.body ? document.body.innerText : '').toLowerCase();
+        const title = (document.title || '').toLowerCase();
+        return BLOCK_KEYWORDS.some(kw => bodyText.includes(kw) || title.includes(kw));
+    }
+
+    function triggerBypass() {
+        console.log("%c🚀 Waevo Anti-IMTGo activado - Intentando bypass...", "color:#00e5ff;font-weight:bold");
+
+        let currentUrl = window.location.href;
+        if (currentUrl.includes('corsproxy.io')) return;
+
+        const proxies = [
+            "https://corsproxy.io/?",
+            "https://api.allorigins.win/raw?url="
+        ];
+
+        let attempt = 0;
+        function tryProxy() {
+            if (attempt >= proxies.length) {
+                console.warn("❌ Todos los proxies fallaron para IMTGo");
+                return;
+            }
+            const proxyUrl = proxies[attempt] + encodeURIComponent(currentUrl);
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ action: "navigate", url: proxyUrl }, "*");
+            } else {
+                window.location.replace(proxyUrl);
+            }
+            attempt++;
+        }
+
+        tryProxy();
+
+        // Reintento automático
+        setTimeout(() => {
+            if (isIMTBlocked()) tryProxy();
+        }, 2500);
+    }
+
+    window.addEventListener('load', () => {
+        if (isIMTBlocked()) triggerBypass();
+    });
+
+    const observer = new MutationObserver(() => {
+        if (isIMTBlocked()) {
+            observer.disconnect();
+            triggerBypass();
+        }
+    });
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+<!-- ====================== FIN BYPASS IMTGO ====================== -->
 
 <!-- FIREBASE SDK -->
 <script type="module">
