@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waevo | Pro Edition</title>
+    <title>Error #Imtlazarus</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
@@ -269,7 +269,7 @@
         .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
 
-        /* PANEL CRÉDITOS DEL NAVEGADOR */
+        /* PANEL CRÃDITOS DEL NAVEGADOR */
         #creditos-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.88);
             backdrop-filter: blur(15px); z-index: 4000;
@@ -548,7 +548,7 @@
         #credits-pw-step, #credits-main-step { display: none; }
         #credits-pw-step.active, #credits-main-step.active { display: block; animation: fadeIn 0.3s; }
 
-        /* ── BARRA DE BÚSQUEDA DE USUARIOS (NUEVO) ── */
+        /* ââ BARRA DE BÃSQUEDA DE USUARIOS (NUEVO) ââ */
         .users-search-wrap {
             position: relative; margin-bottom: 14px;
         }
@@ -576,28 +576,28 @@
 
     <div class="nav-toolbar">
         <div class="nav-controls">
-            <button class="icon-btn" id="btn-back" onclick="browser.goBack()" title="Atrás"><i class="fas fa-arrow-left"></i></button>
+            <button class="icon-btn" id="btn-back" onclick="browser.goBack()" title="AtrÃ¡s"><i class="fas fa-arrow-left"></i></button>
             <button class="icon-btn" id="btn-forward" onclick="browser.goForward()" title="Adelante"><i class="fas fa-arrow-right"></i></button>
             <button class="icon-btn" onclick="browser.reload()" title="Refrescar"><i class="fas fa-rotate-right"></i></button>
             <button class="icon-btn" onclick="browser.goHome()" title="Inicio"><i class="fas fa-house"></i></button>
         </div>
 
         <div class="omnibox-container">
-            <i class="fas fa-shield-check site-info-icon" id="security-icon" title="Seguridad Activada" onclick="ui.showToast('Conexión segura establecida.')"></i>
-            <input type="text" class="omnibox" id="url-input" placeholder="Buscar o introducir una dirección web...">
+            <i class="fas fa-shield-check site-info-icon" id="security-icon" title="Seguridad Activada" onclick="ui.showToast('ConexiÃ³n segura establecida.')"></i>
+            <input type="text" class="omnibox" id="url-input" placeholder="Buscar o introducir una direcciÃ³n web...">
             <i class="fas fa-magnifying-glass search-action-icon" onclick="browser.navigate()"></i>
         </div>
 
         <div class="nav-controls">
-            <button class="icon-btn" onclick="ui.showToast('Página guardada en favoritos ⭐')" title="Favoritos"><i class="fas fa-star"></i></button>
+            <button class="icon-btn" onclick="ui.showToast('PÃ¡gina guardada en favoritos â­')" title="Favoritos"><i class="fas fa-star"></i></button>
             <button class="icon-btn" onclick="ui.togglePanel('downloads')" title="Descargas"><i class="fas fa-download"></i></button>
-            <button class="icon-btn" onclick="ui.togglePanel('menu')" title="Más opciones"><i class="fas fa-bars-staggered"></i></button>
+            <button class="icon-btn" onclick="ui.togglePanel('menu')" title="MÃ¡s opciones"><i class="fas fa-bars-staggered"></i></button>
         </div>
     </div>
 
     <div class="search-tools-bar">
         <div class="search-tool" onclick="browser.quickSearch('web')"><i class="fas fa-globe"></i> Todo</div>
-        <div class="search-tool" onclick="browser.quickSearch('images')"><i class="fas fa-image"></i> Imágenes</div>
+        <div class="search-tool" onclick="browser.quickSearch('images')"><i class="fas fa-image"></i> ImÃ¡genes</div>
         <div class="search-tool" onclick="browser.quickSearch('videos')"><i class="fas fa-video" style="color:#ff0055"></i> Videos</div>
         <div class="search-tool" onclick="browser.quickSearch('news')"><i class="fas fa-newspaper" style="color:var(--accent)"></i> Noticias</div>
         <div class="search-tool" onclick="browser.quickSearch('maps')"><i class="fas fa-map-marker-alt" style="color:var(--success)"></i> Mapas</div>
@@ -608,9 +608,9 @@
 
 <!-- AB CREDITS WIDGET -->
 <div id="ab-credits-widget">
-    <div class="ab-label">CRÉDITOS</div>
+    <div class="ab-label">CRÃDITOS</div>
     <div class="ab-amount" id="ab-amount-display">0</div>
-    <div class="ab-coin">⬡ AB</div>
+    <div class="ab-coin">â¬¡ AB</div>
     <div class="ab-id" id="ab-id-display">cargando...</div>
 </div>
 
@@ -618,7 +618,7 @@
 <div class="viewport-container" id="viewport">
     <div class="alex-start-page active" id="start-page">
         <div class="start-logo">Waevo</div>
-        <input type="text" class="start-search" placeholder="Busca en la web sin límites..." onkeypress="if(event.key==='Enter') browser.navigate(this.value)">
+        <input type="text" class="start-search" placeholder="Busca en la web sin lÃ­mites..." onkeypress="if(event.key==='Enter') browser.navigate(this.value)">
         <div class="quick-links">
             <a class="q-link" onclick="browser.navigate('youtube.com')">
                 <i class="fab fa-youtube q-icon" style="color:#ff0055"></i><span class="q-text">YouTube</span>
@@ -642,31 +642,31 @@
     </div>
 </div>
 
-<!-- PANEL MENÚ -->
+<!-- PANEL MENÃ -->
 <div class="overlay-panel" id="panel-menu">
     <div class="panel-header">
-        <h3><i class="fas fa-cog"></i> Configuración y Opciones</h3>
+        <h3><i class="fas fa-cog"></i> ConfiguraciÃ³n y Opciones</h3>
         <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
     </div>
     <div class="panel-content">
         <div class="menu-grid">
-            <div class="menu-btn" onclick="browser.newTab()"><i class="fas fa-plus"></i>Nueva Pestaña</div>
-            <div class="menu-btn" onclick="ui.showToast('Modo Incógnito Activado 🕵️')"><i class="fas fa-mask"></i>Incógnito</div>
+            <div class="menu-btn" onclick="browser.newTab()"><i class="fas fa-plus"></i>Nueva PestaÃ±a</div>
+            <div class="menu-btn" onclick="ui.showToast('Modo IncÃ³gnito Activado ðµï¸')"><i class="fas fa-mask"></i>IncÃ³gnito</div>
             <div class="menu-btn" onclick="ui.togglePanel('history')"><i class="fas fa-history"></i>Historial</div>
             <div class="menu-btn" onclick="ui.togglePanel('downloads')"><i class="fas fa-download"></i>Descargas</div>
-            <div class="menu-btn" onclick="ui.showToast('Página guardada localmente')"><i class="fas fa-save"></i>Guardar Web</div>
+            <div class="menu-btn" onclick="ui.showToast('PÃ¡gina guardada localmente')"><i class="fas fa-save"></i>Guardar Web</div>
             <div class="menu-btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</div>
-            <div class="menu-btn" onclick="ui.showToast('Panel de Extensiones (Próximamente)')"><i class="fas fa-puzzle-piece"></i>Extensiones</div>
-            <div class="menu-btn" onclick="ui.showToast('Traduciendo página...')"><i class="fas fa-language"></i>Traducir</div>
+            <div class="menu-btn" onclick="ui.showToast('Panel de Extensiones (PrÃ³ximamente)')"><i class="fas fa-puzzle-piece"></i>Extensiones</div>
+            <div class="menu-btn" onclick="ui.showToast('Traduciendo pÃ¡gina...')"><i class="fas fa-language"></i>Traducir</div>
             <div class="menu-btn" onclick="browser.reload()"><i class="fas fa-rotate-right"></i>Recargar</div>
             <div class="menu-btn" onclick="ui.togglePanel('updates')"><i class="fas fa-bolt"></i>Actualizaciones</div>
-            <div class="menu-btn" onclick="ui.showToast('Zoom al 110% ✅')"><i class="fas fa-magnifying-glass-plus"></i>Zoom +</div>
+            <div class="menu-btn" onclick="ui.showToast('Zoom al 110% â')"><i class="fas fa-magnifying-glass-plus"></i>Zoom +</div>
             <div class="menu-btn" onclick="ui.showToast('Pantalla completa')"><i class="fas fa-expand"></i>Pantalla</div>
         </div>
 
         <div class="section-title"><i class="fas fa-shield-halved"></i> Seguridad Avanzada</div>
         <div class="setting-item">
-            <span>Motor Proxy Anti-Bloqueos <br><small style="color:var(--text-muted);font-size:10px;">Evita "Conexión rechazada"</small></span>
+            <span>Motor Proxy Anti-Bloqueos <br><small style="color:var(--text-muted);font-size:10px;">Evita "ConexiÃ³n rechazada"</small></span>
             <div class="toggle-switch active" id="proxy-toggle" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
@@ -674,15 +674,15 @@
             <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
-            <span>Forzar Navegación Segura (HTTPS)</span>
+            <span>Forzar NavegaciÃ³n Segura (HTTPS)</span>
             <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
-            <span>Modo Sin Caché</span>
+            <span>Modo Sin CachÃ©</span>
             <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
-            <span>Protección DNS</span>
+            <span>ProtecciÃ³n DNS</span>
             <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
@@ -692,19 +692,19 @@
 
         <div class="section-title"><i class="fas fa-sliders"></i> Preferencias</div>
         <div class="setting-item">
-            <span>Motor de búsqueda</span>
+            <span>Motor de bÃºsqueda</span>
             <select class="select-input" onchange="ui.showToast('Motor: '+this.value)">
                 <option>Google</option><option>Bing</option><option>DuckDuckGo</option><option>Ecosia</option>
             </select>
         </div>
         <div class="setting-item">
-            <span>Zoom de página</span>
+            <span>Zoom de pÃ¡gina</span>
             <input type="range" class="range-input" min="80" max="130" value="100" oninput="ui.showToast('Zoom: '+this.value+'%')">
         </div>
         <div class="setting-item">
             <span>Tema de la interfaz</span>
             <select class="select-input" onchange="ui.changeTheme(this.value)">
-                <option value="dark">Oscuro</option><option value="blue">Azul profundo</option><option value="purple">Púrpura</option>
+                <option value="dark">Oscuro</option><option value="blue">Azul profundo</option><option value="purple">PÃºrpura</option>
             </select>
         </div>
         <div class="setting-item">
@@ -720,7 +720,7 @@
             <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
         </div>
         <div class="setting-item">
-            <span>Guardar contraseñas</span>
+            <span>Guardar contraseÃ±as</span>
             <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
         </div>
 
@@ -778,18 +778,18 @@
     </div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
-    <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
+    <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="CrÃ©ditos">CrÃ©ditos</div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">Acción completada</div>
+<div class="toast" id="toast">AcciÃ³n completada</div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
     <div class="modal-box">
-        <div class="modal-icon" id="modal-icon">⚡</div>
-        <div class="modal-title" id="modal-title">¿Estás seguro?</div>
-        <div class="modal-desc" id="modal-desc">Esta acción no se puede deshacer.</div>
+        <div class="modal-icon" id="modal-icon">â¡</div>
+        <div class="modal-title" id="modal-title">Â¿EstÃ¡s seguro?</div>
+        <div class="modal-desc" id="modal-desc">Esta acciÃ³n no se puede deshacer.</div>
         <div class="modal-btns">
             <button class="modal-btn cancel" onclick="ui.closeModal()">Cancelar</button>
             <button class="modal-btn confirm" id="modal-confirm-btn">Confirmar</button>
@@ -800,7 +800,7 @@
 <!-- UPDATE INSTALL SCREEN -->
 <div id="update-screen">
     <div class="update-install-logo">Waevo</div>
-    <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Instalando actualización...</div>
+    <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Instalando actualizaciÃ³n...</div>
     <div class="update-progress-bar">
         <div class="update-progress-fill" id="update-progress-fill"></div>
     </div>
@@ -814,15 +814,15 @@
     <div class="shutdown-text">APAGANDO...</div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN PANEL (actualizaciÃ³n) -->
 <div id="admin-panel">
     <div class="admin-box">
         <div class="admin-step active" id="admin-step-1">
-            <div class="admin-title"><i class="fas fa-lock"></i> Panel de Administración</div>
-            <div class="admin-subtitle">Acceso restringido. Introduce la contraseña para continuar.</div>
-            <label class="admin-label">Contraseña</label>
+            <div class="admin-title"><i class="fas fa-lock"></i> Panel de AdministraciÃ³n</div>
+            <div class="admin-subtitle">Acceso restringido. Introduce la contraseÃ±a para continuar.</div>
+            <label class="admin-label">ContraseÃ±a</label>
             <div class="password-input-wrap">
-                <input type="password" class="admin-input" id="admin-password" placeholder="••••••••"
+                <input type="password" class="admin-input" id="admin-password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
                     onkeypress="if(event.key==='Enter') adminPanel.checkPassword()" style="margin-bottom:4px;">
                 <i class="fas fa-eye password-eye" onclick="adminPanel.togglePw(this)"></i>
             </div>
@@ -832,32 +832,32 @@
         </div>
 
         <div class="admin-step" id="admin-step-2">
-            <div class="admin-title" id="admin-form-title"><i class="fas fa-plus-circle"></i> Nueva Actualización</div>
-            <div class="admin-subtitle">Completa los campos y publica la actualización para todos los usuarios.</div>
-            <label class="admin-label">Título de la actualización *</label>
+            <div class="admin-title" id="admin-form-title"><i class="fas fa-plus-circle"></i> Nueva ActualizaciÃ³n</div>
+            <div class="admin-subtitle">Completa los campos y publica la actualizaciÃ³n para todos los usuarios.</div>
+            <label class="admin-label">TÃ­tulo de la actualizaciÃ³n *</label>
             <input type="text" class="admin-input" id="admin-update-title" placeholder="Ej: v3.0 - Mejoras de rendimiento">
-            <label class="admin-label">Descripción *</label>
-            <textarea class="admin-input" id="admin-update-desc" placeholder="Describe qué cambia con esta actualización..." rows="3"></textarea>
-            <label class="admin-label">Código de programación (JS) — se ejecuta al instalar</label>
-            <textarea class="admin-input code-input" id="admin-update-code" placeholder="// Código JS de la actualización..." rows="5"></textarea>
-            <label class="admin-label">💰 Precio en AB (0 = gratis)</label>
+            <label class="admin-label">DescripciÃ³n *</label>
+            <textarea class="admin-input" id="admin-update-desc" placeholder="Describe quÃ© cambia con esta actualizaciÃ³n..." rows="3"></textarea>
+            <label class="admin-label">CÃ³digo de programaciÃ³n (JS) â se ejecuta al instalar</label>
+            <textarea class="admin-input code-input" id="admin-update-code" placeholder="// CÃ³digo JS de la actualizaciÃ³n..." rows="5"></textarea>
+            <label class="admin-label">ð° Precio en AB (0 = gratis)</label>
             <input type="number" class="admin-input" id="admin-update-price" placeholder="0" min="0" value="0" style="margin-bottom:6px;">
             <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:6px;" id="admin-form-error"></div>
-            <button class="admin-submit" id="admin-submit-btn" onclick="adminPanel.publishUpdate()"><i class="fas fa-rocket"></i> Publicar actualización</button>
+            <button class="admin-submit" id="admin-submit-btn" onclick="adminPanel.publishUpdate()"><i class="fas fa-rocket"></i> Publicar actualizaciÃ³n</button>
             <button class="admin-cancel" onclick="adminPanel.close()">Cancelar</button>
         </div>
     </div>
 </div>
 
-<!-- CREDITS MANAGER PANEL -->
+<!-- CREDITS MANAGER PANEL (++) -->
 <div id="credits-panel">
     <div class="credits-box">
         <div id="credits-pw-step" class="active">
-            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de Créditos AB</div>
-            <div class="credits-subtitle">Acceso restringido. Introduce la contraseña.</div>
-            <label class="admin-label">Contraseña</label>
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de CrÃ©ditos AB</div>
+            <div class="credits-subtitle">Acceso restringido. Introduce la contraseÃ±a.</div>
+            <label class="admin-label">ContraseÃ±a</label>
             <div class="password-input-wrap">
-                <input type="password" class="admin-input" id="credits-password" placeholder="••••••••"
+                <input type="password" class="admin-input" id="credits-password" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
                     onkeypress="if(event.key==='Enter') creditsPanel.checkPassword()" style="margin-bottom:4px;">
                 <i class="fas fa-eye password-eye" onclick="creditsPanel.togglePw(this)"></i>
             </div>
@@ -867,12 +867,12 @@
         </div>
 
         <div id="credits-main-step">
-            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de Créditos AB</div>
-            <div class="credits-subtitle">Todos los usuarios conectados. Puedes añadir AB a cualquier usuario.</div>
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de CrÃ©ditos AB</div>
+            <div class="credits-subtitle">Todos los usuarios conectados. Puedes aÃ±adir AB a cualquier usuario.</div>
 
             <div style="background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.2);border-radius:12px;padding:14px;margin-bottom:20px;">
                 <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Tu ID</div>
-                <div style="font-size:12px;font-family:monospace;color:var(--warning);" id="my-id-display">—</div>
+                <div style="font-size:12px;font-family:monospace;color:var(--warning);" id="my-id-display">â</div>
                 <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Tus AB: <span style="color:var(--warning);font-weight:bold;" id="my-ab-display">0</span></div>
             </div>
 
@@ -880,6 +880,7 @@
                 <i class="fas fa-users"></i> Usuarios registrados
             </div>
 
+            <!-- ââ BARRA DE BÃSQUEDA DE USUARIOS (NUEVO) ââ -->
             <div class="users-search-wrap">
                 <i class="fas fa-magnifying-glass users-search-icon"></i>
                 <input type="text" class="users-search-input" id="users-search-input"
@@ -901,7 +902,7 @@
 <!-- GIVE AB MODAL -->
 <div class="modal-overlay" id="give-ab-modal">
     <div class="modal-box" style="border-color:rgba(255,170,0,0.3);">
-        <div class="modal-icon">🪙</div>
+        <div class="modal-icon">ðª</div>
         <div class="modal-title">Dar AB al usuario</div>
         <div class="modal-desc" id="give-ab-target-info">ID del usuario</div>
         <div class="give-ab-form">
@@ -914,7 +915,7 @@
     </div>
 </div>
 
-<!-- MODAL CRÉDITOS DEL NAVEGADOR -->
+<!-- MODAL CRÃDITOS DEL NAVEGADOR -->
 <div id="creditos-modal">
     <div class="creditos-box">
         <div class="creditos-logo">Waevo</div>
@@ -931,71 +932,6 @@
         <button class="creditos-close" onclick="document.getElementById('creditos-modal').classList.remove('active')">Cerrar</button>
     </div>
 </div>
-
-<!-- ====================== IMTGO / LAZARUS BYPASS ====================== -->
-<script>
-// Bypass automático para IMTGo (Lazarus) - Waevo Pro Edition
-(function() {
-    const BLOCK_KEYWORDS = [
-        "acceso denegado", "access denied", "blocked by", "imtlazarus", 
-        "imtgo", "lazarus", "conexión rechazada", "site blocked", 
-        "forbidden", "403 forbidden", "proxy blocked", "filtrado", "restringido"
-    ];
-
-    function isIMTBlocked() {
-        const bodyText = (document.body ? document.body.innerText : '').toLowerCase();
-        const title = (document.title || '').toLowerCase();
-        return BLOCK_KEYWORDS.some(kw => bodyText.includes(kw) || title.includes(kw));
-    }
-
-    function triggerBypass() {
-        console.log("%c🚀 Waevo Anti-IMTGo activado - Intentando bypass...", "color:#00e5ff;font-weight:bold");
-
-        let currentUrl = window.location.href;
-        if (currentUrl.includes('corsproxy.io')) return;
-
-        const proxies = [
-            "https://corsproxy.io/?",
-            "https://api.allorigins.win/raw?url="
-        ];
-
-        let attempt = 0;
-        function tryProxy() {
-            if (attempt >= proxies.length) {
-                console.warn("❌ Todos los proxies fallaron para IMTGo");
-                return;
-            }
-            const proxyUrl = proxies[attempt] + encodeURIComponent(currentUrl);
-            if (window.parent && window.parent !== window) {
-                window.parent.postMessage({ action: "navigate", url: proxyUrl }, "*");
-            } else {
-                window.location.replace(proxyUrl);
-            }
-            attempt++;
-        }
-
-        tryProxy();
-
-        // Reintento automático
-        setTimeout(() => {
-            if (isIMTBlocked()) tryProxy();
-        }, 2500);
-    }
-
-    window.addEventListener('load', () => {
-        if (isIMTBlocked()) triggerBypass();
-    });
-
-    const observer = new MutationObserver(() => {
-        if (isIMTBlocked()) {
-            observer.disconnect();
-            triggerBypass();
-        }
-    });
-    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-})();
-</script>
-<!-- ====================== FIN BYPASS IMTGO ====================== -->
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -1031,7 +967,7 @@
 
 <script>
     /* ======================================================
-       DEVICE STORE — IndexedDB permanente
+       DEVICE STORE â IndexedDB permanente
     ====================================================== */
     const deviceStore = {
         _id: null,
@@ -1092,7 +1028,7 @@
     };
 
     /* ======================================================
-       AB CREDITS MANAGER — Firebase online
+       AB CREDITS MANAGER â Firebase online
     ====================================================== */
     const abManager = {
         _myAB: 0,
@@ -1139,7 +1075,7 @@
     };
 
     /* ======================================================
-       CREDITS PANEL (botón ++)
+       CREDITS PANEL (botÃ³n ++)
     ====================================================== */
     const creditsPanel = {
         _targetUserId: null,
@@ -1168,12 +1104,12 @@
             if (pw === 'vercel') {
                 document.getElementById('credits-pw-step').classList.remove('active');
                 document.getElementById('credits-main-step').classList.add('active');
-                document.getElementById('my-id-display').textContent = deviceStore._id || '—';
+                document.getElementById('my-id-display').textContent = deviceStore._id || 'â';
                 const searchInput = document.getElementById('users-search-input');
                 if (searchInput) searchInput.value = '';
                 this.loadUsers();
             } else {
-                document.getElementById('credits-pw-error').textContent = '❌ Contraseña incorrecta.';
+                document.getElementById('credits-pw-error').textContent = 'â ContraseÃ±a incorrecta.';
                 document.getElementById('credits-password').style.borderColor = 'var(--danger)';
                 setTimeout(() => document.getElementById('credits-password').style.borderColor = '', 1500);
             }
@@ -1190,7 +1126,7 @@
                 return `<div class="user-row">
                     <div>
                         <div style="font-size:11px;font-weight:bold;color:${isMe ? 'var(--accent)' : 'white'};margin-bottom:2px;">
-                            ${isMe ? '👤 Tú' : '🙍 Usuario'}
+                            ${isMe ? 'ð¤ TÃº' : 'ð Usuario'}
                         </div>
                         <div class="user-row-id">${u.id}</div>
                     </div>
@@ -1217,7 +1153,7 @@
                 const container = document.getElementById('users-list-container');
                 if (!data) {
                     this._allUsers = [];
-                    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No hay usuarios registrados aún.</div>';
+                    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No hay usuarios registrados aÃºn.</div>';
                     return;
                 }
                 this._allUsers = Object.entries(data).map(([id, val]) => ({ id, ...val }));
@@ -1236,11 +1172,11 @@
 
         async confirmGiveAB() {
             const amount = parseInt(document.getElementById('give-ab-amount').value) || 0;
-            if (amount <= 0) { ui.showToast('Introduce una cantidad válida'); return; }
+            if (amount <= 0) { ui.showToast('Introduce una cantidad vÃ¡lida'); return; }
             if (!this._targetUserId) return;
             await abManager.giveAB(this._targetUserId, amount);
             document.getElementById('give-ab-modal').classList.remove('active');
-            ui.showToast(`✅ +${amount} AB enviados al usuario`);
+            ui.showToast(`â +${amount} AB enviados al usuario`);
         }
     };
 
@@ -1257,7 +1193,7 @@
         getHistory: () => JSON.parse(localStorage.getItem('ab_history') || '[]'),
         clearAll: () => {
             localStorage.removeItem('ab_history');
-            ui.showToast("Historial eliminado. Las actualizaciones instaladas se conservan ✅");
+            ui.showToast("Historial eliminado. Las actualizaciones instaladas se conservan â");
             ui.renderHistory();
         }
     };
@@ -1283,7 +1219,7 @@
         newTab(url = this.homeUrl) {
             this.idCounter++;
             const tabId = this.idCounter;
-            this.tabs.push({ id: tabId, title: 'Nueva Pestaña', url: url, history: [url], historyIndex: 0 });
+            this.tabs.push({ id: tabId, title: 'Nueva PestaÃ±a', url: url, history: [url], historyIndex: 0 });
             const iframe = document.createElement('iframe');
             iframe.className = 'browser-view';
             iframe.id = `view-${tabId}`;
@@ -1319,7 +1255,7 @@
                 document.getElementById(`view-${id}`).classList.add('active');
                 let cleanUrl = currentTab.url;
                 if (cleanUrl.includes('corsproxy.io/?')) cleanUrl = decodeURIComponent(cleanUrl.split('corsproxy.io/?')[1]);
-                if (cleanUrl.includes('google.com/search?igu=1&q=')) cleanUrl = "Búsqueda: " + decodeURIComponent(cleanUrl.split('q=')[1].split('&')[0]);
+                if (cleanUrl.includes('google.com/search?igu=1&q=')) cleanUrl = "BÃºsqueda: " + decodeURIComponent(cleanUrl.split('q=')[1].split('&')[0]);
                 document.getElementById('url-input').value = cleanUrl;
                 document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
                 document.getElementById('security-icon').style.color = "var(--success)";
@@ -1340,10 +1276,10 @@
                 title = query;
                 if (cleanUrl.includes('youtube.com/watch?v=')) {
                     finalUrl = cleanUrl.replace('watch?v=', 'embed/');
-                    ui.showToast("Optimizando vídeo de YouTube...");
+                    ui.showToast("Optimizando vÃ­deo de YouTube...");
                 } else if (proxyEnabled) {
                     finalUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
-                    ui.showToast("Bypass de seguridad activado 🛡️");
+                    ui.showToast("Bypass de seguridad activado ð¡ï¸");
                 } else { finalUrl = cleanUrl; }
             } else {
                 this.lastSearchQuery = query;
@@ -1361,7 +1297,7 @@
             if (!query || query.includes('http')) { ui.showToast("Escribe algo para buscar primero"); return; }
             let finalUrl = "", title = "";
             switch (type) {
-                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `Imágenes: ${query}`; break;
+                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `ImÃ¡genes: ${query}`; break;
                 case 'videos': finalUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
                 case 'news': finalUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
                 case 'maps': finalUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
@@ -1416,7 +1352,7 @@
         reload() {
             const frame = document.getElementById(`view-${this.activeTabId}`);
             if (frame.src) frame.src = frame.src;
-            ui.showToast("Recargando página...");
+            ui.showToast("Recargando pÃ¡gina...");
         }
 
         goHome() {
@@ -1444,7 +1380,7 @@
                 if (tab.url.includes('google.com')) icon = '<i class="fab fa-google" style="color:var(--accent)"></i>';
                 if (tab.url.includes('youtube.com')) icon = '<i class="fab fa-youtube" style="color:var(--danger)"></i>';
                 if (tab.url === 'about:start') icon = '<i class="fas fa-house"></i>';
-                el.innerHTML = `${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
+                el.innerHTML = `${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">Ã</div>`;
                 container.appendChild(el);
             });
             const newBtn = document.createElement('div');
@@ -1514,10 +1450,10 @@
         closeModal: () => document.getElementById('modal-overlay').classList.remove('active'),
 
         confirmShutdown: () => {
-            ui.showModal('🔴', 'Apagar Waevo', '¿De verdad quieres apagar el navegador? Se cerrará y se reiniciará después de 1 minuto.', 'Sí, apagar', '', () => {
+            ui.showModal('ð´', 'Apagar Waevo', 'Â¿De verdad quieres apagar el navegador? Se cerrarÃ¡ y se reiniciarÃ¡ despuÃ©s de 1 minuto.', 'SÃ­, apagar', '', () => {
                 const sc = document.getElementById('shutdown-screen');
                 sc.classList.add('active');
-                setTimeout(() => { sc.classList.remove('active'); ui.showToast("¡Bienvenido de nuevo a AlexBrowser! ✅"); }, 60000);
+                setTimeout(() => { sc.classList.remove('active'); ui.showToast("Â¡Bienvenido de nuevo a AlexBrowser! â"); }, 60000);
             });
         },
 
@@ -1525,7 +1461,7 @@
             if (theme === 'blue') { document.documentElement.style.setProperty('--accent', '#4da6ff'); document.documentElement.style.setProperty('--accent-secondary', '#0055ff'); }
             else if (theme === 'purple') { document.documentElement.style.setProperty('--accent', '#cc66ff'); document.documentElement.style.setProperty('--accent-secondary', '#8800cc'); }
             else { document.documentElement.style.setProperty('--accent', '#00e5ff'); document.documentElement.style.setProperty('--accent-secondary', '#bd00ff'); }
-            ui.showToast('Tema aplicado ✅');
+            ui.showToast('Tema aplicado â');
         }
     };
 
@@ -1544,7 +1480,7 @@
         async render(updates) {
             const container = document.getElementById('updates-list');
             if (!updates || updates.length === 0) {
-                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding-top:50px;"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);margin-bottom:15px;display:block;"></i><p>Todo está actualizado</p></div>`;
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding-top:50px;"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);margin-bottom:15px;display:block;"></i><p>Todo estÃ¡ actualizado</p></div>`;
                 document.getElementById('update-badge').style.display = 'none';
                 return;
             }
@@ -1564,7 +1500,7 @@
                 const canAfford = myAB >= price;
 
                 const priceTag = isPaid
-                    ? `<span class="update-price-tag paid">🪙 ${price} AB</span>`
+                    ? `<span class="update-price-tag paid">ðª ${price} AB</span>`
                     : `<span class="update-price-tag free">Gratis</span>`;
 
                 let installBtn = '';
@@ -1593,7 +1529,7 @@
                         </div>
                         <div class="update-date">${dateStr}</div>
                     </div>
-                    <div class="update-title">${u.title || 'Sin título'}</div>
+                    <div class="update-title">${u.title || 'Sin tÃ­tulo'}</div>
                     <div class="update-desc">${u.desc || ''}</div>
                     ${installBtn}
                     ${adminActions}
@@ -1615,21 +1551,21 @@
             const myAB = abManager.getAB();
 
             if (isPaid && myAB < price) {
-                ui.showToast(`❌ No tienes suficientes AB. Necesitas ${price}, tienes ${myAB}.`);
+                ui.showToast(`â No tienes suficientes AB. Necesitas ${price}, tienes ${myAB}.`);
                 return;
             }
 
             const desc = isPaid
-                ? `Se descontarán ${price} AB de tu saldo. Tienes ${myAB} AB. ¿Instalar "${u.title}"?`
-                : `¿Seguro que quieres instalar "${u.title}"? Tardará unos 3 minutos.`;
+                ? `Se descontarÃ¡n ${price} AB de tu saldo. Tienes ${myAB} AB. Â¿Instalar "${u.title}"?`
+                : `Â¿Seguro que quieres instalar "${u.title}"? TardarÃ¡ unos 3 minutos.`;
 
-            ui.showModal(isPaid ? '🪙' : '⚡', '¿Instalar actualización?', desc,
-                isPaid ? `Sí, gastar ${price} AB` : 'Sí, instalar',
+            ui.showModal(isPaid ? 'ðª' : 'â¡', 'Â¿Instalar actualizaciÃ³n?', desc,
+                isPaid ? `SÃ­, gastar ${price} AB` : 'SÃ­, instalar',
                 isPaid ? 'gold' : 'green',
                 async () => {
                     if (isPaid) {
                         const ok = await abManager.spendAB(deviceStore._id, price);
-                        if (!ok) { ui.showToast('❌ AB insuficientes.'); return; }
+                        if (!ok) { ui.showToast('â AB insuficientes.'); return; }
                     }
                     this.runInstall(id, u.code || '', u.title || '');
                 }
@@ -1644,15 +1580,15 @@
             screen.classList.add('active');
 
             const steps = [
-                { pct: 8,  step: "Conectando con servidores de AlexBrowser...", status: "Estableciendo conexión segura..." },
-                { pct: 18, step: "Descargando paquete de actualización...", status: "0.0 MB / 12.4 MB" },
+                { pct: 8,  step: "Conectando con servidores de AlexBrowser...", status: "Estableciendo conexiÃ³n segura..." },
+                { pct: 18, step: "Descargando paquete de actualizaciÃ³n...", status: "0.0 MB / 12.4 MB" },
                 { pct: 32, step: "Verificando integridad de archivos...", status: "Comprobando firma digital SHA-256..." },
-                { pct: 46, step: "Aplicando parches del motor...", status: "Modificando núcleo de navegación..." },
-                { pct: 59, step: "Actualizando módulos de seguridad...", status: "Certificados SSL renovados..." },
-                { pct: 72, step: "Optimizando rendimiento...", status: "Ajustando configuración interna..." },
+                { pct: 46, step: "Aplicando parches del motor...", status: "Modificando nÃºcleo de navegaciÃ³n..." },
+                { pct: 59, step: "Actualizando mÃ³dulos de seguridad...", status: "Certificados SSL renovados..." },
+                { pct: 72, step: "Optimizando rendimiento...", status: "Ajustando configuraciÃ³n interna..." },
                 { pct: 84, step: "Instalando mejoras de interfaz...", status: "Compilando recursos visuales..." },
-                { pct: 93, step: "Finalizando instalación...", status: "Limpiando archivos temporales..." },
-                { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios y reiniciando..." }
+                { pct: 93, step: "Finalizando instalaciÃ³n...", status: "Limpiando archivos temporales..." },
+                { pct: 100, step: "Â¡ActualizaciÃ³n completada!", status: "Aplicando cambios y reiniciando..." }
             ];
 
             const totalTime = 180000;
@@ -1666,7 +1602,7 @@
                         this._applied.push(id);
                         setTimeout(() => {
                             screen.classList.remove('active');
-                            ui.showToast(`✅ "${title}" instalada correctamente`);
+                            ui.showToast(`â "${title}" instalada correctamente`);
                             if (window._fbReady) this.load();
                         }, 2000);
                     });
@@ -1683,10 +1619,10 @@
         },
 
         deleteUpdate(id, title) {
-            ui.showModal('🗑️', 'Eliminar actualización', `¿Seguro que quieres eliminar "${title}"?`, 'Sí, eliminar', '', () => {
+            ui.showModal('ðï¸', 'Eliminar actualizaciÃ³n', `Â¿Seguro que quieres eliminar "${title}"?`, 'SÃ­, eliminar', '', () => {
                 if (!window._fbReady) return;
                 window._fbRemove(window._fbRef(window._fbDB, `alexbrowser_updates/${id}`))
-                    .then(() => ui.showToast(`🗑️ Actualización eliminada`))
+                    .then(() => ui.showToast(`ðï¸ ActualizaciÃ³n eliminada`))
                     .catch(err => ui.showToast('Error: ' + err.message));
             });
         },
@@ -1716,12 +1652,12 @@
             const defaults = [
                 {
                     title: "v2.0 - Motor Anti-Bloqueos Mejorado",
-                    desc: "Nuevo sistema de bypass que permite cargar más sitios sin errores de conexión rechazada.",
+                    desc: "Nuevo sistema de bypass que permite cargar mÃ¡s sitios sin errores de conexiÃ³n rechazada.",
                     code: "console.log('[AlexBrowser] Motor anti-bloqueos v2.0 aplicado.');",
                     version: "v2.0", price: 0, timestamp: Date.now() - 86400000 * 3
                 },
                 {
-                    title: "v2.1 - Interfaz Rediseñada",
+                    title: "v2.1 - Interfaz RediseÃ±ada",
                     desc: "Nuevas animaciones, efectos visuales mejorados y barra de herramientas optimizada.",
                     code: "document.querySelectorAll('.tab').forEach(t => t.style.transition = 'all 0.5s cubic-bezier(0.2,0.8,0.2,1)');",
                     version: "v2.1", price: 0, timestamp: Date.now() - 86400000
@@ -1743,8 +1679,8 @@
             document.getElementById('admin-password').value = '';
             document.getElementById('admin-pw-error').textContent = '';
             document.getElementById('admin-form-error').textContent = '';
-            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Actualización';
-            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-rocket"></i> Publicar actualización';
+            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva ActualizaciÃ³n';
+            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-rocket"></i> Publicar actualizaciÃ³n';
             document.getElementById('admin-update-title').value = '';
             document.getElementById('admin-update-desc').value = '';
             document.getElementById('admin-update-code').value = '';
@@ -1768,7 +1704,7 @@
                 const cached = Object.values(updatesManager._cache);
                 if (cached.length) updatesManager.render(cached);
             } else {
-                document.getElementById('admin-pw-error').textContent = '❌ Contraseña incorrecta.';
+                document.getElementById('admin-pw-error').textContent = 'â ContraseÃ±a incorrecta.';
                 document.getElementById('admin-password').style.borderColor = 'var(--danger)';
                 setTimeout(() => document.getElementById('admin-password').style.borderColor = '', 1500);
             }
@@ -1781,7 +1717,7 @@
             document.getElementById('admin-panel').classList.add('active');
             document.getElementById('admin-step-1').classList.remove('active');
             document.getElementById('admin-step-2').classList.add('active');
-            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-pen"></i> Editar Actualización';
+            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-pen"></i> Editar ActualizaciÃ³n';
             document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
             document.getElementById('admin-update-title').value = u.title || '';
             document.getElementById('admin-update-desc').value = u.desc || '';
@@ -1796,7 +1732,7 @@
             const code = document.getElementById('admin-update-code').value.trim();
             const price = parseInt(document.getElementById('admin-update-price').value) || 0;
 
-            if (!title || !desc) { document.getElementById('admin-form-error').textContent = '❌ El título y la descripción son obligatorios.'; return; }
+            if (!title || !desc) { document.getElementById('admin-form-error').textContent = 'â El tÃ­tulo y la descripciÃ³n son obligatorios.'; return; }
             document.getElementById('admin-form-error').textContent = '';
             if (!window._fbReady) { ui.showToast('Firebase no disponible.'); return; }
 
@@ -1804,15 +1740,15 @@
                 const existing = updatesManager._cache[this._editingId];
                 const updated = { ...existing, title, desc, code: code || '', price, editedAt: Date.now() };
                 window._fbSet(window._fbRef(window._fbDB, `alexbrowser_updates/${this._editingId}`), updated)
-                    .then(() => { this.close(); ui.showToast(`✅ Actualización editada correctamente.`); })
-                    .catch(err => { document.getElementById('admin-form-error').textContent = '❌ Error: ' + err.message; });
+                    .then(() => { this.close(); ui.showToast(`â ActualizaciÃ³n editada correctamente.`); })
+                    .catch(err => { document.getElementById('admin-form-error').textContent = 'â Error: ' + err.message; });
             } else {
                 const count = Object.keys(updatesManager._cache).length;
                 const version = `v${2 + Math.floor(count / 10)}.${(count % 10) + 2}`;
                 const newUpdate = { title, desc, code: code || '', price, version, timestamp: Date.now() };
                 window._fbPush(window._fbRef(window._fbDB, 'alexbrowser_updates'), newUpdate)
-                    .then(() => { this.close(); ui.showToast(`✅ Actualización publicada para todos.`); })
-                    .catch(err => { document.getElementById('admin-form-error').textContent = '❌ Error: ' + err.message; });
+                    .then(() => { this.close(); ui.showToast(`â ActualizaciÃ³n publicada para todos.`); })
+                    .catch(err => { document.getElementById('admin-form-error').textContent = 'â Error: ' + err.message; });
             }
         }
     };
@@ -1823,7 +1759,7 @@
         const userId = await deviceStore.getOrCreateId();
         await updatesManager.loadApplied();
 
-        document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
+        document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + 'â¦';
 
         abManager.init(userId);
 
