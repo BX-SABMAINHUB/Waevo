@@ -268,6 +268,25 @@
         .corner-btn.credits-btn:hover { color: rgba(255,170,0,0.6); border-color: rgba(255,170,0,0.2); box-shadow: 0 0 12px rgba(255,170,0,0.2); }
         .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
+        .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .corner-btn.dashboard-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .corner-btn.redeem-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+        /* SUBMENU SESIÓN */
+        .session-submenu {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
+            background: rgba(15,15,22,0.96); border: 1px solid var(--border);
+            border-radius: 12px; padding: 8px; display: none; z-index: 1000;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7); backdrop-filter: blur(12px);
+        }
+        .session-submenu.active { display: block; animation: fadeIn 0.2s; }
+        .session-submenu button {
+            display: block; width: 100%; padding: 8px 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; color: white; font-size: 12px; font-weight: bold;
+            cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .session-submenu button:hover { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
 
         /* PANEL CRÉDITOS DEL NAVEGADOR */
         #creditos-modal {
@@ -769,12 +788,28 @@
 
 <!-- CORNER BUTTONS -->
 <div class="corner-buttons">
+    <!-- NUEVO BOTÓN DE TABLET CON GUARDADO DE SESIÓN -->
+    <div class="corner-btn tablet-btn" id="tablet-btn" onclick="ui.toggleSessionMenu()" title="Guardar sesión en dispositivo">
+        <i class="fas fa-tablet-screen-button"></i>
+        <div class="session-submenu" id="session-submenu">
+            <button onclick="sessionManager.saveSession(); ui.toggleSessionMenu();">Guardar sesión en dispositivo</button>
+        </div>
+    </div>
+
     <div class="corner-btn updates-btn" onclick="ui.togglePanel('updates')" title="Actualizaciones">
         <i class="fas fa-bolt"></i>
         <span class="update-badge" id="update-badge">0</span>
     </div>
     <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
         <i class="fas fa-power-off"></i>
+    </div>
+    <!-- NUEVO: Dashboard -->
+    <div class="corner-btn dashboard-btn" onclick="browser.navigate('https://waevo-clave.vercel.app')" title="Dashboard">
+        <i class="fas fa-gauge-high"></i>
+    </div>
+    <!-- NUEVO: Canjear -->
+    <div class="corner-btn redeem-btn" onclick="browser.navigate('https://waevo-redeem.vercel.app')" title="Canjear">
+        <i class="fas fa-gift"></i>
     </div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
@@ -1198,6 +1233,65 @@
         }
     };
 
+    /* ======== SESSION MANAGER ======== */
+    const sessionManager = {
+        async saveSession() {
+            const sessionData = {
+                tabs: browser.tabs.map(tab => ({
+                    id: tab.id,
+                    title: tab.title,
+                    url: tab.url,
+                    history: tab.history,
+                    historyIndex: tab.historyIndex
+                })),
+                activeTabId: browser.activeTabId,
+                idCounter: browser.idCounter,
+                lastSearchQuery: browser.lastSearchQuery
+            };
+            await deviceStore.set('savedSession', JSON.stringify(sessionData));
+            ui.showToast('✅ Sesión guardada en el dispositivo. Se restaurará al recargar.');
+        },
+
+        async restoreSession() {
+            const raw = await deviceStore.get('savedSession');
+            if (!raw) return false;
+            try {
+                const sessionData = JSON.parse(raw);
+                // Limpiar estado actual
+                browser.tabs = [];
+                document.querySelectorAll('.browser-view').forEach(f => f.remove());
+                document.getElementById('start-page').classList.add('active');
+                document.getElementById('url-input').value = '';
+
+                // Recrear pestañas y vistas
+                sessionData.tabs.forEach(tab => {
+                    const iframe = document.createElement('iframe');
+                    iframe.className = 'browser-view';
+                    iframe.id = `view-${tab.id}`;
+                    iframe.setAttribute('allowfullscreen', 'true');
+                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
+                    iframe.setAttribute('allow', 'camera; microphone; geolocation; autoplay; clipboard-write;');
+                    document.getElementById('viewport').appendChild(iframe);
+                    browser.tabs.push({
+                        id: tab.id,
+                        title: tab.title,
+                        url: tab.url,
+                        history: tab.history,
+                        historyIndex: tab.historyIndex
+                    });
+                });
+                browser.activeTabId = sessionData.activeTabId;
+                browser.idCounter = sessionData.idCounter;
+                browser.lastSearchQuery = sessionData.lastSearchQuery || '';
+                browser.switchTab(browser.activeTabId);
+                return true;
+            } catch (e) {
+                console.warn('Error al restaurar sesión:', e);
+                return false;
+            }
+        }
+    };
+
     /* ======== BROWSER ENGINE ======== */
     class BrowserEngine {
         constructor() {
@@ -1406,6 +1500,11 @@
         },
 
         closePanels: () => document.querySelectorAll('.overlay-panel').forEach(p => p.classList.remove('open')),
+
+        toggleSessionMenu: () => {
+            const submenu = document.getElementById('session-submenu');
+            submenu.classList.toggle('active');
+        },
 
         renderHistory: () => {
             const list = dataManager.getHistory();
@@ -1763,7 +1862,19 @@
 
         abManager.init(userId);
 
-        browser.init();
+        // Intentar restaurar sesión guardada
+        const restored = await sessionManager.restoreSession();
+        if (!restored) {
+            browser.init();
+        } else {
+            // Si se restauró, actualizamos la UI
+            browser.renderTabs();
+            browser.updateNavButtons();
+            document.getElementById('url-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') browser.navigate();
+            });
+            ui.renderHistory();
+        }
         updatesManager.load();
     };
 
