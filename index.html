@@ -159,31 +159,55 @@
         .q-icon { font-size: 30px; margin-bottom: 10px; }
         .q-text { font-size: 12px; font-weight: bold; }
 
-        /* AB CREDITS WIDGET */
+        /* AB CREDITS WIDGET (nuevo diseño compacto) */
         #ab-credits-widget {
-            position: fixed; top: 150px; left: 16px;
-            background: rgba(15,15,22,0.92); border: 1px solid rgba(255,170,0,0.3);
-            border-radius: 16px; padding: 10px 16px;
-            z-index: 300; backdrop-filter: blur(12px);
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 12px rgba(255,170,0,0.1);
-            min-width: 80px;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15,15,22,0.88);
+            border: 1px solid rgba(255,170,0,0.25);
+            border-radius: 20px;
+            padding: 6px 14px;
+            z-index: 300;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 12px;
         }
-        #ab-credits-widget .ab-label {
-            font-size: 9px; color: var(--text-muted); letter-spacing: 2px; font-weight: bold;
+        #ab-credits-widget .ab-icon {
+            font-size: 14px;
+            color: var(--warning);
         }
         #ab-credits-widget .ab-amount {
-            font-size: 22px; font-weight: 900;
+            font-weight: 900;
             background: linear-gradient(135deg, #ffaa00, #ffdd55);
-            -webkit-background-clip: text; color: transparent;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 15px;
             line-height: 1;
         }
-        #ab-credits-widget .ab-coin {
-            font-size: 10px; color: rgba(255,170,0,0.6);
+        #ab-credits-widget .ab-label {
+            color: rgba(255,170,0,0.7);
+            font-weight: bold;
+            font-size: 10px;
+            margin-right: 2px;
+        }
+        #ab-credits-widget .ab-separator {
+            width: 1px;
+            height: 16px;
+            background: rgba(255,255,255,0.12);
+            margin: 0 4px;
         }
         #ab-credits-widget .ab-id {
-            font-size: 8px; color: rgba(255,255,255,0.2);
-            margin-top: 4px; font-family: monospace;
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .overlay-panel {
@@ -269,8 +293,6 @@
         .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
         .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .corner-btn.dashboard-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .corner-btn.redeem-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
         /* SUBMENU SESIÓN */
         .session-submenu {
@@ -625,12 +647,13 @@
     </div>
 </div>
 
-<!-- AB CREDITS WIDGET -->
+<!-- AB CREDITS WIDGET (ESQUINA INFERIOR IZQUIERDA) -->
 <div id="ab-credits-widget">
-    <div class="ab-label">CRÉDITOS</div>
-    <div class="ab-amount" id="ab-amount-display">0</div>
-    <div class="ab-coin">⬡ AB</div>
-    <div class="ab-id" id="ab-id-display">cargando...</div>
+    <i class="fas fa-coins ab-icon"></i>
+    <span class="ab-amount" id="ab-amount-display">0</span>
+    <span class="ab-label">AB</span>
+    <span class="ab-separator"></span>
+    <span class="ab-id" id="ab-id-display">cargando...</span>
 </div>
 
 <!-- VIEWPORT -->
@@ -639,24 +662,9 @@
         <div class="start-logo">Waevo</div>
         <input type="text" class="start-search" placeholder="Busca en la web sin límites..." onkeypress="if(event.key==='Enter') browser.navigate(this.value)">
         <div class="quick-links">
-            <a class="q-link" onclick="browser.navigate('youtube.com')">
-                <i class="fab fa-youtube q-icon" style="color:#ff0055"></i><span class="q-text">YouTube</span>
-            </a>
-            <a class="q-link" onclick="browser.navigate('instagram.com')">
-                <i class="fab fa-instagram q-icon" style="color:#e1306c"></i><span class="q-text">Instagram</span>
-            </a>
-            <a class="q-link" onclick="browser.navigate('x.com')">
-                <i class="fab fa-x-twitter q-icon"></i><span class="q-text">X (Twitter)</span>
-            </a>
-            <a class="q-link" onclick="browser.navigate('https://api.mrscraper.com/?token=atk_c41f11b297533b2b0998bcd8833d3bc537b0723ccc6cf7243e4a5583faa57ba5&html=true&super=true&url=https%3A%2F%2Fwww.tiktok.com%2F')">
-                <i class="fab fa-tiktok q-icon" style="color:#69C9D0"></i><span class="q-text">TikTok</span>
-            </a>
-            <a class="q-link" onclick="browser.navigate('amazon.es')">
-                <i class="fab fa-amazon q-icon" style="color:#FF9900"></i><span class="q-text">Amazon</span>
-            </a>
-            <a class="q-link" onclick="browser.navigate('github.com')">
-                <i class="fab fa-github q-icon"></i><span class="q-text">GitHub</span>
-            </a>
+            <div class="q-link" onclick="browser.navigate('101games')">
+                <i class="fas fa-gamepad q-icon" style="color:#00e5ff"></i><span class="q-text">101games</span>
+            </div>
         </div>
     </div>
 </div>
@@ -788,7 +796,7 @@
 
 <!-- CORNER BUTTONS -->
 <div class="corner-buttons">
-    <!-- NUEVO BOTÓN DE TABLET CON GUARDADO DE SESIÓN -->
+    <!-- BOTÓN DE TABLET CON GUARDADO DE SESIÓN -->
     <div class="corner-btn tablet-btn" id="tablet-btn" onclick="ui.toggleSessionMenu()" title="Guardar sesión en dispositivo">
         <i class="fas fa-tablet-screen-button"></i>
         <div class="session-submenu" id="session-submenu">
@@ -802,14 +810,6 @@
     </div>
     <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
         <i class="fas fa-power-off"></i>
-    </div>
-    <!-- NUEVO: Dashboard -->
-    <div class="corner-btn dashboard-btn" onclick="browser.navigate('https://waevo-clave.vercel.app')" title="Dashboard">
-        <i class="fas fa-gauge-high"></i>
-    </div>
-    <!-- NUEVO: Canjear -->
-    <div class="corner-btn redeem-btn" onclick="browser.navigate('https://waevo-redeem.vercel.app')" title="Canjear">
-        <i class="fas fa-gift"></i>
     </div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
