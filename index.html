@@ -330,6 +330,89 @@
             white-space: nowrap;
         }
 
+        /* ── NUEVOS BOTONES FLOTANTES (IZQUIERDA, SOBRE CRÉDITOS) ── */
+        .left-floating-btns {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 310;
+        }
+        .mini-fab {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(15,15,22,0.85);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer;
+            transition: 0.2s; backdrop-filter: blur(8px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+        .mini-fab:hover { transform: scale(1.15); color: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .mini-fab.mb-btn:hover { color: var(--accent); border-color: var(--accent); }
+        .mini-fab.friends-btn:hover { color: #69C9D0; border-color: #69C9D0; }
+        .mini-fab.chat-btn:hover { color: var(--success); border-color: var(--success); }
+
+        /* ── PANELES DE AMIGOS Y CHAT ── */
+        .friends-chat-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px); z-index: 4000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .friends-chat-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .friends-chat-box {
+            background: rgba(15,15,22,0.98); border: 1px solid var(--border);
+            border-radius: 24px; width: 650px; max-width: 95%; height: 80vh;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .friends-chat-header {
+            padding: 18px 24px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.4);
+        }
+        .friends-chat-header h3 { margin:0; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .friends-chat-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; }
+        .friends-tabs { display: flex; gap: 10px; margin-bottom: 16px; }
+        .friends-tab {
+            padding: 8px 18px; border-radius: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-muted); font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .friends-tab.active { background: rgba(0,229,255,0.15); border-color: var(--accent); color: var(--accent); }
+
+        .friend-request-card, .chat-friend-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 14px; margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .friend-request-card span, .chat-friend-card span { font-size: 13px; font-family: monospace; color: var(--text-main); }
+
+        .chat-messages {
+            flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+            margin-bottom: 12px; padding-right: 6px;
+        }
+        .chat-msg {
+            max-width: 70%; padding: 10px 14px; border-radius: 14px;
+            font-size: 13px; line-height: 1.4; word-break: break-word;
+        }
+        .chat-msg.mine { align-self: flex-end; background: linear-gradient(135deg, var(--accent-secondary), var(--accent)); color: white; }
+        .chat-msg.other { align-self: flex-start; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08); color: var(--text-main); }
+        .chat-msg img { max-width: 200px; border-radius: 10px; margin-top: 6px; }
+        .chat-input-row { display: flex; gap: 8px; }
+        .chat-input-row input {
+            flex: 1; padding: 10px 14px; border-radius: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; font-size: 13px;
+        }
+        .chat-input-row button {
+            width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: pointer; transition: 0.2s;
+        }
+        .chat-input-row button:hover { background: rgba(0,229,255,0.2); color: var(--accent); border-color: var(--accent); }
+
         .overlay-panel {
             position: fixed; top: 140px; right: 0; bottom: 0; width: 420px;
             background: rgba(15,15,20,0.97); backdrop-filter: blur(25px);
@@ -826,6 +909,26 @@
     <span class="ab-label">AB</span>
     <span class="ab-separator"></span>
     <span class="ab-id" id="ab-id-display">cargando...</span>
+</div>
+
+<!-- NUEVOS BOTONES FLOTANTES (ManageBac, Mis Amigos, Chat) -->
+<div class="left-floating-btns">
+    <div class="mini-fab mb-btn" onclick="window.open('https://managebac.com','_blank')" title="ManageBac">
+        <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div class="mini-fab friends-btn" onclick="friendsSystem.openPanel()" title="Mis Amigos">
+        <i class="fas fa-user-group"></i>
+    </div>
+    <div class="mini-fab chat-btn" onclick="friendsSystem.openChatList()" title="Chat">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+</div>
+
+<!-- PANEL DE AMIGOS / CHAT -->
+<div class="friends-chat-overlay" id="friends-chat-overlay">
+    <div class="friends-chat-box" id="friends-chat-box">
+        <!-- El contenido se llena dinámicamente -->
+    </div>
 </div>
 
 <!-- VIEWPORT -->
@@ -1476,7 +1579,6 @@
             iframe.src = url;
             document.getElementById('live-view-overlay').classList.add('active');
 
-            // Actualizar cada 5 segundos
             if (this._interval) clearInterval(this._interval);
             this._interval = setInterval(async () => {
                 const snap = await window._fbGet(window._fbRef(window._fbDB, `alexbrowser_users/${userId}`));
@@ -2156,6 +2258,262 @@
         }, 3000);
     }
 
+    /* ══════════════════════════════════════════════════════════
+       SISTEMA DE AMIGOS Y CHAT
+    ══════════════════════════════════════════════════════════ */
+    const friendsSystem = {
+        _myId: null,
+        _friends: {},        // { friendId: { nickname, addedAt } }
+        _requests: [],       // solicitudes pendientes recibidas
+        _currentChat: null,  // id del amigo con el que se chatea
+
+        init(myId) {
+            this._myId = myId;
+            if (!window._fbReady) {
+                window.addEventListener('firebaseReady', () => this._startListeners(), { once: true });
+            } else {
+                this._startListeners();
+            }
+        },
+
+        _startListeners() {
+            // Escuchar solicitudes de amistad recibidas
+            const requestsRef = window._fbRef(window._fbDB, `friendRequests/${this._myId}`);
+            window._fbOnValue(requestsRef, snap => {
+                const data = snap.val();
+                this._requests = data ? Object.entries(data).map(([key, val]) => ({ key, ...val })) : [];
+            });
+
+            // Escuchar lista de amigos
+            const friendsRef = window._fbRef(window._fbDB, `friendships/${this._myId}`);
+            window._fbOnValue(friendsRef, snap => {
+                this._friends = snap.val() || {};
+            });
+
+            // Escuchar mensajes del chat actual
+            this._listenChat();
+        },
+
+        _listenChat() {
+            if (!this._currentChat) return;
+            const chatId = this._getChatId(this._myId, this._currentChat);
+            const chatRef = window._fbRef(window._fbDB, `chats/${chatId}`);
+            window._fbOnValue(chatRef, snap => {
+                const data = snap.val();
+                this._renderChatMessages(data ? Object.values(data).sort((a,b) => a.timestamp - b.timestamp) : []);
+            });
+        },
+
+        _getChatId(a, b) {
+            return [a, b].sort().join('_');
+        },
+
+        // ── ABRIR PANEL PRINCIPAL (MIS AMIGOS) ──
+        openPanel() {
+            const overlay = document.getElementById('friends-chat-overlay');
+            const box = document.getElementById('friends-chat-box');
+            overlay.classList.add('active');
+            box.innerHTML = `
+                <div class="friends-chat-header">
+                    <h3><i class="fas fa-user-group" style="color:#69C9D0;"></i> Mis Amigos</h3>
+                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="friends-chat-body">
+                    <div class="friends-tabs">
+                        <button class="friends-tab active" onclick="friendsSystem._switchTab('requests')">Peticiones</button>
+                        <button class="friends-tab" onclick="friendsSystem._switchTab('search')">Buscar amigo</button>
+                    </div>
+                    <div id="friends-content-area"></div>
+                </div>
+            `;
+            this._switchTab('requests');
+        },
+
+        _switchTab(tab) {
+            document.querySelectorAll('.friends-tab').forEach((t, i) => {
+                t.classList.toggle('active', (i === 0 && tab === 'requests') || (i === 1 && tab === 'search'));
+            });
+            const area = document.getElementById('friends-content-area');
+            if (tab === 'requests') {
+                area.innerHTML = this._requests.length === 0
+                    ? '<div style="text-align:center;color:var(--text-muted);padding:30px;">No tienes solicitudes pendientes.</div>'
+                    : this._requests.map(r => `
+                        <div class="friend-request-card">
+                            <div>
+                                <span style="font-weight:bold;">${r.from}</span>
+                                <div style="font-size:10px;color:var(--text-muted);">${new Date(r.timestamp).toLocaleString()}</div>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button class="give-ab-btn" onclick="friendsSystem._acceptRequest('${r.from}','${r.key}')"><i class="fas fa-check"></i> Aceptar</button>
+                                <button class="give-ab-btn" style="background:rgba(255,0,85,0.2);color:var(--danger);border-color:rgba(255,0,85,0.3);" onclick="friendsSystem._rejectRequest('${r.key}')"><i class="fas fa-times"></i> Rechazar</button>
+                            </div>
+                        </div>
+                    `).join('');
+            } else {
+                area.innerHTML = `
+                    <div style="margin-bottom:12px;">
+                        <input type="text" class="users-search-input" id="friend-search-input" placeholder="Primeros 6 caracteres del ID..." maxlength="6">
+                    </div>
+                    <button class="give-ab-btn" style="width:100%;" onclick="friendsSystem._searchFriend()"><i class="fas fa-search"></i> Buscar</button>
+                    <div id="friend-search-results" style="margin-top:12px;"></div>
+                `;
+            }
+        },
+
+        async _acceptRequest(fromUserId, requestKey) {
+            // Añadir a ambas listas de amistad
+            const ref1 = window._fbRef(window._fbDB, `friendships/${this._myId}/${fromUserId}`);
+            const ref2 = window._fbRef(window._fbDB, `friendships/${fromUserId}/${this._myId}`);
+            await window._fbSet(ref1, { nickname: null, addedAt: Date.now() });
+            await window._fbSet(ref2, { nickname: null, addedAt: Date.now() });
+            // Eliminar la solicitud
+            await window._fbRemove(window._fbRef(window._fbDB, `friendRequests/${this._myId}/${requestKey}`));
+            ui.showToast('✅ Solicitud aceptada. Ya sois amigos.');
+        },
+
+        async _rejectRequest(requestKey) {
+            await window._fbRemove(window._fbRef(window._fbDB, `friendRequests/${this._myId}/${requestKey}`));
+            ui.showToast('Solicitud rechazada.');
+        },
+
+        async _searchFriend() {
+            const input = document.getElementById('friend-search-input');
+            const prefix = input.value.trim();
+            if (prefix.length < 6) {
+                ui.showToast('Introduce al menos 6 caracteres.');
+                return;
+            }
+            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            const snap = await window._fbGet(usersRef);
+            const users = snap.val();
+            const results = Object.entries(users || {})
+                .filter(([id]) => id.startsWith(prefix) && id !== this._myId)
+                .map(([id, data]) => ({ id, ...data }));
+
+            const container = document.getElementById('friend-search-results');
+            if (results.length === 0) {
+                container.innerHTML = '<div style="color:var(--text-muted);text-align:center;">No se encontró ningún usuario.</div>';
+                return;
+            }
+            container.innerHTML = results.map(u => `
+                <div class="friend-request-card">
+                    <span>${u.id}</span>
+                    <button class="give-ab-btn" onclick="friendsSystem._sendRequest('${u.id}')"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
+                </div>
+            `).join('');
+        },
+
+        async _sendRequest(targetId) {
+            const ref = window._fbRef(window._fbDB, `friendRequests/${targetId}`);
+            await window._fbPush(ref, { from: this._myId, timestamp: Date.now() });
+            ui.showToast('📨 Solicitud enviada.');
+        },
+
+        // ── ABRIR LISTA DE CHATS ──
+        openChatList() {
+            const overlay = document.getElementById('friends-chat-overlay');
+            const box = document.getElementById('friends-chat-box');
+            overlay.classList.add('active');
+            const friends = Object.entries(this._friends);
+            box.innerHTML = `
+                <div class="friends-chat-header">
+                    <h3><i class="fas fa-comment-dots" style="color:var(--success);"></i> Chats</h3>
+                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="friends-chat-body">
+                    ${friends.length === 0 ? '<div style="text-align:center;color:var(--text-muted);padding:30px;">No tienes amigos añadidos aún.</div>' : ''}
+                    ${friends.map(([friendId, data]) => `
+                        <div class="chat-friend-card" onclick="friendsSystem._openChat('${friendId}')">
+                            <span>${data.nickname || friendId.slice(0, 10) + '…'}</span>
+                            <button class="give-ab-btn" style="font-size:11px;" onclick="event.stopPropagation(); friendsSystem._setNickname('${friendId}')">Apodo</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        },
+
+        _openChat(friendId) {
+            this._currentChat = friendId;
+            const overlay = document.getElementById('friends-chat-overlay');
+            const box = document.getElementById('friends-chat-box');
+            const friendData = this._friends[friendId] || {};
+            const displayName = friendData.nickname || friendId.slice(0, 10) + '…';
+            box.innerHTML = `
+                <div class="friends-chat-header">
+                    <h3><i class="fas fa-comment"></i> ${displayName}</h3>
+                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="friends-chat-body" style="flex:1;">
+                    <div class="chat-messages" id="chat-messages-container"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="chat-message-input" placeholder="Escribe un mensaje...">
+                        <button onclick="friendsSystem._sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                        <button onclick="friendsSystem._sendImage()"><i class="fas fa-image"></i></button>
+                    </div>
+                </div>
+            `;
+            this._listenChat();
+            // Scroll al final
+            setTimeout(() => {
+                const container = document.getElementById('chat-messages-container');
+                if (container) container.scrollTop = container.scrollHeight;
+            }, 100);
+        },
+
+        _renderChatMessages(messages) {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+            container.innerHTML = messages.map(m => {
+                const isMine = m.from === this._myId;
+                let content = m.text || '';
+                // Si es una URL de imagen, mostrarla
+                if (m.imageUrl) {
+                    content += `<br><img src="${m.imageUrl}" alt="imagen">`;
+                } else if (content.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                    content = `<img src="${content}" alt="imagen">`;
+                }
+                return `<div class="chat-msg ${isMine ? 'mine' : 'other'}">
+                    <div>${content}</div>
+                    <div style="font-size:9px;opacity:0.5;margin-top:4px;">${new Date(m.timestamp).toLocaleTimeString()}</div>
+                </div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        },
+
+        async _sendMessage() {
+            if (!this._currentChat) return;
+            const input = document.getElementById('chat-message-input');
+            const text = input.value.trim();
+            if (!text) return;
+            const chatId = this._getChatId(this._myId, this._currentChat);
+            const ref = window._fbRef(window._fbDB, `chats/${chatId}`);
+            await window._fbPush(ref, { from: this._myId, text, timestamp: Date.now() });
+            input.value = '';
+        },
+
+        async _sendImage() {
+            if (!this._currentChat) return;
+            const url = prompt('Pega el enlace de la imagen:');
+            if (!url || !url.startsWith('http')) return;
+            const chatId = this._getChatId(this._myId, this._currentChat);
+            const ref = window._fbRef(window._fbDB, `chats/${chatId}`);
+            await window._fbPush(ref, { from: this._myId, imageUrl: url, timestamp: Date.now() });
+        },
+
+        async _setNickname(friendId) {
+            const newNick = prompt('Ponle un apodo a este amigo:');
+            if (!newNick) return;
+            const ref = window._fbRef(window._fbDB, `friendships/${this._myId}/${friendId}`);
+            await window._fbUpdate(ref, { nickname: newNick });
+            ui.showToast('Apodo actualizado.');
+        },
+
+        close() {
+            document.getElementById('friends-chat-overlay').classList.remove('active');
+            this._currentChat = null;
+        }
+    };
+
     /* ======== INICIALIZACIÓN WAEVO ======== */
     const browser = new BrowserEngine();
 
@@ -2166,6 +2524,7 @@
         document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
 
         abManager.init(userId);
+        friendsSystem.init(userId);  // ← Inicializar sistema de amigos
 
         const restored = await sessionManager.restoreSession();
         if (!restored) {
