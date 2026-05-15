@@ -46,6 +46,39 @@
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
+        /* ── TIENDA (OVERLAY) ── */
+        #shop-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px); z-index: 4000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #shop-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .shop-box {
+            background: rgba(15,15,22,0.98); border: 1px solid var(--border);
+            border-radius: 24px; padding: 30px; width: 420px; max-width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            animation: slideUp 0.3s cubic-bezier(0.2,0.8,0.2,1);
+        }
+        .shop-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .shop-header h3 { margin:0; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+        .shop-pack {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 20px; margin-bottom: 14px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .shop-pack-info { display: flex; flex-direction: column; }
+        .shop-pack-ab { font-size: 22px; font-weight: 900; color: var(--warning); }
+        .shop-pack-price { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+        .shop-pack-btn {
+            padding: 10px 20px; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.2s;
+        }
+        .shop-pack-btn:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent-glow); }
+
         /* ── PANTALLA CALCULADORA ── */
         #calc-lock-screen {
             position: fixed; inset: 0;
@@ -354,6 +387,7 @@
         .mini-fab.mb-btn:hover { color: var(--accent); border-color: var(--accent); }
         .mini-fab.friends-btn:hover { color: #69C9D0; border-color: #69C9D0; }
         .mini-fab.chat-btn:hover { color: var(--success); border-color: var(--success); }
+        .mini-fab.shop-btn:hover { color: var(--warning); border-color: var(--warning); box-shadow: 0 0 12px rgba(255,170,0,0.3); }
 
         /* ── PANELES DE AMIGOS Y CHAT ── */
         .friends-chat-overlay {
@@ -855,6 +889,37 @@
     </div>
 </div>
 
+<!-- TIENDA OVERLAY -->
+<div id="shop-overlay">
+    <div class="shop-box">
+        <div class="shop-header">
+            <h3><i class="fas fa-store" style="color:var(--warning);"></i> Tienda de AB</h3>
+            <button class="icon-btn" onclick="shopSystem.close()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="shop-pack">
+            <div class="shop-pack-info">
+                <span class="shop-pack-ab"><i class="fas fa-coins" style="color:var(--warning);margin-right:4px;"></i>3 AB</span>
+                <span class="shop-pack-price">1,99 €</span>
+            </div>
+            <button class="shop-pack-btn" onclick="shopSystem.buy('ab_pack_3')">Comprar</button>
+        </div>
+        <div class="shop-pack">
+            <div class="shop-pack-info">
+                <span class="shop-pack-ab"><i class="fas fa-coins" style="color:var(--warning);margin-right:4px;"></i>8 AB</span>
+                <span class="shop-pack-price">4,99 €</span>
+            </div>
+            <button class="shop-pack-btn" onclick="shopSystem.buy('ab_pack_8')">Comprar</button>
+        </div>
+        <div class="shop-pack">
+            <div class="shop-pack-info">
+                <span class="shop-pack-ab"><i class="fas fa-coins" style="color:var(--warning);margin-right:4px;"></i>20 AB</span>
+                <span class="shop-pack-price">11,99 €</span>
+            </div>
+            <button class="shop-pack-btn" onclick="shopSystem.buy('ab_pack_20')">Comprar</button>
+        </div>
+    </div>
+</div>
+
 <!-- VISOR EN DIRECTO -->
 <div id="live-view-overlay">
     <div class="live-view-container">
@@ -911,7 +976,7 @@
     <span class="ab-id" id="ab-id-display">cargando...</span>
 </div>
 
-<!-- NUEVOS BOTONES FLOTANTES (ManageBac, Mis Amigos, Chat) -->
+<!-- NUEVOS BOTONES FLOTANTES (ManageBac, Mis Amigos, Chat, Tienda) -->
 <div class="left-floating-btns">
     <div class="mini-fab mb-btn" onclick="window.open('https://managebac.com','_blank')" title="ManageBac">
         <i class="fas fa-graduation-cap"></i>
@@ -921,6 +986,9 @@
     </div>
     <div class="mini-fab chat-btn" onclick="friendsSystem.openChatList()" title="Chat">
         <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="mini-fab shop-btn" onclick="shopSystem.open()" title="Tienda">
+        <i class="fas fa-store"></i>
     </div>
 </div>
 
@@ -1277,6 +1345,20 @@
 </script>
 
 <script>
+    /* ── TIENDA ── */
+    const shopSystem = {
+        open() {
+            document.getElementById('shop-overlay').classList.add('active');
+        },
+        close() {
+            document.getElementById('shop-overlay').classList.remove('active');
+        },
+        buy(pack) {
+            // De momento vacío, en el siguiente paso añadiremos PayPal
+            console.log('Comprar pack:', pack);
+        }
+    };
+
     /* ── CALCULADORA DE BLOQUEO ── */
     const lockCalc = {
         display: document.getElementById('calc-display'),
@@ -2558,6 +2640,9 @@
     });
     document.getElementById('creditos-modal').addEventListener('click', (e) => {
         if (e.target === document.getElementById('creditos-modal')) document.getElementById('creditos-modal').classList.remove('active');
+    });
+    document.getElementById('shop-overlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('shop-overlay')) shopSystem.close();
     });
 </script>
 
