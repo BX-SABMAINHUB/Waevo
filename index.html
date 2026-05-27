@@ -84,7 +84,8 @@
             position: fixed; inset: 0;
             background: radial-gradient(circle at center, #0a0a14, #000);
             z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: none; /* Se mostrará vía JS tras comprobar baneo */
+            flex-direction: column; align-items: center; justify-content: center;
             backdrop-filter: blur(20px);
         }
         .calc-container {
@@ -1460,7 +1461,7 @@
         _renderMain() {
             document.getElementById('bk-box-content').innerHTML = `
                 <div class="bk-title"><i class="fas fa-user-lock"></i> Bloquear usuario</div>
-                <input type="text" class="bk-input" id="ban-user-id" placeholder="ID del usuario a bloquear">
+                <input type="text" class="bk-input" id="ban-user-id" placeholder="Primeros 6 caracteres del ID (sin usr_)">
                 <div class="bk-row">
                     <input type="number" id="ban-time-value" placeholder="Cantidad" min="1" value="1">
                     <select id="ban-time-unit">
@@ -1477,7 +1478,7 @@
             `;
             this._loadBans();
         },
-                async _addBan() {
+        async _addBan() {
             const partialId = document.getElementById('ban-user-id').value.trim();
             const timeValue = parseInt(document.getElementById('ban-time-value').value);
             const timeUnit = document.getElementById('ban-time-unit').value;
@@ -1545,62 +1546,63 @@
     };
 
     /* ── CALCULADORA DE BLOQUEO (clave: 1111x1111) ── */
-const lockCalc = {
-    display: document.getElementById('calc-display'),
-    errorMsg: document.getElementById('calc-error-msg'),
-    currentInput: '',
+    const lockCalc = {
+        display: document.getElementById('calc-display'),
+        errorMsg: document.getElementById('calc-error-msg'),
+        currentInput: '',
 
-    append(char) {
-        this.currentInput += char;
-        this.display.textContent = this.currentInput;
-        this.display.classList.remove('error');
-        this.errorMsg.textContent = '';
-    },
+        append(char) {
+            this.currentInput += char;
+            this.display.textContent = this.currentInput;
+            this.display.classList.remove('error');
+            this.errorMsg.textContent = '';
+        },
 
-    clearAll() {
-        this.currentInput = '';
-        this.display.textContent = '';
-        this.display.classList.remove('error');
-        this.errorMsg.textContent = '';
-    },
-
-    backspace() {
-        this.currentInput = this.currentInput.slice(0, -1);
-        this.display.textContent = this.currentInput;
-        this.display.classList.remove('error');
-        this.errorMsg.textContent = '';
-    },
-
-    calculate() {
-        const raw = this.currentInput.trim();
-        if (!raw) {
-            this.errorMsg.textContent = 'Introduce una operación.';
-            this.display.classList.add('error');
-            return;
-        }
-
-        // Normalizar: quitar espacios, minúsculas y unificar símbolos de multiplicación
-        let normalized = raw.replace(/\s+/g, '').toLowerCase();
-        normalized = normalized.replace(/[*×]/g, 'x');   // botón * o × → x
-
-        if (normalized !== '1111x1111') {
+        clearAll() {
             this.currentInput = '';
             this.display.textContent = '';
-            this.display.classList.add('error');
-            this.errorMsg.textContent = 'Operación incorrecta. Inténtalo de nuevo.';
-            return;
+            this.display.classList.remove('error');
+            this.errorMsg.textContent = '';
+        },
+
+        backspace() {
+            this.currentInput = this.currentInput.slice(0, -1);
+            this.display.textContent = this.currentInput;
+            this.display.classList.remove('error');
+            this.errorMsg.textContent = '';
+        },
+
+        calculate() {
+            const raw = this.currentInput.trim();
+            if (!raw) {
+                this.errorMsg.textContent = 'Introduce una operación.';
+                this.display.classList.add('error');
+                return;
+            }
+
+            // Normalizar: quitar espacios, minúsculas y unificar símbolos de multiplicación
+            let normalized = raw.replace(/\s+/g, '').toLowerCase();
+            normalized = normalized.replace(/[*×]/g, 'x');   // botón * o × → x
+
+            if (normalized !== '1111x1111') {
+                this.currentInput = '';
+                this.display.textContent = '';
+                this.display.classList.add('error');
+                this.errorMsg.textContent = 'Operación incorrecta. Inténtalo de nuevo.';
+                return;
+            }
+
+            this.errorMsg.textContent = '';
+            document.getElementById('calc-lock-screen').style.display = 'none';
+            document.getElementById('calc-loading-screen').classList.add('active');
+
+            setTimeout(() => {
+                document.getElementById('calc-loading-screen').classList.remove('active');
+                initWaevo();
+            }, 3000);
         }
+    };
 
-        this.errorMsg.textContent = '';
-        document.getElementById('calc-lock-screen').style.display = 'none';
-        document.getElementById('calc-loading-screen').classList.add('active');
-
-        setTimeout(() => {
-            document.getElementById('calc-loading-screen').classList.remove('active');
-            initWaevo();
-        }, 3000);
-    }
-};
     /* ======================================================
        DEVICE STORE — IndexedDB permanente
     ====================================================== */
@@ -2803,26 +2805,21 @@ const lockCalc = {
 
     async function initWaevo() {
         const userId = await deviceStore.getOrCreateId();
-                // Verificar si el usuario está baneado (incluso antes de mostrar la calculadora)
+        // Verificar si el usuario está baneado (ya se verificó antes, pero repetimos por seguridad)
         if (window._fbReady) {
             const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
             const banSnap = await window._fbGet(banRef);
             if (banSnap.exists()) {
                 const banData = banSnap.val();
                 if (banData.expiresAt > Date.now()) {
-                    // Bloqueado: ocultar calculadora y mostrar pantalla de bloqueo
-                    document.getElementById('calc-lock-screen').style.display = 'none';
-                    document.getElementById('calc-loading-screen').classList.remove('active');
                     document.getElementById('ban-screen').classList.add('active');
                     const timerEl = document.getElementById('ban-timer');
                     const updateTimer = () => {
                         const remaining = banData.expiresAt - Date.now();
                         if (remaining <= 0) {
                             document.getElementById('ban-screen').classList.remove('active');
-                            // Eliminar el baneo expirado y reiniciar
                             window._fbRemove(banRef);
-                            // Reiniciar el proceso desde cero
-                            initWaevo();
+                            location.reload();
                             return;
                         }
                         const days = Math.floor(remaining / 86400000);
@@ -2833,16 +2830,14 @@ const lockCalc = {
                     };
                     updateTimer();
                     setInterval(updateTimer, 1000);
-                    return; // No continuar con la inicialización
+                    return;
                 } else {
-                    // El baneo ya expiró, eliminarlo
                     await window._fbRemove(banRef);
                 }
             }
         }
-        // Si no está baneado, mostrar la calculadora
-        document.getElementById('calc-lock-screen').style.display = 'flex';
 
+        // IMPORTANTE: No mostrar la calculadora otra vez
         await updatesManager.loadApplied();
         document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
         abManager.init(userId);
@@ -2862,6 +2857,48 @@ const lockCalc = {
         updatesManager.load();
         startSendingCurrentUrl();
     }
+
+    /* ── ARRANQUE INICIAL: comprobar baneo y mostrar calculadora ── */
+    async function startupCheckBan() {
+        const userId = await deviceStore.getOrCreateId();
+        if (window._fbReady) {
+            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
+            const banSnap = await window._fbGet(banRef);
+            if (banSnap.exists()) {
+                const banData = banSnap.val();
+                if (banData.expiresAt > Date.now()) {
+                    // Bloqueado: ocultar calculadora, mostrar pantalla de bloqueo
+                    document.getElementById('calc-lock-screen').style.display = 'none';
+                    document.getElementById('ban-screen').classList.add('active');
+                    const timerEl = document.getElementById('ban-timer');
+                    const updateTimer = () => {
+                        const remaining = banData.expiresAt - Date.now();
+                        if (remaining <= 0) {
+                            document.getElementById('ban-screen').classList.remove('active');
+                            window._fbRemove(banRef);
+                            location.reload();
+                            return;
+                        }
+                        const days = Math.floor(remaining / 86400000);
+                        const hours = Math.floor((remaining % 86400000) / 3600000);
+                        const minutes = Math.floor((remaining % 3600000) / 60000);
+                        const seconds = Math.floor((remaining % 60000) / 1000);
+                        timerEl.textContent = `Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    };
+                    updateTimer();
+                    setInterval(updateTimer, 1000);
+                    return;
+                } else {
+                    await window._fbRemove(banRef);
+                }
+            }
+        }
+        // No baneado: mostrar la calculadora
+        document.getElementById('calc-lock-screen').style.display = 'flex';
+    }
+
+    // Ejecutar la comprobación al cargar la página
+    startupCheckBan();
 
     document.getElementById('modal-overlay').addEventListener('click', (e) => {
         if (e.target === document.getElementById('modal-overlay')) ui.closeModal();
