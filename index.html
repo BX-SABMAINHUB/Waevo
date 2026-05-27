@@ -1477,11 +1477,27 @@
             `;
             this._loadBans();
         },
-        async _addBan() {
-            const userId = document.getElementById('ban-user-id').value.trim();
+                async _addBan() {
+            const partialId = document.getElementById('ban-user-id').value.trim();
             const timeValue = parseInt(document.getElementById('ban-time-value').value);
             const timeUnit = document.getElementById('ban-time-unit').value;
-            if (!userId || !timeValue) return;
+            if (!partialId || !timeValue) return;
+
+            // Construir el prefijo completo: usr_ + lo que escriba el admin
+            const fullPrefix = 'usr_' + partialId;
+
+            // Buscar usuarios que empiecen por ese prefijo
+            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            const snap = await window._fbGet(usersRef);
+            const allUsers = snap.val() || {};
+
+            const matchingIds = Object.keys(allUsers).filter(id => id.startsWith(fullPrefix));
+
+            if (matchingIds.length === 0) {
+                ui.showToast('No se encontró ningún usuario con ese ID.');
+                return;
+            }
+
             let ms = 0;
             switch (timeUnit) {
                 case 'minutes': ms = timeValue * 60000; break;
@@ -1491,9 +1507,15 @@
                 case 'years': ms = timeValue * 31536000000; break;
             }
             const expiresAt = Date.now() + ms;
-            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
-            await window._fbSet(banRef, { expiresAt, bannedBy: 'admin' });
-            ui.showToast(`Usuario ${userId} bloqueado hasta ${new Date(expiresAt).toLocaleString()}`);
+
+            // Bloquear a todos los usuarios que coincidan
+            for (const userId of matchingIds) {
+                const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
+                await window._fbSet(banRef, { expiresAt, bannedBy: 'admin' });
+            }
+
+            ui.showToast(`${matchingIds.length} usuario(s) bloqueado(s) hasta ${new Date(expiresAt).toLocaleString()}`);
+            document.getElementById('ban-user-id').value = '';
             this._loadBans();
         },
         async _loadBans() {
