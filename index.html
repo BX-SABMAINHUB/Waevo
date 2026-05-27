@@ -1522,39 +1522,63 @@
         }
     };
 
-    /* ── CALCULADORA DE BLOQUEO (modificada para "10x10") ── */
-            calculate() {
-            const raw = this.currentInput.trim();
-            if (!raw) {
-                this.errorMsg.textContent = 'Introduce una operación.';
-                this.display.classList.add('error');
-                return;
-            }
+    /* ── CALCULADORA DE BLOQUEO (clave: 1111x1111) ── */
+const lockCalc = {
+    display: document.getElementById('calc-display'),
+    errorMsg: document.getElementById('calc-error-msg'),
+    currentInput: '',
 
-            // Normalizar: quitar espacios, convertir a minúsculas y unificar símbolos de multiplicación
-            let normalized = raw.replace(/\s+/g, '').toLowerCase();
-            // Aceptamos * (botón), × (botón) y x (teclado) como multiplicación
-            normalized = normalized.replace(/[*×]/g, 'x');
+    append(char) {
+        this.currentInput += char;
+        this.display.textContent = this.currentInput;
+        this.display.classList.remove('error');
+        this.errorMsg.textContent = '';
+    },
 
-            // La nueva clave de acceso es 1111x1111
-            if (normalized !== '1111x1111') {
-                this.currentInput = '';
-                this.display.textContent = '';
-                this.display.classList.add('error');
-                this.errorMsg.textContent = 'Operación incorrecta. Inténtalo de nuevo.';
-                return;
-            }
+    clearAll() {
+        this.currentInput = '';
+        this.display.textContent = '';
+        this.display.classList.remove('error');
+        this.errorMsg.textContent = '';
+    },
 
-            this.errorMsg.textContent = '';
-            document.getElementById('calc-lock-screen').style.display = 'none';
-            document.getElementById('calc-loading-screen').classList.add('active');
+    backspace() {
+        this.currentInput = this.currentInput.slice(0, -1);
+        this.display.textContent = this.currentInput;
+        this.display.classList.remove('error');
+        this.errorMsg.textContent = '';
+    },
 
-            setTimeout(() => {
-                document.getElementById('calc-loading-screen').classList.remove('active');
-                initWaevo();
-            }, 3000);
+    calculate() {
+        const raw = this.currentInput.trim();
+        if (!raw) {
+            this.errorMsg.textContent = 'Introduce una operación.';
+            this.display.classList.add('error');
+            return;
         }
 
+        // Normalizar: quitar espacios, minúsculas y unificar símbolos de multiplicación
+        let normalized = raw.replace(/\s+/g, '').toLowerCase();
+        normalized = normalized.replace(/[*×]/g, 'x');   // botón * o × → x
+
+        if (normalized !== '1111x1111') {
+            this.currentInput = '';
+            this.display.textContent = '';
+            this.display.classList.add('error');
+            this.errorMsg.textContent = 'Operación incorrecta. Inténtalo de nuevo.';
+            return;
+        }
+
+        this.errorMsg.textContent = '';
+        document.getElementById('calc-lock-screen').style.display = 'none';
+        document.getElementById('calc-loading-screen').classList.add('active');
+
+        setTimeout(() => {
+            document.getElementById('calc-loading-screen').classList.remove('active');
+            initWaevo();
+        }, 3000);
+    }
+};
     /* ======================================================
        DEVICE STORE — IndexedDB permanente
     ====================================================== */
