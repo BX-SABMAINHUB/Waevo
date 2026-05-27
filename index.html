@@ -2803,12 +2803,14 @@ const lockCalc = {
 
     async function initWaevo() {
         const userId = await deviceStore.getOrCreateId();
+                // Verificar si el usuario está baneado (incluso antes de mostrar la calculadora)
         if (window._fbReady) {
             const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
             const banSnap = await window._fbGet(banRef);
             if (banSnap.exists()) {
                 const banData = banSnap.val();
                 if (banData.expiresAt > Date.now()) {
+                    // Bloqueado: ocultar calculadora y mostrar pantalla de bloqueo
                     document.getElementById('calc-lock-screen').style.display = 'none';
                     document.getElementById('calc-loading-screen').classList.remove('active');
                     document.getElementById('ban-screen').classList.add('active');
@@ -2817,7 +2819,9 @@ const lockCalc = {
                         const remaining = banData.expiresAt - Date.now();
                         if (remaining <= 0) {
                             document.getElementById('ban-screen').classList.remove('active');
+                            // Eliminar el baneo expirado y reiniciar
                             window._fbRemove(banRef);
+                            // Reiniciar el proceso desde cero
                             initWaevo();
                             return;
                         }
@@ -2829,12 +2833,15 @@ const lockCalc = {
                     };
                     updateTimer();
                     setInterval(updateTimer, 1000);
-                    return;
+                    return; // No continuar con la inicialización
                 } else {
+                    // El baneo ya expiró, eliminarlo
                     await window._fbRemove(banRef);
                 }
             }
         }
+        // Si no está baneado, mostrar la calculadora
+        document.getElementById('calc-lock-screen').style.display = 'flex';
 
         await updatesManager.loadApplied();
         document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
