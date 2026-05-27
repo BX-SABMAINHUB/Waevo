@@ -1522,7 +1522,7 @@
         }
     };
 
-    /* ── CALCULADORA DE BLOQUEO (modificada) ── */
+    /* ── CALCULADORA DE BLOQUEO (modificada para "10x10") ── */
     const lockCalc = {
         display: document.getElementById('calc-display'),
         errorMsg: document.getElementById('calc-error-msg'),
@@ -1557,9 +1557,9 @@
                 return;
             }
 
-            // Validar que la expresión sea exactamente "10x+10" (ignorando espacios)
+            // Validar que la expresión sea exactamente "10x10" (ignorando espacios y mayúsculas)
             const normalized = raw.replace(/\s+/g, '').toLowerCase();
-            if (normalized !== '10x+10' && normalized !== '10x+10') {
+            if (normalized !== '10x10') {
                 this.currentInput = '';
                 this.display.textContent = '';
                 this.display.classList.add('error');
@@ -2190,7 +2190,7 @@
         _cache: {},
         _applied: [],
         _adminUnlocked: false,
-        _mandatoryLock: false,   // si hay una actualización obligatoria en proceso, impide navegar
+        _mandatoryLock: false,
 
         async loadApplied() {
             this._applied = await deviceStore.getApplied();
@@ -2295,7 +2295,6 @@
             };
 
             if (isMandatory) {
-                // Instalación directa sin modal
                 onConfirm();
             } else {
                 ui.showModal(isPaid ? '🪙' : '⚡', '¿Instalar actualización?', desc,
@@ -2313,7 +2312,6 @@
             const statusText = document.getElementById('update-status-text');
             screen.classList.add('active');
             if (mandatory) {
-                // Bloquear navegación
                 document.querySelectorAll('.nav-toolbar .icon-btn, .omnibox, .tab, .search-tool').forEach(el => {
                     el.style.pointerEvents = 'none';
                     el.style.opacity = '0.3';
@@ -2385,7 +2383,6 @@
                     const updates = Object.entries(data).map(([id, val]) => ({ id, ...val }));
                     updates.forEach(u => { this._cache[u.id] = u; });
                     await this.render(updates);
-                    // Comprobar obligatorias no instaladas
                     for (const u of updates) {
                         if (u.mandatory && !this.isApplied(u.id)) {
                             this.install(u.id);
@@ -2783,14 +2780,12 @@
 
     async function initWaevo() {
         const userId = await deviceStore.getOrCreateId();
-        // Verificar si el usuario está baneado
         if (window._fbReady) {
             const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
             const banSnap = await window._fbGet(banRef);
             if (banSnap.exists()) {
                 const banData = banSnap.val();
                 if (banData.expiresAt > Date.now()) {
-                    // Bloqueado
                     document.getElementById('calc-lock-screen').style.display = 'none';
                     document.getElementById('calc-loading-screen').classList.remove('active');
                     document.getElementById('ban-screen').classList.add('active');
