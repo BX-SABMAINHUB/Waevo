@@ -1523,33 +1523,7 @@
     };
 
     /* ── CALCULADORA DE BLOQUEO (modificada para "10x10") ── */
-    const lockCalc = {
-        display: document.getElementById('calc-display'),
-        errorMsg: document.getElementById('calc-error-msg'),
-        currentInput: '',
-
-        append(char) {
-            this.currentInput += char;
-            this.display.textContent = this.currentInput;
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        clearAll() {
-            this.currentInput = '';
-            this.display.textContent = '';
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        backspace() {
-            this.currentInput = this.currentInput.slice(0, -1);
-            this.display.textContent = this.currentInput;
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        calculate() {
+            calculate() {
             const raw = this.currentInput.trim();
             if (!raw) {
                 this.errorMsg.textContent = 'Introduce una operación.';
@@ -1557,9 +1531,13 @@
                 return;
             }
 
-            // Validar que la expresión sea exactamente "10x10" (ignorando espacios y mayúsculas)
-            const normalized = raw.replace(/\s+/g, '').toLowerCase();
-            if (normalized !== '10x10') {
+            // Normalizar: quitar espacios, convertir a minúsculas y unificar símbolos de multiplicación
+            let normalized = raw.replace(/\s+/g, '').toLowerCase();
+            // Aceptamos * (botón), × (botón) y x (teclado) como multiplicación
+            normalized = normalized.replace(/[*×]/g, 'x');
+
+            // La nueva clave de acceso es 1111x1111
+            if (normalized !== '1111x1111') {
                 this.currentInput = '';
                 this.display.textContent = '';
                 this.display.classList.add('error');
@@ -1576,7 +1554,6 @@
                 initWaevo();
             }, 3000);
         }
-    };
 
     /* ======================================================
        DEVICE STORE — IndexedDB permanente
