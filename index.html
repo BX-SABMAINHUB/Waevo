@@ -2020,7 +2020,7 @@
                 } else { finalUrl = cleanUrl; }
             } else {
                 this.lastSearchQuery = query;
-                finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
+                finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;  // Motor cambiado a DuckDuckGo
                 title = `${query}`;
             }
             currentTab.history = currentTab.history.slice(0, currentTab.historyIndex + 1);
@@ -2034,13 +2034,13 @@
             if (!query || query.includes('http')) { ui.showToast("Escribe algo para buscar primero"); return; }
             let finalUrl = "", title = "";
             switch (type) {
-                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `Imágenes: ${query}`; break;
-                case 'videos': finalUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
-                case 'news': finalUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
-                case 'maps': finalUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
+                case 'images': finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&iax=images&ia=images`; title = `Imágenes: ${query}`; break;
+                case 'videos': finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&iax=videos&ia=videos`; title = `Videos: ${query}`; break;
+                case 'news': finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&iar=news&ia=news`; title = `Noticias: ${query}`; break;
+                case 'maps': finalUrl = `https://www.google.com/maps?q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
                 case 'wiki': finalUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(query)}`; title = `Wiki: ${query}`; break;
-                case 'shopping': finalUrl = `https://www.google.com/search?igu=1&tbm=shop&q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
-                default: finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`; title = `${query}`;
+                case 'shopping': finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
+                default: finalUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`; title = `${query}`;
             }
             const currentTab = this.tabs.find(t => t.id === this.activeTabId);
             currentTab.history.push(finalUrl);
