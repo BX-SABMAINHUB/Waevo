@@ -84,7 +84,7 @@
             position: fixed; inset: 0;
             background: radial-gradient(circle at center, #0a0a14, #000);
             z-index: 10000;
-            display: none; /* Se mostrará vía JS tras comprobar baneo */
+            display: none;
             flex-direction: column; align-items: center; justify-content: center;
             backdrop-filter: blur(20px);
         }
@@ -2551,7 +2551,7 @@
     }
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AMIGOS Y CHAT
+       SISTEMA DE AMIGOS Y CHAT (CORREGIDO)
     ══════════════════════════════════════════════════════════ */
     const friendsSystem = {
         _myId: null,
@@ -2640,7 +2640,7 @@
             } else {
                 area.innerHTML = `
                     <div style="margin-bottom:12px;">
-                        <input type="text" class="users-search-input" id="friend-search-input" placeholder="Primeros 6 caracteres del ID..." maxlength="6">
+                        <input type="text" class="users-search-input" id="friend-search-input" placeholder="Primeros 6 caracteres del ID (sin usr_)" maxlength="6">
                     </div>
                     <button class="give-ab-btn" style="width:100%;" onclick="friendsSystem._searchFriend()"><i class="fas fa-search"></i> Buscar</button>
                     <div id="friend-search-results" style="margin-top:12px;"></div>
@@ -2669,11 +2669,13 @@
                 ui.showToast('Introduce al menos 6 caracteres.');
                 return;
             }
+            // Construir el prefijo completo: usr_ + lo que escribe el usuario
+            const fullPrefix = 'usr_' + prefix;
             const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
             const snap = await window._fbGet(usersRef);
             const users = snap.val();
             const results = Object.entries(users || {})
-                .filter(([id]) => id.startsWith(prefix) && id !== this._myId)
+                .filter(([id]) => id.startsWith(fullPrefix) && id !== this._myId)
                 .map(([id, data]) => ({ id, ...data }));
 
             const container = document.getElementById('friend-search-results');
