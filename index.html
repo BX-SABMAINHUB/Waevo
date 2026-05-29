@@ -2004,24 +2004,25 @@
         navigate(inputVal = null) {
             let query = inputVal || document.getElementById('url-input').value.trim();
             if (!query) return;
+            const proxyEnabled = document.getElementById('proxy-toggle').classList.contains('active');
             const currentTab = this.tabs.find(t => t.id === this.activeTabId);
             let finalUrl = "", title = "";
-
-            // SIEMPRE USAMOS EL PROXY CORS PARA EVITAR BLOQUEOS EN IFRAMES
             const isUrl = query.includes('.') && !query.includes(' ');
             if (isUrl) {
                 let cleanUrl = query.startsWith('http') ? query : 'https://' + query;
                 title = query;
                 if (cleanUrl.includes('youtube.com/watch?v=')) {
-                    cleanUrl = cleanUrl.replace('watch?v=', 'embed/');
-                }
-                finalUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
+                    finalUrl = cleanUrl.replace('watch?v=', 'embed/');
+                    ui.showToast("Optimizando vídeo de YouTube...");
+                } else if (proxyEnabled) {
+                    finalUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
+                    ui.showToast("Bypass de seguridad activado 🛡️");
+                } else { finalUrl = cleanUrl; }
             } else {
                 this.lastSearchQuery = query;
-                finalUrl = `https://corsproxy.io/?${encodeURIComponent('https://www.google.com/search?igu=1&q=' + encodeURIComponent(query))}`;
+                finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
                 title = `${query}`;
             }
-
             currentTab.history = currentTab.history.slice(0, currentTab.historyIndex + 1);
             currentTab.history.push(finalUrl);
             currentTab.historyIndex++;
@@ -2031,17 +2032,16 @@
         quickSearch(type) {
             let query = this.lastSearchQuery || document.getElementById('url-input').value.trim();
             if (!query || query.includes('http')) { ui.showToast("Escribe algo para buscar primero"); return; }
-            let targetUrl = "", title = "";
+            let finalUrl = "", title = "";
             switch (type) {
-                case 'images': targetUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `Imágenes: ${query}`; break;
-                case 'videos': targetUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
-                case 'news': targetUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
-                case 'maps': targetUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
-                case 'wiki': targetUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(query)}`; title = `Wiki: ${query}`; break;
-                case 'shopping': targetUrl = `https://www.google.com/search?igu=1&tbm=shop&q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
-                default: targetUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`; title = `${query}`;
+                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `Imágenes: ${query}`; break;
+                case 'videos': finalUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
+                case 'news': finalUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
+                case 'maps': finalUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
+                case 'wiki': finalUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(query)}`; title = `Wiki: ${query}`; break;
+                case 'shopping': finalUrl = `https://www.google.com/search?igu=1&tbm=shop&q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
+                default: finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`; title = `${query}`;
             }
-            const finalUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
             const currentTab = this.tabs.find(t => t.id === this.activeTabId);
             currentTab.history.push(finalUrl);
             currentTab.historyIndex++;
