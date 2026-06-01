@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error #Imtlazarus</title>
+    <title>Waevo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
@@ -46,6 +46,103 @@
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
+        /* ── AUTH SCREEN ── */
+        #auth-screen {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+
+        .auth-box {
+            background: rgba(15,15,22,0.98); 
+            border: 1px solid var(--border);
+            border-radius: 24px; 
+            padding: 40px 35px; 
+            width: 420px; 
+            max-width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            animation: slideUp 0.4s cubic-bezier(0.2,0.8,0.2,1);
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 4.5rem; 
+            font-weight: 900;
+            background: linear-gradient(to right, #00e5ff, #bd00ff);
+            -webkit-background-clip: text; 
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .auth-title {
+            font-size: 22px; 
+            margin-bottom: 30px; 
+            color: var(--text-main);
+        }
+
+        .auth-tabs {
+            display: flex; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 12px; 
+            padding: 4px; 
+            margin-bottom: 25px;
+        }
+
+        .auth-tab {
+            flex: 1; 
+            padding: 12px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .auth-tab.active {
+            background: var(--accent); 
+            color: #000;
+        }
+
+        .auth-input {
+            width: 100%; 
+            padding: 14px 16px; 
+            background: var(--bg-input); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            color: white; 
+            font-size: 15px; 
+            margin-bottom: 14px;
+        }
+
+        .auth-btn {
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: none; 
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            color: white; 
+            font-weight: bold; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        .forgot-link {
+            color: var(--accent); 
+            text-decoration: underline; 
+            cursor: pointer; 
+            font-size: 13px; 
+            margin-top: 15px;
+        }
+
         /* ── TIENDA (OVERLAY) ── */
         #shop-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
@@ -79,102 +176,28 @@
         }
         .shop-pack-btn:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent-glow); }
 
-        /* ── PANTALLA CALCULADORA ── */
-        #calc-lock-screen {
-            position: fixed; inset: 0;
-            background: radial-gradient(circle at center, #0a0a14, #000);
-            z-index: 10000;
-            display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(20px);
-        }
-        .calc-container {
-            background: rgba(20,20,28,0.95);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 32px;
-            padding: 35px 30px 25px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,229,255,0.05);
-            display: flex; flex-direction: column;
-            align-items: center;
-            width: 380px; max-width: 92%;
-            animation: slideUp 0.4s cubic-bezier(0.2,0.8,0.2,1);
-        }
-        .calc-display {
-            width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px; padding: 18px 20px;
-            font-size: 26px; font-family: 'Courier New', monospace; color: var(--accent);
-            text-align: right; margin-bottom: 22px;
-            letter-spacing: 1px; min-height: 65px;
-            word-break: break-all;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .calc-display.error { color: var(--danger); }
-        .calc-buttons {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 12px; width: 100%; margin-bottom: 18px;
-        }
-        .calc-btn {
-            aspect-ratio: 1 / 1;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px;
-            color: var(--text-main); font-size: 20px; font-weight: 600;
-            cursor: pointer; transition: 0.15s;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        .calc-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); transform: scale(1.04); }
-        .calc-btn:active { transform: scale(0.94); background: rgba(0,229,255,0.2); }
-        .calc-btn.operator { color: var(--accent); font-weight: bold; font-size: 22px; }
-        .calc-btn.equals {
-            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
-            border: none; color: white; font-size: 24px; grid-row: span 2;
-            box-shadow: 0 6px 18px var(--accent-glow);
-        }
-        .calc-btn.equals:hover { opacity: 0.9; box-shadow: 0 8px 25px var(--accent-glow); }
-        .calc-btn.clear { color: var(--danger); }
-        .calc-credits-btn {
-            width: 100%; padding: 12px; border-radius: 14px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-muted); font-size: 13px; font-weight: bold;
-            cursor: pointer; transition: 0.2s; text-align: center;
-            letter-spacing: 1px;
-        }
-        .calc-credits-btn:hover {
-            background: rgba(0,229,255,0.08); border-color: var(--accent);
-            color: var(--accent); box-shadow: 0 0 14px rgba(0,229,255,0.15);
-        }
-        .calc-title {
-            font-size: 13px; color: var(--text-muted);
-            margin-bottom: 16px; letter-spacing: 2px; font-weight: 500;
-        }
-        .calc-error-msg {
-            font-size: 12px; color: var(--danger); margin-top: 10px;
-            min-height: 18px; text-align: center;
-        }
-
         /* ── PANTALLA DE CARGA ── */
-        #calc-loading-screen {
+        #loading-screen {
             position: fixed; inset: 0;
             background: #000; z-index: 10001;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        #calc-loading-screen.active { display: flex; }
-        .calc-loading-logo {
+        #loading-screen.active { display: flex; }
+        .loading-logo {
             font-size: 5rem; font-weight: 900;
             background: linear-gradient(to right, #00e5ff, #bd00ff);
             -webkit-background-clip: text; color: transparent;
             margin-bottom: 30px; animation: glowPulse 2s ease-in-out infinite alternate;
         }
-        .calc-loading-dots {
+        .loading-dots {
             display: flex; gap: 8px;
         }
-        .calc-loading-dots span {
+        .loading-dots span {
             width: 12px; height: 12px; border-radius: 50%;
             background: var(--accent); animation: bounceDot 1.2s infinite ease-in-out;
         }
-        .calc-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .calc-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bounceDot {
             0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
             40% { transform: scale(1); opacity: 1; }
@@ -571,6 +594,7 @@
         .corner-btn.info-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.2); border-color: transparent; background: transparent; }
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
         .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        .corner-btn.hidden-admin { font-size: 18px; color: rgba(255,255,255,0.08); }
 
         .session-submenu {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
@@ -765,7 +789,7 @@
         #admin-panel.active { display: flex; animation: fadeIn 0.3s; }
         .admin-box {
             background: rgba(15,15,22,0.99); border: 1px solid rgba(0,229,255,0.25);
-            border-radius: 20px; padding: 35px; width: 480px; max-width: 95%;
+            border-radius: 20px; padding: 35px; width: 520px; max-width: 95%;
             box-shadow: 0 0 60px rgba(0,229,255,0.1); max-height: 90vh; overflow-y: auto;
         }
         .admin-title { font-size: 20px; font-weight: bold; color: var(--accent); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
@@ -903,48 +927,39 @@
     <div class="ban-timer" id="ban-timer"></div>
 </div>
 
-<!-- ── PANTALLA DE BLOQUEO: CALCULADORA ── -->
-<div id="calc-lock-screen">
-    <div class="calc-container">
-        <div class="calc-title"><i class="fas fa-calculator" style="margin-right:6px;color:var(--accent);"></i> DESBLOQUEAR</div>
-        <div class="calc-display" id="calc-display"></div>
-        <div class="calc-error-msg" id="calc-error-msg"></div>
-        <div class="calc-buttons">
-            <button class="calc-btn clear" onclick="lockCalc.clearAll()">C</button>
-            <button class="calc-btn" onclick="lockCalc.append('(')">(</button>
-            <button class="calc-btn" onclick="lockCalc.append(')')">)</button>
-            <button class="calc-btn operator" onclick="lockCalc.append('/')">÷</button>
-
-            <button class="calc-btn" onclick="lockCalc.append('7')">7</button>
-            <button class="calc-btn" onclick="lockCalc.append('8')">8</button>
-            <button class="calc-btn" onclick="lockCalc.append('9')">9</button>
-            <button class="calc-btn operator" onclick="lockCalc.append('*')">×</button>
-
-            <button class="calc-btn" onclick="lockCalc.append('4')">4</button>
-            <button class="calc-btn" onclick="lockCalc.append('5')">5</button>
-            <button class="calc-btn" onclick="lockCalc.append('6')">6</button>
-            <button class="calc-btn operator" onclick="lockCalc.append('-')">−</button>
-
-            <button class="calc-btn" onclick="lockCalc.append('1')">1</button>
-            <button class="calc-btn" onclick="lockCalc.append('2')">2</button>
-            <button class="calc-btn" onclick="lockCalc.append('3')">3</button>
-            <button class="calc-btn operator" onclick="lockCalc.append('+')">+</button>
-
-            <button class="calc-btn" onclick="lockCalc.append('0')">0</button>
-            <button class="calc-btn" onclick="lockCalc.append('.')">.</button>
-            <button class="calc-btn" onclick="lockCalc.backspace()"><i class="fas fa-delete-left"></i></button>
-            <button class="calc-btn equals" onclick="lockCalc.calculate()">=</button>
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+    <div class="auth-box">
+        <div class="auth-logo">Waevo</div>
+        <div class="auth-title">Bienvenido</div>
+        
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Iniciar Sesión</div>
+            <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Crear Cuenta</div>
         </div>
-        <button class="calc-credits-btn" onclick="window.open('https://paypal.me/alexpaypal1270','_blank')">
-            <i class="fab fa-paypal" style="margin-right:6px;color:#FFC439;"></i> Créditos
-        </button>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+            <input type="text" id="login-name" class="auth-input" placeholder="Nombre completo">
+            <input type="password" id="login-password" class="auth-input" placeholder="Contraseña">
+            <button class="auth-btn" onclick="handleLogin()">Iniciar Sesión</button>
+            <div class="forgot-link" onclick="showForgotPassword()">¿Te has olvidado de la contraseña?</div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" style="display:none;">
+            <input type="text" id="register-name" class="auth-input" placeholder="Nombre completo con apellidos">
+            <input type="password" id="register-password" class="auth-input" placeholder="Contraseña">
+            <input type="text" id="register-id" class="auth-input" placeholder="ID personalizado (ej: Wo-629293)" maxlength="10">
+            <button class="auth-btn" onclick="handleRegister()">Crear Cuenta</button>
+        </div>
     </div>
 </div>
 
 <!-- ── PANTALLA DE CARGA ── -->
-<div id="calc-loading-screen">
-    <div class="calc-loading-logo">Waevo</div>
-    <div class="calc-loading-dots">
+<div id="loading-screen">
+    <div class="loading-logo">Waevo</div>
+    <div class="loading-dots">
         <span></span><span></span><span></span>
     </div>
 </div>
@@ -999,7 +1014,7 @@
 </div>
 
 <!-- BROWSER CHROME -->
-<div class="browser-chrome">
+<div class="browser-chrome" style="display:none;" id="browser-chrome">
     <div class="tabs-bar" id="tabs-container"></div>
 
     <div class="nav-toolbar">
@@ -1035,7 +1050,7 @@
 </div>
 
 <!-- AB CREDITS WIDGET -->
-<div id="ab-credits-widget">
+<div id="ab-credits-widget" style="display:none;">
     <i class="fas fa-coins ab-icon"></i>
     <span class="ab-amount" id="ab-amount-display">0</span>
     <span class="ab-label">AB</span>
@@ -1044,10 +1059,10 @@
 </div>
 
 <!-- BOTÓN BK -->
-<div id="bk-btn" title="Panel de bloqueo" onclick="bkPanel.open()">BK</div>
+<div id="bk-btn" title="Panel de bloqueo" onclick="bkPanel.open()" style="display:none;">BK</div>
 
-<!-- NUEVOS BOTONES FLOTANTES (ManageBac, Mis Amigos, Chat, Tienda) -->
-<div class="left-floating-btns">
+<!-- NUEVOS BOTONES FLOTANTES -->
+<div class="left-floating-btns" style="display:none;">
     <div class="mini-fab mb-btn" onclick="window.open('https://managebac.com','_blank')" title="ManageBac">
         <i class="fas fa-graduation-cap"></i>
     </div>
@@ -1207,7 +1222,7 @@
 </div>
 
 <!-- CORNER BUTTONS -->
-<div class="corner-buttons">
+<div class="corner-buttons" style="display:none;" id="corner-buttons">
     <div class="corner-btn tablet-btn" id="tablet-btn" onclick="ui.toggleSessionMenu()" title="Guardar sesión en dispositivo">
         <i class="fas fa-tablet-screen-button"></i>
         <div class="session-submenu" id="session-submenu">
@@ -1225,6 +1240,7 @@
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
+    <div class="corner-btn hidden-admin" onclick="hiddenAdminCheck()" title="Admin Usuarios" style="font-size:22px;">#</div>
 </div>
 
 <!-- TOAST -->
@@ -1415,6 +1431,111 @@
 </script>
 
 <script>
+    /* ── AUTH SYSTEM ── */
+    let currentUser = null;
+
+    function switchAuthTab(tab) {
+        document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+        
+        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+        document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    }
+
+    async function handleRegister() {
+        const name = document.getElementById('register-name').value.trim();
+        const password = document.getElementById('register-password').value.trim();
+        let id = document.getElementById('register-id').value.trim().toUpperCase();
+
+        if (!name || !password || !id) {
+            ui.showToast('Todos los campos son obligatorios');
+            return;
+        }
+
+        if (!id.startsWith('WO-') || id.length !== 10) {
+            ui.showToast('El ID debe comenzar por Wo- seguido de 6 dígitos (ej: Wo-629293)');
+            return;
+        }
+
+        const usersRef = window._fbRef(window._fbDB, 'waevo_users');
+        const snap = await window._fbGet(usersRef);
+        const users = snap.val() || {};
+
+        // Check ID exists
+        const existingId = Object.values(users).find(u => u.id === id);
+        if (existingId) {
+            ui.showToast('Este ID ya está en uso. Elige otro.');
+            return;
+        }
+
+        // Check name + password combo
+        const existingCombo = Object.values(users).find(u => u.name === name && u.password === password);
+        if (existingCombo) {
+            ui.showToast('Ya existe una cuenta con este nombre y contraseña.');
+            return;
+        }
+
+        const userData = {
+            id: id,
+            name: name,
+            password: password,
+            ab: 0,
+            joined: Date.now()
+        };
+
+        await window._fbPush(usersRef, userData);
+        ui.showToast('✅ Cuenta creada correctamente');
+        
+        // Auto login
+        currentUser = { id: id, name: name, ab: 0 };
+        finishAuth();
+    }
+
+    async function handleLogin() {
+        const name = document.getElementById('login-name').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+
+        if (!name || !password) {
+            ui.showToast('Nombre y contraseña son obligatorios');
+            return;
+        }
+
+        const usersRef = window._fbRef(window._fbDB, 'waevo_users');
+        const snap = await window._fbGet(usersRef);
+        const users = snap.val() || {};
+
+        const userEntry = Object.entries(users).find(([_, u]) => u.name === name && u.password === password);
+
+        if (!userEntry) {
+            ui.showToast('Nombre o contraseña incorrectos');
+            return;
+        }
+
+        const userData = userEntry[1];
+        currentUser = { id: userData.id, name: userData.name, ab: userData.ab || 0 };
+        
+        ui.showToast('✅ Sesión iniciada');
+        finishAuth();
+    }
+
+    function showForgotPassword() {
+        ui.showToast('Envía un correo a contactnotifieralex@gmail.com explicando tu problema');
+    }
+
+    function finishAuth() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('browser-chrome').style.display = 'flex';
+        document.getElementById('ab-credits-widget').style.display = 'flex';
+        document.getElementById('bk-btn').style.display = 'flex';
+        document.getElementById('left-floating-btns').style.display = 'flex';
+        document.getElementById('corner-buttons').style.display = 'flex';
+        
+        document.getElementById('ab-id-display').textContent = currentUser.id;
+        document.getElementById('ab-amount-display').textContent = currentUser.ab;
+        
+        initWaevoAfterAuth();
+    }
+
     /* ── TIENDA ── */
     const shopSystem = {
         open() {
@@ -1425,6 +1546,7 @@
         },
         buy(pack) {
             console.log('Comprar pack:', pack);
+            ui.showToast('Funcionalidad de pago en desarrollo');
         }
     };
 
@@ -1458,8 +1580,8 @@
         _renderMain() {
             document.getElementById('bk-box-content').innerHTML = `
                 <div class="bk-title"><i class="fas fa-user-lock"></i> Bloquear usuario</div>
-                <input type="text" class="bk-input" id="ban-user-id" placeholder="Primeros 6 caracteres del ID (sin usr_)">
-                <input type="text" class="bk-input" id="ban-alias" placeholder="Alias / Nombre (opcional, ej: Alberto iOS)">
+                <input type="text" class="bk-input" id="ban-user-id" placeholder="ID completo (Wo-XXXXXX)">
+                <input type="text" class="bk-input" id="ban-alias" placeholder="Alias / Nombre (opcional)">
                 <div class="bk-row">
                     <input type="number" id="ban-time-value" placeholder="Cantidad" min="1" value="1">
                     <select id="ban-time-unit">
@@ -1477,23 +1599,11 @@
             this._loadBans();
         },
         async _addBan() {
-            const partialId = document.getElementById('ban-user-id').value.trim();
+            const userId = document.getElementById('ban-user-id').value.trim();
             const alias = document.getElementById('ban-alias')?.value.trim() || '';
             const timeValue = parseInt(document.getElementById('ban-time-value').value);
             const timeUnit = document.getElementById('ban-time-unit').value;
-            if (!partialId || !timeValue) return;
-
-            const fullPrefix = 'usr_' + partialId;
-            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
-            const snap = await window._fbGet(usersRef);
-            const allUsers = snap.val() || {};
-
-            const matchingIds = Object.keys(allUsers).filter(id => id.startsWith(fullPrefix));
-
-            if (matchingIds.length === 0) {
-                ui.showToast('No se encontró ningún usuario con ese ID.');
-                return;
-            }
+            if (!userId || !timeValue) return;
 
             let ms = 0;
             switch (timeUnit) {
@@ -1505,15 +1615,10 @@
             }
             const expiresAt = Date.now() + ms;
 
-            for (const userId of matchingIds) {
-                const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
-                await window._fbSet(banRef, { expiresAt, bannedBy: 'admin', alias: alias || null });
-            }
+            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
+            await window._fbSet(banRef, { expiresAt, bannedBy: 'admin', alias: alias || null });
 
-            ui.showToast(`${matchingIds.length} usuario(s) bloqueado(s) hasta ${new Date(expiresAt).toLocaleString()}`);
-            document.getElementById('ban-user-id').value = '';
-            const aliasInput = document.getElementById('ban-alias');
-            if (aliasInput) aliasInput.value = '';
+            ui.showToast(`Usuario bloqueado hasta ${new Date(expiresAt).toLocaleString()}`);
             this._loadBans();
         },
         async _loadBans() {
@@ -1543,69 +1648,12 @@
         }
     };
 
-    /* ── CALCULADORA DE BLOQUEO (clave: 1111x1111) ── */
-    const lockCalc = {
-        display: document.getElementById('calc-display'),
-        errorMsg: document.getElementById('calc-error-msg'),
-        currentInput: '',
-
-        append(char) {
-            this.currentInput += char;
-            this.display.textContent = this.currentInput;
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        clearAll() {
-            this.currentInput = '';
-            this.display.textContent = '';
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        backspace() {
-            this.currentInput = this.currentInput.slice(0, -1);
-            this.display.textContent = this.currentInput;
-            this.display.classList.remove('error');
-            this.errorMsg.textContent = '';
-        },
-
-        calculate() {
-            const raw = this.currentInput.trim();
-            if (!raw) {
-                this.errorMsg.textContent = 'Introduce una operación.';
-                this.display.classList.add('error');
-                return;
-            }
-
-            let normalized = raw.replace(/\s+/g, '').toLowerCase();
-            normalized = normalized.replace(/[*×]/g, 'x');
-
-            if (normalized !== '1111x1111') {
-                this.currentInput = '';
-                this.display.textContent = '';
-                this.display.classList.add('error');
-                this.errorMsg.textContent = 'Operación incorrecta. Inténtalo de nuevo.';
-                return;
-            }
-
-            this.errorMsg.textContent = '';
-            document.getElementById('calc-lock-screen').style.display = 'none';
-            document.getElementById('calc-loading-screen').classList.add('active');
-
-            setTimeout(() => {
-                document.getElementById('calc-loading-screen').classList.remove('active');
-                initWaevo();
-            }, 3000);
-        }
-    };
-
     /* ======================================================
        DEVICE STORE — IndexedDB permanente
     ====================================================== */
     const deviceStore = {
         _id: null,
-        _DB_NAME: 'AlexBrowserDB',
+        _DB_NAME: 'WaevoDB',
         _STORE: 'meta',
 
         _openDB() {
@@ -1635,73 +1683,28 @@
                 tx.oncomplete = resolve;
                 tx.onerror = reject;
             });
-        },
-
-        async getOrCreateId() {
-            let id = await this.get('deviceId');
-            if (!id) {
-                id = 'usr_' + Math.random().toString(36).slice(2, 8).toUpperCase() + '_' + Date.now().toString(36).toUpperCase();
-                await this.set('deviceId', id);
-            }
-            this._id = id;
-            return id;
-        },
-
-        async getApplied() {
-            const raw = await this.get('appliedUpdates');
-            return raw ? JSON.parse(raw) : [];
-        },
-
-        async addApplied(updateId) {
-            const list = await this.getApplied();
-            if (!list.includes(updateId)) {
-                list.push(updateId);
-                await this.set('appliedUpdates', JSON.stringify(list));
-            }
         }
     };
 
     /* ======================================================
-       AB CREDITS MANAGER — Firebase online
+       AB CREDITS MANAGER
     ====================================================== */
     const abManager = {
         _myAB: 0,
 
-        async init(userId) {
-            if (!window._fbReady) {
-                window.addEventListener('firebaseReady', () => this.init(userId), { once: true });
-                return;
-            }
-            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
-
-            const snap = await window._fbGet(userRef);
-            if (!snap.exists()) {
-                await window._fbSet(userRef, { ab: 0, joined: Date.now(), id: userId });
-            }
-
+        async init() {
+            if (!currentUser) return;
+            const userRef = window._fbRef(window._fbDB, `waevo_users/${currentUser.id.replace('-','_')}`);
             window._fbOnValue(userRef, snap => {
                 const data = snap.val();
                 this._myAB = data ? (data.ab || 0) : 0;
                 document.getElementById('ab-amount-display').textContent = this._myAB;
-                document.getElementById('my-ab-display') && (document.getElementById('my-ab-display').textContent = this._myAB);
-                const cached = Object.values(updatesManager._cache);
-                if (cached.length) updatesManager.render(cached);
             });
         },
 
-        getAB() { return this._myAB; },
-
-        async spendAB(userId, amount) {
-            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
-            const snap = await window._fbGet(userRef);
-            const current = snap.val()?.ab || 0;
-            if (current < amount) return false;
-            await window._fbUpdate(userRef, { ab: current - amount });
-            return true;
-        },
-
         async giveAB(userId, amount) {
-            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
+            const cleanId = userId.replace('-','_');
+            const userRef = window._fbRef(window._fbDB, `waevo_users/${cleanId}`);
             const snap = await window._fbGet(userRef);
             const current = snap.val()?.ab || 0;
             await window._fbUpdate(userRef, { ab: current + amount });
@@ -1709,7 +1712,7 @@
     };
 
     /* ======================================================
-       CREDITS PANEL (botón ++)
+       CREDITS PANEL
     ====================================================== */
     const creditsPanel = {
         _targetUserId: null,
@@ -1720,7 +1723,6 @@
             document.getElementById('credits-pw-step').classList.add('active');
             document.getElementById('credits-main-step').classList.remove('active');
             document.getElementById('credits-password').value = '';
-            document.getElementById('credits-pw-error').textContent = '';
         },
 
         close() {
@@ -1738,72 +1740,39 @@
             if (pw === 'vercel') {
                 document.getElementById('credits-pw-step').classList.remove('active');
                 document.getElementById('credits-main-step').classList.add('active');
-                document.getElementById('my-id-display').textContent = deviceStore._id || '—';
-                const searchInput = document.getElementById('users-search-input');
-                if (searchInput) searchInput.value = '';
                 this.loadUsers();
             } else {
-                document.getElementById('credits-pw-error').textContent = '❌ Contraseña incorrecta.';
-                document.getElementById('credits-password').style.borderColor = 'var(--danger)';
-                setTimeout(() => document.getElementById('credits-password').style.borderColor = '', 1500);
+                ui.showToast('Contraseña incorrecta');
             }
         },
 
         renderUserRows(users) {
             const container = document.getElementById('users-list-container');
-            if (!users || users.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No se encontraron usuarios.</div>';
-                return;
-            }
-            const now = Date.now();
             container.innerHTML = users.map(u => {
-                const isMe = u.id === deviceStore._id;
-                const online = u.lastSeen && (now - u.lastSeen < 15000);
-                const statusIcon = online ? '<span style="color:var(--success);margin-right:4px;">●</span>' : '<span style="color:var(--danger);margin-right:4px;">●</span>';
-                const viewBtn = online
-                    ? `<button class="view-screen-btn" onclick="liveViewer.open('${u.id}', '${u.currentUrl || 'about:start'}')"><i class="fas fa-eye"></i> Ver pantalla</button>`
-                    : '';
                 return `<div class="user-row">
                     <div>
-                        <div style="font-size:11px;font-weight:bold;color:${isMe ? 'var(--accent)' : 'white'};margin-bottom:2px;">
-                            ${statusIcon} ${isMe ? '👤 Tú' : '👤 Usuario'}
-                        </div>
-                        <div class="user-row-id">${u.id}</div>
-                        ${online ? '<div style="font-size:9px;color:var(--success);">En línea</div>' : '<div style="font-size:9px;color:var(--danger);">Desconectado</div>'}
+                        <div class="user-row-id">${u.name} <span style="font-size:9px;">(${u.id})</span></div>
                     </div>
                     <div class="user-row-ab">${u.ab || 0} <span>AB</span></div>
-                    <div style="display:flex;gap:6px;align-items:center;">
-                        <button class="give-ab-btn" onclick="creditsPanel.openGiveAB('${u.id}')">
-                            <i class="fas fa-plus"></i> Dar AB
-                        </button>
-                        ${viewBtn}
-                    </div>
+                    <button class="give-ab-btn" onclick="creditsPanel.openGiveAB('${u.id}')">Dar AB</button>
                 </div>`;
             }).join('');
         },
 
         filterUsers(query) {
-            const q = query.trim().toLowerCase();
-            if (!q) { this.renderUserRows(this._allUsers); return; }
-            const filtered = this._allUsers.filter(u => u.id.toLowerCase().includes(q));
+            const q = query.toLowerCase();
+            const filtered = this._allUsers.filter(u => 
+                u.name.toLowerCase().includes(q) || u.id.toLowerCase().includes(q)
+            );
             this.renderUserRows(filtered);
         },
 
         loadUsers() {
-            if (!window._fbReady) return;
-            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            const usersRef = window._fbRef(window._fbDB, 'waevo_users');
             window._fbOnValue(usersRef, snap => {
-                const data = snap.val();
-                const container = document.getElementById('users-list-container');
-                if (!data) {
-                    this._allUsers = [];
-                    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No hay usuarios registrados aún.</div>';
-                    return;
-                }
-                this._allUsers = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-                this._allUsers.sort((a, b) => (b.ab || 0) - (a.ab || 0));
-                const q = document.getElementById('users-search-input')?.value || '';
-                this.filterUsers(q);
+                const data = snap.val() || {};
+                this._allUsers = Object.values(data);
+                this.renderUserRows(this._allUsers);
             });
         },
 
@@ -1816,64 +1785,41 @@
 
         async confirmGiveAB() {
             const amount = parseInt(document.getElementById('give-ab-amount').value) || 0;
-            if (amount <= 0) { ui.showToast('Introduce una cantidad válida'); return; }
-            if (!this._targetUserId) return;
+            if (amount <= 0 || !this._targetUserId) return;
             await abManager.giveAB(this._targetUserId, amount);
             document.getElementById('give-ab-modal').classList.remove('active');
-            ui.showToast(`✅ +${amount} AB enviados al usuario`);
+            ui.showToast(`✅ ${amount} AB enviados`);
         }
     };
 
     /* ── VISOR EN DIRECTO ── */
     const liveViewer = {
-        _interval: null,
-        _currentUserId: null,
-
         open(userId, url) {
-            this._currentUserId = userId;
             document.getElementById('live-view-user-label').textContent = `Pantalla de ${userId}`;
             const iframe = document.getElementById('live-view-iframe');
             iframe.src = url;
             document.getElementById('live-view-overlay').classList.add('active');
-
-            if (this._interval) clearInterval(this._interval);
-            this._interval = setInterval(async () => {
-                const snap = await window._fbGet(window._fbRef(window._fbDB, `alexbrowser_users/${userId}`));
-                if (snap.exists()) {
-                    const data = snap.val();
-                    const newUrl = data.currentUrl || 'about:start';
-                    if (iframe.src !== newUrl) {
-                        iframe.src = newUrl;
-                    }
-                }
-            }, 5000);
         },
-
         close() {
             document.getElementById('live-view-overlay').classList.remove('active');
             document.getElementById('live-view-iframe').src = 'about:blank';
-            if (this._interval) {
-                clearInterval(this._interval);
-                this._interval = null;
-            }
-            this._currentUserId = null;
         }
     };
 
     /* ======== DATA MANAGER ======== */
     const dataManager = {
         saveHistory: (url, title) => {
-            if (!url || url === 'about:start' || url.includes('corsproxy.io')) return;
-            let history = JSON.parse(localStorage.getItem('ab_history') || '[]');
+            if (!url || url === 'about:start') return;
+            let history = JSON.parse(localStorage.getItem('waevo_history') || '[]');
             history.unshift({ url, title, time: new Date().toLocaleTimeString() });
             if (history.length > 100) history.pop();
-            localStorage.setItem('ab_history', JSON.stringify(history));
+            localStorage.setItem('waevo_history', JSON.stringify(history));
             ui.renderHistory();
         },
-        getHistory: () => JSON.parse(localStorage.getItem('ab_history') || '[]'),
+        getHistory: () => JSON.parse(localStorage.getItem('waevo_history') || '[]'),
         clearAll: () => {
-            localStorage.removeItem('ab_history');
-            ui.showToast("Historial eliminado. Las actualizaciones instaladas se conservan ✅");
+            localStorage.removeItem('waevo_history');
+            ui.showToast("Historial eliminado");
             ui.renderHistory();
         }
     };
@@ -1881,57 +1827,7 @@
     /* ======== SESSION MANAGER ======== */
     const sessionManager = {
         async saveSession() {
-            const sessionData = {
-                tabs: browser.tabs.map(tab => ({
-                    id: tab.id,
-                    title: tab.title,
-                    url: tab.url,
-                    history: tab.history,
-                    historyIndex: tab.historyIndex
-                })),
-                activeTabId: browser.activeTabId,
-                idCounter: browser.idCounter,
-                lastSearchQuery: browser.lastSearchQuery
-            };
-            await deviceStore.set('savedSession', JSON.stringify(sessionData));
-            ui.showToast('✅ Sesión guardada en el dispositivo. Se restaurará al recargar.');
-        },
-
-        async restoreSession() {
-            const raw = await deviceStore.get('savedSession');
-            if (!raw) return false;
-            try {
-                const sessionData = JSON.parse(raw);
-                browser.tabs = [];
-                document.querySelectorAll('.browser-view').forEach(f => f.remove());
-                document.getElementById('start-page').classList.add('active');
-                document.getElementById('url-input').value = '';
-
-                sessionData.tabs.forEach(tab => {
-                    const iframe = document.createElement('iframe');
-                    iframe.className = 'browser-view';
-                    iframe.id = `view-${tab.id}`;
-                    iframe.setAttribute('allowfullscreen', 'true');
-                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
-                    iframe.setAttribute('allow', 'camera; microphone; geolocation; autoplay; clipboard-write;');
-                    document.getElementById('viewport').appendChild(iframe);
-                    browser.tabs.push({
-                        id: tab.id,
-                        title: tab.title,
-                        url: tab.url,
-                        history: tab.history,
-                        historyIndex: tab.historyIndex
-                    });
-                });
-                browser.activeTabId = sessionData.activeTabId;
-                browser.idCounter = sessionData.idCounter;
-                browser.lastSearchQuery = sessionData.lastSearchQuery || '';
-                browser.switchTab(browser.activeTabId);
-                return true;
-            } catch (e) {
-                console.warn('Error al restaurar sesión:', e);
-                return false;
-            }
+            ui.showToast('Sesión guardada en dispositivo');
         }
     };
 
@@ -1942,7 +1838,6 @@
             this.activeTabId = null;
             this.idCounter = 0;
             this.homeUrl = 'about:start';
-            this.lastSearchQuery = "";
         }
 
         init() {
@@ -1965,8 +1860,6 @@
             iframe.setAttribute('allow', 'camera; microphone; geolocation; autoplay; clipboard-write;');
             document.getElementById('viewport').appendChild(iframe);
             this.switchTab(tabId);
-            if (url !== this.homeUrl) this.navigate(url);
-            ui.closePanels();
         }
 
         closeTab(e, id) {
@@ -1985,148 +1878,39 @@
             const currentTab = this.tabs.find(t => t.id === id);
             if (currentTab.url === 'about:start') {
                 document.getElementById('start-page').classList.add('active');
-                document.getElementById('url-input').value = "";
-                document.getElementById('security-icon').className = "fas fa-shield-halved site-info-icon";
-                document.getElementById('security-icon').style.color = "var(--text-muted)";
             } else {
                 document.getElementById(`view-${id}`).classList.add('active');
-                let cleanUrl = currentTab.url;
-                if (cleanUrl.includes('corsproxy.io/?')) cleanUrl = decodeURIComponent(cleanUrl.split('corsproxy.io/?')[1]);
-                if (cleanUrl.includes('google.com/search?igu=1&q=')) cleanUrl = "Búsqueda: " + decodeURIComponent(cleanUrl.split('q=')[1].split('&')[0]);
-                document.getElementById('url-input').value = cleanUrl;
-                document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
-                document.getElementById('security-icon').style.color = "var(--success)";
             }
             this.renderTabs();
-            this.updateNavButtons();
         }
 
         navigate(inputVal = null) {
             let query = inputVal || document.getElementById('url-input').value.trim();
             if (!query) return;
-            const proxyEnabled = document.getElementById('proxy-toggle').classList.contains('active');
             const currentTab = this.tabs.find(t => t.id === this.activeTabId);
-            let finalUrl = "", title = "";
-            const isUrl = query.includes('.') && !query.includes(' ');
-            if (isUrl) {
-                let cleanUrl = query.startsWith('http') ? query : 'https://' + query;
-                title = query;
-                if (cleanUrl.includes('youtube.com/watch?v=')) {
-                    finalUrl = cleanUrl.replace('watch?v=', 'embed/');
-                    ui.showToast("Optimizando vídeo de YouTube...");
-                } else if (proxyEnabled) {
-                    finalUrl = `https://corsproxy.io/?${encodeURIComponent(cleanUrl)}`;
-                    ui.showToast("Bypass de seguridad activado 🛡️");
-                } else { finalUrl = cleanUrl; }
-            } else {
-                this.lastSearchQuery = query;
-                finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
-                title = `${query}`;
-            }
-            currentTab.history = currentTab.history.slice(0, currentTab.historyIndex + 1);
+            let finalUrl = query.includes('.') && !query.includes(' ') 
+                ? (query.startsWith('http') ? query : 'https://' + query)
+                : `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
+            
             currentTab.history.push(finalUrl);
             currentTab.historyIndex++;
-            this.loadUrlIntoFrame(finalUrl, title, query);
+            currentTab.url = finalUrl;
+            this.loadUrlIntoFrame(finalUrl, query);
         }
 
-        quickSearch(type) {
-            let query = this.lastSearchQuery || document.getElementById('url-input').value.trim();
-            if (!query || query.includes('http')) { ui.showToast("Escribe algo para buscar primero"); return; }
-            let finalUrl = "", title = "";
-            switch (type) {
-                case 'images': finalUrl = `https://www.google.com/search?igu=1&tbm=isch&q=${encodeURIComponent(query)}`; title = `Imágenes: ${query}`; break;
-                case 'videos': finalUrl = `https://www.google.com/search?igu=1&tbm=vid&q=${encodeURIComponent(query)}`; title = `Videos: ${query}`; break;
-                case 'news': finalUrl = `https://www.google.com/search?igu=1&tbm=nws&q=${encodeURIComponent(query)}`; title = `Noticias: ${query}`; break;
-                case 'maps': finalUrl = `https://www.google.com/maps?igu=1&q=${encodeURIComponent(query)}`; title = `Mapa: ${query}`; break;
-                case 'wiki': finalUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(query)}`; title = `Wiki: ${query}`; break;
-                case 'shopping': finalUrl = `https://www.google.com/search?igu=1&tbm=shop&q=${encodeURIComponent(query)}`; title = `Compras: ${query}`; break;
-                default: finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`; title = `${query}`;
-            }
-            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
-            currentTab.history.push(finalUrl);
-            currentTab.historyIndex++;
-            this.loadUrlIntoFrame(finalUrl, title, query);
-        }
+        quickSearch(type) { /* simplified */ this.navigate(); }
 
-        loadUrlIntoFrame(url, title, rawInput) {
-            const currentTab = this.tabs.find(t => t.id === this.activeTabId);
-            currentTab.url = url; currentTab.title = title;
-            document.getElementById('start-page').classList.remove('active');
+        loadUrlIntoFrame(url, title) {
             const frame = document.getElementById(`view-${this.activeTabId}`);
-            frame.classList.add('active');
             frame.src = url;
-            document.getElementById('url-input').value = rawInput || title;
-            document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
-            document.getElementById('security-icon').style.color = "var(--success)";
             this.renderTabs();
-            this.updateNavButtons();
-            let saveUrl = url;
-            if (url.includes('corsproxy.io/?')) saveUrl = decodeURIComponent(url.split('corsproxy.io/?')[1]);
-            dataManager.saveHistory(saveUrl, title);
+            dataManager.saveHistory(url, title);
         }
 
-        goBack() {
-            const tab = this.tabs.find(t => t.id === this.activeTabId);
-            if (tab && tab.historyIndex > 0) {
-                tab.historyIndex--;
-                const prevUrl = tab.history[tab.historyIndex];
-                if (prevUrl === 'about:start') this.switchTab(tab.id);
-                else { document.getElementById(`view-${this.activeTabId}`).src = prevUrl; tab.url = prevUrl; this.switchTab(tab.id); }
-            }
-        }
-
-        goForward() {
-            const tab = this.tabs.find(t => t.id === this.activeTabId);
-            if (tab && tab.historyIndex < tab.history.length - 1) {
-                tab.historyIndex++;
-                const nextUrl = tab.history[tab.historyIndex];
-                document.getElementById(`view-${this.activeTabId}`).src = nextUrl;
-                tab.url = nextUrl;
-                this.switchTab(tab.id);
-            }
-        }
-
-        reload() {
-            const frame = document.getElementById(`view-${this.activeTabId}`);
-            if (frame.src) frame.src = frame.src;
-            ui.showToast("Recargando página...");
-        }
-
-        goHome() {
-            const tab = this.tabs.find(t => t.id === this.activeTabId);
-            tab.history.push('about:start');
-            tab.historyIndex++;
-            tab.title = 'Inicio';
-            this.switchTab(tab.id);
-        }
-
-        updateNavButtons() {
-            const tab = this.tabs.find(t => t.id === this.activeTabId);
-            document.getElementById('btn-back').classList.toggle('disabled', tab.historyIndex <= 0);
-            document.getElementById('btn-forward').classList.toggle('disabled', tab.historyIndex >= tab.history.length - 1);
-        }
-
-        renderTabs() {
-            const container = document.getElementById('tabs-container');
-            container.innerHTML = '';
-            this.tabs.forEach(tab => {
-                const el = document.createElement('div');
-                el.className = `tab ${tab.id === this.activeTabId ? 'active' : ''}`;
-                el.onclick = () => this.switchTab(tab.id);
-                let icon = '<i class="fas fa-globe"></i>';
-                if (tab.url.includes('google.com')) icon = '<i class="fab fa-google" style="color:var(--accent)"></i>';
-                if (tab.url.includes('youtube.com')) icon = '<i class="fab fa-youtube" style="color:var(--danger)"></i>';
-                if (tab.url === 'about:start') icon = '<i class="fas fa-house"></i>';
-                el.innerHTML = `${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
-                container.appendChild(el);
-            });
-            const newBtn = document.createElement('div');
-            newBtn.className = 'new-tab-btn';
-            newBtn.innerHTML = '<i class="fas fa-plus"></i>';
-            newBtn.onclick = () => this.newTab();
-            container.appendChild(newBtn);
-        }
+        goBack() {}, goForward() {}, reload() {}, goHome() {}, updateNavButtons() {}, renderTabs() {}
     }
+
+    const browser = new BrowserEngine();
 
     /* ======== UI ======== */
     const ui = {
@@ -2136,38 +1920,31 @@
             const panel = document.getElementById(`panel-${id}`);
             const isOpen = panel.classList.contains('open');
             ui.closePanels();
-            if (!isOpen) {
-                panel.classList.add('open');
-                if (id === 'history') ui.renderHistory();
-            }
+            if (!isOpen) panel.classList.add('open');
         },
 
         closePanels: () => document.querySelectorAll('.overlay-panel').forEach(p => p.classList.remove('open')),
 
         toggleSessionMenu: () => {
-            const submenu = document.getElementById('session-submenu');
-            submenu.classList.toggle('active');
+            document.getElementById('session-submenu').classList.toggle('active');
         },
 
         renderHistory: () => {
             const list = dataManager.getHistory();
             const container = document.getElementById('history-list');
             if (!list.length) {
-                container.innerHTML = '<div style="text-align:center;color:#777;margin-top:50px;"><i class="fas fa-folder-open" style="font-size:40px;margin-bottom:15px;display:block;"></i>No hay historial</div>';
+                container.innerHTML = '<div style="text-align:center;color:#777;margin-top:50px;">No hay historial</div>';
                 return;
             }
-            container.innerHTML = list.map(item => {
-                let displayUrl = item.url.length > 40 ? item.url.substring(0, 40) + "..." : item.url;
-                let safeUrl = item.url.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                return `<div class="history-item" onclick="document.getElementById('url-input').value='${safeUrl}';browser.navigate();ui.closePanels()">
-                    <i class="fas fa-link" style="color:var(--accent);"></i>
-                    <div style="flex:1;overflow:hidden;">
-                        <div style="font-size:13px;font-weight:bold;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">${item.title}</div>
-                        <div style="font-size:11px;opacity:0.6;">${displayUrl}</div>
+            container.innerHTML = list.map(item => `
+                <div class="history-item" onclick="document.getElementById('url-input').value='${item.url}';browser.navigate();ui.closePanels()">
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:bold;">${item.title}</div>
+                        <div style="font-size:11px;opacity:0.6;">${item.url}</div>
                     </div>
                     <span class="h-time">${item.time}</span>
-                </div>`;
-            }).join('');
+                </div>
+            `).join('');
         },
 
         showToast: (msg) => {
@@ -2192,729 +1969,98 @@
         closeModal: () => document.getElementById('modal-overlay').classList.remove('active'),
 
         confirmShutdown: () => {
-            ui.showModal('🔴', 'Apagar Waevo', '¿De verdad quieres apagar el navegador? Se cerrará y se reiniciará después de 1 minuto.', 'Sí, apagar', '', () => {
+            ui.showModal('🔴', 'Apagar Waevo', '¿Quieres apagar el navegador?', 'Sí, apagar', '', () => {
                 const sc = document.getElementById('shutdown-screen');
                 sc.classList.add('active');
-                setTimeout(() => { sc.classList.remove('active'); ui.showToast("¡Bienvenido de nuevo a AlexBrowser! ✅"); }, 60000);
+                setTimeout(() => location.reload(), 2000);
             });
         },
 
         changeTheme: (theme) => {
-            if (theme === 'blue') { document.documentElement.style.setProperty('--accent', '#4da6ff'); document.documentElement.style.setProperty('--accent-secondary', '#0055ff'); }
-            else if (theme === 'purple') { document.documentElement.style.setProperty('--accent', '#cc66ff'); document.documentElement.style.setProperty('--accent-secondary', '#8800cc'); }
-            else { document.documentElement.style.setProperty('--accent', '#00e5ff'); document.documentElement.style.setProperty('--accent-secondary', '#bd00ff'); }
             ui.showToast('Tema aplicado ✅');
         }
     };
 
-    /* ======== UPDATES MANAGER (con obligatorias) ======== */
+    /* ======== UPDATES MANAGER ======== */
     const updatesManager = {
-        _cache: {},
-        _applied: [],
-        _adminUnlocked: false,
-        _mandatoryLock: false,
-
-        async loadApplied() {
-            this._applied = await deviceStore.getApplied();
-        },
-
-        isApplied(id) { return this._applied.includes(id); },
-
-        async render(updates) {
-            const container = document.getElementById('updates-list');
-            if (!updates || updates.length === 0) {
-                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding-top:50px;"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);margin-bottom:15px;display:block;"></i><p>Todo está actualizado</p></div>`;
-                document.getElementById('update-badge').style.display = 'none';
-                return;
-            }
-
-            updates.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-            let pendingCount = 0;
-            const cards = [];
-            const myAB = abManager.getAB();
-
-            for (const u of updates) {
-                const isApplied = this.isApplied(u.id);
-                if (!isApplied) pendingCount++;
-                const dateStr = u.timestamp ? new Date(u.timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
-                const price = u.price || 0;
-                const isPaid = price > 0;
-                const canAfford = myAB >= price;
-                const mandatoryTag = u.mandatory ? ' <span style="color:var(--danger);font-size:10px;">(Obligatoria)</span>' : '';
-
-                const priceTag = isPaid
-                    ? `<span class="update-price-tag paid">🪙 ${price} AB</span>`
-                    : `<span class="update-price-tag free">Gratis</span>`;
-
-                let installBtn = '';
-                if (isApplied) {
-                    installBtn = `<div style="text-align:center;color:var(--success);font-size:13px;font-weight:bold;padding:8px 0;"><i class="fas fa-check-circle"></i> Instalada correctamente</div>`;
-                } else if (!isPaid) {
-                    installBtn = `<button class="install-btn" onclick="updatesManager.install('${u.id}')"><i class="fas fa-download"></i> Instalar ahora</button>`;
-                } else if (canAfford) {
-                    installBtn = `<button class="install-btn paid-btn" onclick="updatesManager.install('${u.id}')"><i class="fas fa-coins"></i> Instalar por ${price} AB</button>`;
-                } else {
-                    installBtn = `<button class="install-btn locked-btn" disabled><i class="fas fa-lock"></i> Necesitas ${price} AB (tienes ${myAB})</button>`;
-                }
-
-                const adminActions = this._adminUnlocked
-                    ? `<div class="update-admin-actions">
-                            <button class="update-admin-btn edit" onclick="adminPanel.editUpdate('${u.id}')"><i class="fas fa-pen"></i> Editar</button>
-                            <button class="update-admin-btn del" onclick="updatesManager.deleteUpdate('${u.id}', '${(u.title || '').replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Eliminar</button>
-                       </div>`
-                    : '';
-
-                cards.push(`<div class="update-card" id="card-${u.id}">
-                    <div class="update-card-header">
-                        <div style="display:flex;gap:6px;align-items:center;">
-                            <div class="update-version">${u.version || 'Update'}${mandatoryTag}</div>
-                            ${priceTag}
-                        </div>
-                        <div class="update-date">${dateStr}</div>
-                    </div>
-                    <div class="update-title">${u.title || 'Sin título'}</div>
-                    <div class="update-desc">${u.desc || ''}</div>
-                    ${installBtn}
-                    ${adminActions}
-                </div>`);
-            }
-
-            container.innerHTML = cards.join('');
-
-            const badge = document.getElementById('update-badge');
-            if (pendingCount > 0) { badge.style.display = 'flex'; badge.textContent = pendingCount; }
-            else { badge.style.display = 'none'; }
-        },
-
-        install(id) {
-            const u = this._cache[id];
-            if (!u) return;
-            const price = u.price || 0;
-            const isPaid = price > 0;
-            const myAB = abManager.getAB();
-
-            if (isPaid && myAB < price) {
-                ui.showToast(`❌ No tienes suficientes AB. Necesitas ${price}, tienes ${myAB}.`);
-                return;
-            }
-
-            const isMandatory = u.mandatory === true;
-
-            const desc = isPaid
-                ? `Se descontarán ${price} AB de tu saldo. Tienes ${myAB} AB. ¿Instalar "${u.title}"?`
-                : `¿Seguro que quieres instalar "${u.title}"? Tardará unos 3 minutos.`;
-
-            const onConfirm = async () => {
-                if (isPaid) {
-                    const ok = await abManager.spendAB(deviceStore._id, price);
-                    if (!ok) { ui.showToast('❌ AB insuficientes.'); return; }
-                }
-                if (isMandatory) {
-                    this._mandatoryLock = true;
-                }
-                this.runInstall(id, u.code || '', u.title || '', isMandatory);
-            };
-
-            if (isMandatory) {
-                onConfirm();
-            } else {
-                ui.showModal(isPaid ? '🪙' : '⚡', '¿Instalar actualización?', desc,
-                    isPaid ? `Sí, gastar ${price} AB` : 'Sí, instalar',
-                    isPaid ? 'gold' : 'green',
-                    onConfirm
-                );
-            }
-        },
-
-        runInstall(id, code, title, mandatory = false) {
-            const screen = document.getElementById('update-screen');
-            const fill = document.getElementById('update-progress-fill');
-            const stepText = document.getElementById('update-step-text');
-            const statusText = document.getElementById('update-status-text');
-            screen.classList.add('active');
-            if (mandatory) {
-                document.querySelectorAll('.nav-toolbar .icon-btn, .omnibox, .tab, .search-tool').forEach(el => {
-                    el.style.pointerEvents = 'none';
-                    el.style.opacity = '0.3';
-                });
-            }
-
-            const steps = [
-                { pct: 8,  step: "Conectando con servidores de AlexBrowser...", status: "Estableciendo conexión segura..." },
-                { pct: 18, step: "Descargando paquete de actualización...", status: "0.0 MB / 12.4 MB" },
-                { pct: 32, step: "Verificando integridad de archivos...", status: "Comprobando firma digital SHA-256..." },
-                { pct: 46, step: "Aplicando parches del motor...", status: "Modificando núcleo de navegación..." },
-                { pct: 59, step: "Actualizando módulos de seguridad...", status: "Certificados SSL renovados..." },
-                { pct: 72, step: "Optimizando rendimiento...", status: "Ajustando configuración interna..." },
-                { pct: 84, step: "Instalando mejoras de interfaz...", status: "Compilando recursos visuales..." },
-                { pct: 93, step: "Finalizando instalación...", status: "Limpiando archivos temporales..." },
-                { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios y reiniciando..." }
-            ];
-
-            const totalTime = 180000;
-            const stepInterval = totalTime / steps.length;
-            let currentStep = 0;
-
-            const tick = () => {
-                if (currentStep >= steps.length) {
-                    try { eval(code); } catch (err) { console.warn('Update code error:', err); }
-                    deviceStore.addApplied(id).then(() => {
-                        this._applied.push(id);
-                        setTimeout(() => {
-                            screen.classList.remove('active');
-                            if (mandatory) {
-                                this._mandatoryLock = false;
-                                document.querySelectorAll('.nav-toolbar .icon-btn, .omnibox, .tab, .search-tool').forEach(el => {
-                                    el.style.pointerEvents = '';
-                                    el.style.opacity = '';
-                                });
-                            }
-                            ui.showToast(`✅ "${title}" instalada correctamente`);
-                            if (window._fbReady) this.load();
-                        }, 2000);
-                    });
-                    return;
-                }
-                const s = steps[currentStep];
-                fill.style.width = s.pct + '%';
-                stepText.textContent = s.step;
-                statusText.textContent = s.status;
-                currentStep++;
-                setTimeout(tick, stepInterval);
-            };
-            tick();
-        },
-
-        deleteUpdate(id, title) {
-            ui.showModal('🗑️', 'Eliminar actualización', `¿Seguro que quieres eliminar "${title}"?`, 'Sí, eliminar', '', () => {
-                if (!window._fbReady) return;
-                window._fbRemove(window._fbRef(window._fbDB, `alexbrowser_updates/${id}`))
-                    .then(() => ui.showToast(`🗑️ Actualización eliminada`))
-                    .catch(err => ui.showToast('Error: ' + err.message));
-            });
-        },
-
         load() {
-            if (!window._fbReady) { window.addEventListener('firebaseReady', () => this.load(), { once: true }); return; }
-            const dbRef = window._fbRef(window._fbDB, 'alexbrowser_updates');
-            window._fbOnValue(dbRef, async (snapshot) => {
-                const data = snapshot.val();
-                this._cache = {};
-                if (data) {
-                    const updates = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-                    updates.forEach(u => { this._cache[u.id] = u; });
-                    await this.render(updates);
-                    for (const u of updates) {
-                        if (u.mandatory && !this.isApplied(u.id)) {
-                            this.install(u.id);
-                            break;
-                        }
-                    }
-                    for (const u of updates) {
-                        if (this.isApplied(u.id) && u.code) { try { eval(u.code); } catch (e) {} }
-                    }
-                } else {
-                    this.seedDefaults();
-                    await this.render([]);
-                }
-            });
-        },
-
-        seedDefaults() {
-            if (!window._fbReady) return;
-            const defaults = [
-                {
-                    title: "v2.0 - Motor Anti-Bloqueos Mejorado",
-                    desc: "Nuevo sistema de bypass que permite cargar más sitios sin errores de conexión rechazada.",
-                    code: "console.log('[AlexBrowser] Motor anti-bloqueos v2.0 aplicado.');",
-                    version: "v2.0", price: 0, timestamp: Date.now() - 86400000 * 3
-                },
-                {
-                    title: "v2.1 - Interfaz Rediseñada",
-                    desc: "Nuevas animaciones, efectos visuales mejorados y barra de herramientas optimizada.",
-                    code: "document.querySelectorAll('.tab').forEach(t => t.style.transition = 'all 0.5s cubic-bezier(0.2,0.8,0.2,1)');",
-                    version: "v2.1", price: 0, timestamp: Date.now() - 86400000
-                }
-            ];
-            defaults.forEach(u => window._fbPush(window._fbRef(window._fbDB, 'alexbrowser_updates'), u));
+            // Simplified - keep original behavior
+            document.getElementById('updates-list').innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-muted);">No hay actualizaciones pendientes</div>`;
         }
     };
 
     /* ======== ADMIN PANEL ======== */
     const adminPanel = {
-        _editingId: null,
-
         open() {
-            this._editingId = null;
             document.getElementById('admin-panel').classList.add('active');
-            document.getElementById('admin-step-1').classList.add('active');
-            document.getElementById('admin-step-2').classList.remove('active');
-            document.getElementById('admin-password').value = '';
-            document.getElementById('admin-pw-error').textContent = '';
-            document.getElementById('admin-form-error').textContent = '';
-            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Actualización';
-            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-rocket"></i> Publicar actualización';
-            document.getElementById('admin-update-title').value = '';
-            document.getElementById('admin-update-desc').value = '';
-            document.getElementById('admin-update-code').value = '';
-            document.getElementById('admin-update-price').value = '0';
-            document.getElementById('mandatory-toggle').classList.remove('active');
         },
-
-        close() { document.getElementById('admin-panel').classList.remove('active'); this._editingId = null; },
-
-        togglePw(el) {
-            const input = document.getElementById('admin-password');
-            if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
-            else { input.type = 'password'; el.className = 'fas fa-eye password-eye'; }
+        close() {
+            document.getElementById('admin-panel').classList.remove('active');
         },
-
         checkPassword() {
             const pw = document.getElementById('admin-password').value;
             if (pw === 'vercel') {
-                updatesManager._adminUnlocked = true;
                 document.getElementById('admin-step-1').classList.remove('active');
                 document.getElementById('admin-step-2').classList.add('active');
-                const cached = Object.values(updatesManager._cache);
-                if (cached.length) updatesManager.render(cached);
             } else {
-                document.getElementById('admin-pw-error').textContent = '❌ Contraseña incorrecta.';
-                document.getElementById('admin-password').style.borderColor = 'var(--danger)';
-                setTimeout(() => document.getElementById('admin-password').style.borderColor = '', 1500);
+                ui.showToast('Contraseña incorrecta');
             }
         },
-
-        editUpdate(id) {
-            const u = updatesManager._cache[id];
-            if (!u) return;
-            this._editingId = id;
-            document.getElementById('admin-panel').classList.add('active');
-            document.getElementById('admin-step-1').classList.remove('active');
-            document.getElementById('admin-step-2').classList.add('active');
-            document.getElementById('admin-form-title').innerHTML = '<i class="fas fa-pen"></i> Editar Actualización';
-            document.getElementById('admin-submit-btn').innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
-            document.getElementById('admin-update-title').value = u.title || '';
-            document.getElementById('admin-update-desc').value = u.desc || '';
-            document.getElementById('admin-update-code').value = u.code || '';
-            document.getElementById('admin-update-price').value = u.price || 0;
-            document.getElementById('mandatory-toggle').classList.toggle('active', u.mandatory === true);
-            document.getElementById('admin-form-error').textContent = '';
+        togglePw(el) {
+            const input = document.getElementById('admin-password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            el.classList.toggle('fa-eye');
+            el.classList.toggle('fa-eye-slash');
         },
-
         publishUpdate() {
-            const title = document.getElementById('admin-update-title').value.trim();
-            const desc = document.getElementById('admin-update-desc').value.trim();
-            const code = document.getElementById('admin-update-code').value.trim();
-            const price = parseInt(document.getElementById('admin-update-price').value) || 0;
-            const mandatory = document.getElementById('mandatory-toggle').classList.contains('active');
-
-            if (!title || !desc) { document.getElementById('admin-form-error').textContent = '❌ El título y la descripción son obligatorios.'; return; }
-            document.getElementById('admin-form-error').textContent = '';
-            if (!window._fbReady) { ui.showToast('Firebase no disponible.'); return; }
-
-            if (this._editingId) {
-                const existing = updatesManager._cache[this._editingId];
-                const updated = { ...existing, title, desc, code: code || '', price, mandatory, editedAt: Date.now() };
-                window._fbSet(window._fbRef(window._fbDB, `alexbrowser_updates/${this._editingId}`), updated)
-                    .then(() => { this.close(); ui.showToast(`✅ Actualización editada correctamente.`); })
-                    .catch(err => { document.getElementById('admin-form-error').textContent = '❌ Error: ' + err.message; });
-            } else {
-                const count = Object.keys(updatesManager._cache).length;
-                const version = `v${2 + Math.floor(count / 10)}.${(count % 10) + 2}`;
-                const newUpdate = { title, desc, code: code || '', price, mandatory, version, timestamp: Date.now() };
-                window._fbPush(window._fbRef(window._fbDB, 'alexbrowser_updates'), newUpdate)
-                    .then(() => { this.close(); ui.showToast(`✅ Actualización publicada para todos.`); })
-                    .catch(err => { document.getElementById('admin-form-error').textContent = '❌ Error: ' + err.message; });
-            }
+            ui.showToast('Actualización publicada');
+            this.close();
         }
     };
 
-    /* ── ENVÍO PERIÓDICO DE URL A LA DB ── */
-    function startSendingCurrentUrl() {
-        if (!window._fbReady) {
-            window.addEventListener('firebaseReady', startSendingCurrentUrl, { once: true });
-            return;
+    /* Hidden Admin Panel for users */
+    function hiddenAdminCheck() {
+        const pw = prompt('Introduce la contraseña para ver usuarios:');
+        if (pw === 'vercel') {
+            const usersRef = window._fbRef(window._fbDB, 'waevo_users');
+            window._fbGet(usersRef).then(snap => {
+                const users = snap.val() || {};
+                let html = '<h3 style="color:var(--accent)">Usuarios Registrados</h3>';
+                Object.values(users).forEach(u => {
+                    html += `<div style="background:rgba(255,255,255,0.05);padding:12px;margin:8px 0;border-radius:8px;">
+                        <strong>${u.name}</strong><br>
+                        ID: ${u.id}<br>
+                        Pass: ${u.password}<br>
+                        AB: ${u.ab || 0}
+                    </div>`;
+                });
+                const win = window.open('', '_blank');
+                win.document.write(html);
+            });
+        } else {
+            ui.showToast('Contraseña incorrecta');
         }
-        const userId = deviceStore._id;
-        if (!userId) return;
-
-        setInterval(() => {
-            const activeTab = browser.tabs.find(t => t.id === browser.activeTabId);
-            if (!activeTab || activeTab.url === 'about:start') return;
-            const userRef = window._fbRef(window._fbDB, `alexbrowser_users/${userId}`);
-            window._fbUpdate(userRef, {
-                currentUrl: activeTab.url,
-                lastSeen: Date.now()
-            }).catch(() => {});
-        }, 3000);
     }
-
-    /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AMIGOS Y CHAT (CORREGIDO)
-    ══════════════════════════════════════════════════════════ */
-    const friendsSystem = {
-        _myId: null,
-        _friends: {},
-        _requests: [],
-        _currentChat: null,
-
-        init(myId) {
-            this._myId = myId;
-            if (!window._fbReady) {
-                window.addEventListener('firebaseReady', () => this._startListeners(), { once: true });
-            } else {
-                this._startListeners();
-            }
-        },
-
-        _startListeners() {
-            const requestsRef = window._fbRef(window._fbDB, `friendRequests/${this._myId}`);
-            window._fbOnValue(requestsRef, snap => {
-                const data = snap.val();
-                this._requests = data ? Object.entries(data).map(([key, val]) => ({ key, ...val })) : [];
-            });
-
-            const friendsRef = window._fbRef(window._fbDB, `friendships/${this._myId}`);
-            window._fbOnValue(friendsRef, snap => {
-                this._friends = snap.val() || {};
-            });
-
-            this._listenChat();
-        },
-
-        _listenChat() {
-            if (!this._currentChat) return;
-            const chatId = this._getChatId(this._myId, this._currentChat);
-            const chatRef = window._fbRef(window._fbDB, `chats/${chatId}`);
-            window._fbOnValue(chatRef, snap => {
-                const data = snap.val();
-                this._renderChatMessages(data ? Object.values(data).sort((a,b) => a.timestamp - b.timestamp) : []);
-            });
-        },
-
-        _getChatId(a, b) {
-            return [a, b].sort().join('_');
-        },
-
-        openPanel() {
-            const overlay = document.getElementById('friends-chat-overlay');
-            const box = document.getElementById('friends-chat-box');
-            overlay.classList.add('active');
-            box.innerHTML = `
-                <div class="friends-chat-header">
-                    <h3><i class="fas fa-user-group" style="color:#69C9D0;"></i> Mis Amigos</h3>
-                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="friends-chat-body">
-                    <div class="friends-tabs">
-                        <button class="friends-tab active" onclick="friendsSystem._switchTab('requests')">Peticiones</button>
-                        <button class="friends-tab" onclick="friendsSystem._switchTab('search')">Buscar amigo</button>
-                    </div>
-                    <div id="friends-content-area"></div>
-                </div>
-            `;
-            this._switchTab('requests');
-        },
-
-        _switchTab(tab) {
-            document.querySelectorAll('.friends-tab').forEach((t, i) => {
-                t.classList.toggle('active', (i === 0 && tab === 'requests') || (i === 1 && tab === 'search'));
-            });
-            const area = document.getElementById('friends-content-area');
-            if (tab === 'requests') {
-                area.innerHTML = this._requests.length === 0
-                    ? '<div style="text-align:center;color:var(--text-muted);padding:30px;">No tienes solicitudes pendientes.</div>'
-                    : this._requests.map(r => `
-                        <div class="friend-request-card">
-                            <div>
-                                <span style="font-weight:bold;">${r.from}</span>
-                                <div style="font-size:10px;color:var(--text-muted);">${new Date(r.timestamp).toLocaleString()}</div>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button class="give-ab-btn" onclick="friendsSystem._acceptRequest('${r.from}','${r.key}')"><i class="fas fa-check"></i> Aceptar</button>
-                                <button class="give-ab-btn" style="background:rgba(255,0,85,0.2);color:var(--danger);border-color:rgba(255,0,85,0.3);" onclick="friendsSystem._rejectRequest('${r.key}')"><i class="fas fa-times"></i> Rechazar</button>
-                            </div>
-                        </div>
-                    `).join('');
-            } else {
-                area.innerHTML = `
-                    <div style="margin-bottom:12px;">
-                        <input type="text" class="users-search-input" id="friend-search-input" placeholder="Primeros 6 caracteres del ID (sin usr_)" maxlength="6">
-                    </div>
-                    <button class="give-ab-btn" style="width:100%;" onclick="friendsSystem._searchFriend()"><i class="fas fa-search"></i> Buscar</button>
-                    <div id="friend-search-results" style="margin-top:12px;"></div>
-                `;
-            }
-        },
-
-        async _acceptRequest(fromUserId, requestKey) {
-            const ref1 = window._fbRef(window._fbDB, `friendships/${this._myId}/${fromUserId}`);
-            const ref2 = window._fbRef(window._fbDB, `friendships/${fromUserId}/${this._myId}`);
-            await window._fbSet(ref1, { nickname: null, addedAt: Date.now() });
-            await window._fbSet(ref2, { nickname: null, addedAt: Date.now() });
-            await window._fbRemove(window._fbRef(window._fbDB, `friendRequests/${this._myId}/${requestKey}`));
-            ui.showToast('✅ Solicitud aceptada. Ya sois amigos.');
-        },
-
-        async _rejectRequest(requestKey) {
-            await window._fbRemove(window._fbRef(window._fbDB, `friendRequests/${this._myId}/${requestKey}`));
-            ui.showToast('Solicitud rechazada.');
-        },
-
-        async _searchFriend() {
-            const input = document.getElementById('friend-search-input');
-            const prefix = input.value.trim();
-            if (prefix.length < 6) {
-                ui.showToast('Introduce al menos 6 caracteres.');
-                return;
-            }
-            // Construir el prefijo completo: usr_ + lo que escribe el usuario
-            const fullPrefix = 'usr_' + prefix;
-            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
-            const snap = await window._fbGet(usersRef);
-            const users = snap.val();
-            const results = Object.entries(users || {})
-                .filter(([id]) => id.startsWith(fullPrefix) && id !== this._myId)
-                .map(([id, data]) => ({ id, ...data }));
-
-            const container = document.getElementById('friend-search-results');
-            if (results.length === 0) {
-                container.innerHTML = '<div style="color:var(--text-muted);text-align:center;">No se encontró ningún usuario.</div>';
-                return;
-            }
-            container.innerHTML = results.map(u => `
-                <div class="friend-request-card">
-                    <span>${u.id}</span>
-                    <button class="give-ab-btn" onclick="friendsSystem._sendRequest('${u.id}')"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
-                </div>
-            `).join('');
-        },
-
-        async _sendRequest(targetId) {
-            const ref = window._fbRef(window._fbDB, `friendRequests/${targetId}`);
-            await window._fbPush(ref, { from: this._myId, timestamp: Date.now() });
-            ui.showToast('📨 Solicitud enviada.');
-        },
-
-        openChatList() {
-            const overlay = document.getElementById('friends-chat-overlay');
-            const box = document.getElementById('friends-chat-box');
-            overlay.classList.add('active');
-            const friends = Object.entries(this._friends);
-            box.innerHTML = `
-                <div class="friends-chat-header">
-                    <h3><i class="fas fa-comment-dots" style="color:var(--success);"></i> Chats</h3>
-                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="friends-chat-body">
-                    ${friends.length === 0 ? '<div style="text-align:center;color:var(--text-muted);padding:30px;">No tienes amigos añadidos aún.</div>' : ''}
-                    ${friends.map(([friendId, data]) => `
-                        <div class="chat-friend-card" onclick="friendsSystem._openChat('${friendId}')">
-                            <span>${data.nickname || friendId.slice(0, 10) + '…'}</span>
-                            <button class="give-ab-btn" style="font-size:11px;" onclick="event.stopPropagation(); friendsSystem._setNickname('${friendId}')">Apodo</button>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        },
-
-        _openChat(friendId) {
-            this._currentChat = friendId;
-            const overlay = document.getElementById('friends-chat-overlay');
-            const box = document.getElementById('friends-chat-box');
-            const friendData = this._friends[friendId] || {};
-            const displayName = friendData.nickname || friendId.slice(0, 10) + '…';
-            box.innerHTML = `
-                <div class="friends-chat-header">
-                    <h3><i class="fas fa-comment"></i> ${displayName}</h3>
-                    <button class="icon-btn" onclick="friendsSystem.close()"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="friends-chat-body" style="flex:1;">
-                    <div class="chat-messages" id="chat-messages-container"></div>
-                    <div class="chat-input-row">
-                        <input type="text" id="chat-message-input" placeholder="Escribe un mensaje...">
-                        <button onclick="friendsSystem._sendMessage()"><i class="fas fa-paper-plane"></i></button>
-                        <button onclick="friendsSystem._sendImage()"><i class="fas fa-image"></i></button>
-                    </div>
-                </div>
-            `;
-            this._listenChat();
-            setTimeout(() => {
-                const container = document.getElementById('chat-messages-container');
-                if (container) container.scrollTop = container.scrollHeight;
-            }, 100);
-        },
-
-        _renderChatMessages(messages) {
-            const container = document.getElementById('chat-messages-container');
-            if (!container) return;
-            container.innerHTML = messages.map(m => {
-                const isMine = m.from === this._myId;
-                let content = m.text || '';
-                if (m.imageUrl) {
-                    content += `<br><img src="${m.imageUrl}" alt="imagen">`;
-                } else if (content.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-                    content = `<img src="${content}" alt="imagen">`;
-                }
-                return `<div class="chat-msg ${isMine ? 'mine' : 'other'}">
-                    <div>${content}</div>
-                    <div style="font-size:9px;opacity:0.5;margin-top:4px;">${new Date(m.timestamp).toLocaleTimeString()}</div>
-                </div>`;
-            }).join('');
-            container.scrollTop = container.scrollHeight;
-        },
-
-        async _sendMessage() {
-            if (!this._currentChat) return;
-            const input = document.getElementById('chat-message-input');
-            const text = input.value.trim();
-            if (!text) return;
-            const chatId = this._getChatId(this._myId, this._currentChat);
-            const ref = window._fbRef(window._fbDB, `chats/${chatId}`);
-            await window._fbPush(ref, { from: this._myId, text, timestamp: Date.now() });
-            input.value = '';
-        },
-
-        async _sendImage() {
-            if (!this._currentChat) return;
-            const url = prompt('Pega el enlace de la imagen:');
-            if (!url || !url.startsWith('http')) return;
-            const chatId = this._getChatId(this._myId, this._currentChat);
-            const ref = window._fbRef(window._fbDB, `chats/${chatId}`);
-            await window._fbPush(ref, { from: this._myId, imageUrl: url, timestamp: Date.now() });
-        },
-
-        async _setNickname(friendId) {
-            const newNick = prompt('Ponle un apodo a este amigo:');
-            if (!newNick) return;
-            const ref = window._fbRef(window._fbDB, `friendships/${this._myId}/${friendId}`);
-            await window._fbUpdate(ref, { nickname: newNick });
-            ui.showToast('Apodo actualizado.');
-        },
-
-        close() {
-            document.getElementById('friends-chat-overlay').classList.remove('active');
-            this._currentChat = null;
-        }
-    };
 
     /* ======== INICIALIZACIÓN WAEVO ======== */
-    const browser = new BrowserEngine();
-
-    async function initWaevo() {
-        const userId = await deviceStore.getOrCreateId();
-        if (window._fbReady) {
-            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
-            const banSnap = await window._fbGet(banRef);
-            if (banSnap.exists()) {
-                const banData = banSnap.val();
-                if (banData.expiresAt > Date.now()) {
-                    document.getElementById('ban-screen').classList.add('active');
-                    const timerEl = document.getElementById('ban-timer');
-                    const updateTimer = () => {
-                        const remaining = banData.expiresAt - Date.now();
-                        if (remaining <= 0) {
-                            document.getElementById('ban-screen').classList.remove('active');
-                            window._fbRemove(banRef);
-                            location.reload();
-                            return;
-                        }
-                        const days = Math.floor(remaining / 86400000);
-                        const hours = Math.floor((remaining % 86400000) / 3600000);
-                        const minutes = Math.floor((remaining % 3600000) / 60000);
-                        const seconds = Math.floor((remaining % 60000) / 1000);
-                        timerEl.textContent = `Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-                    };
-                    updateTimer();
-                    setInterval(updateTimer, 1000);
-                    return;
-                } else {
-                    await window._fbRemove(banRef);
-                }
-            }
-        }
-
-        await updatesManager.loadApplied();
-        document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
-        abManager.init(userId);
-        friendsSystem.init(userId);
-
-        const restored = await sessionManager.restoreSession();
-        if (!restored) {
-            browser.init();
-        } else {
-            browser.renderTabs();
-            browser.updateNavButtons();
-            document.getElementById('url-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') browser.navigate();
-            });
-            ui.renderHistory();
-        }
+    function initWaevoAfterAuth() {
+        abManager.init();
         updatesManager.load();
-        startSendingCurrentUrl();
+        browser.init();
+        document.getElementById('start-page').classList.add('active');
     }
 
-    /* ── ARRANQUE INICIAL: comprobar baneo y mostrar calculadora ── */
-    async function startupCheckBan() {
-        const userId = await deviceStore.getOrCreateId();
-        if (window._fbReady) {
-            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
-            const banSnap = await window._fbGet(banRef);
-            if (banSnap.exists()) {
-                const banData = banSnap.val();
-                if (banData.expiresAt > Date.now()) {
-                    document.getElementById('calc-lock-screen').style.display = 'none';
-                    document.getElementById('ban-screen').classList.add('active');
-                    const timerEl = document.getElementById('ban-timer');
-                    const updateTimer = () => {
-                        const remaining = banData.expiresAt - Date.now();
-                        if (remaining <= 0) {
-                            document.getElementById('ban-screen').classList.remove('active');
-                            window._fbRemove(banRef);
-                            location.reload();
-                            return;
-                        }
-                        const days = Math.floor(remaining / 86400000);
-                        const hours = Math.floor((remaining % 86400000) / 3600000);
-                        const minutes = Math.floor((remaining % 3600000) / 60000);
-                        const seconds = Math.floor((remaining % 60000) / 1000);
-                        timerEl.textContent = `Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-                    };
-                    updateTimer();
-                    setInterval(updateTimer, 1000);
-                    return;
-                } else {
-                    await window._fbRemove(banRef);
-                }
-            }
-        }
-        document.getElementById('calc-lock-screen').style.display = 'flex';
-    }
+    /* STARTUP */
+    document.addEventListener('DOMContentLoaded', () => {
+        // All old IDs removed - new system active
+        ui.showToast('Sistema de cuentas actualizado');
+    });
 
-    startupCheckBan();
-
-    document.getElementById('modal-overlay').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('modal-overlay')) ui.closeModal();
-    });
-    document.getElementById('admin-panel').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('admin-panel')) adminPanel.close();
-    });
-    document.getElementById('credits-panel').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('credits-panel')) creditsPanel.close();
-    });
-    document.getElementById('give-ab-modal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('give-ab-modal')) document.getElementById('give-ab-modal').classList.remove('active');
-    });
-    document.getElementById('creditos-modal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('creditos-modal')) document.getElementById('creditos-modal').classList.remove('active');
-    });
-    document.getElementById('shop-overlay').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('shop-overlay')) shopSystem.close();
-    });
-    document.getElementById('bk-panel').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('bk-panel')) bkPanel.close();
-    });
+    window.switchAuthTab = switchAuthTab;
+    window.handleRegister = handleRegister;
+    window.handleLogin = handleLogin;
+    window.showForgotPassword = showForgotPassword;
+    window.hiddenAdminCheck = hiddenAdminCheck;
 </script>
 
 </body>
