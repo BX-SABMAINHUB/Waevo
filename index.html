@@ -572,7 +572,7 @@
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
         .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        /* Estilo para botón RAP (esquina inferior derecha, junto a los demás) */
+        /* Estilo para botón RAP */
         .corner-btn.rap-btn {
             font-weight: 900; font-size: 14px; letter-spacing: 1px;
             background: linear-gradient(135deg, #ff0055, #ffaa00);
@@ -1027,7 +1027,7 @@
 <div class="auth-overlay" id="auth-login-overlay">
     <div class="auth-box">
         <h3>Iniciar sesión</h3>
-        <p>Introduce tu ID y contraseña.</p>
+        <p>Introduce tu contraseña.</p>
         <input type="text" class="auth-input" id="auth-login-id" placeholder="ID de tu cuenta" readonly>
         <input type="password" class="auth-input" id="auth-login-password" placeholder="Contraseña">
         <button class="auth-btn" onclick="authSystem.login()">Entrar</button>
@@ -2909,7 +2909,7 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AUTENTICACIÓN (NUEVO)
+       SISTEMA DE AUTENTICACIÓN (ACTUALIZADO)
     ══════════════════════════════════════════════════════════ */
     const authSystem = {
         async check() {
@@ -2919,22 +2919,18 @@
                 return;
             }
 
-            // Verificar si ya está logueado
             const saved = localStorage.getItem(`auth_${userId}`);
             if (saved === 'ok') {
                 this._proceedToBrowser();
                 return;
             }
 
-            // Verificar si tiene contraseña en Firebase
             const passRef = window._fbRef(window._fbDB, `passwords/${userId}`);
             const snap = await window._fbGet(passRef);
             if (snap.exists()) {
-                // Ya tiene contraseña, mostrar login
                 document.getElementById('auth-login-id').value = userId;
                 document.getElementById('auth-login-overlay').classList.add('active');
             } else {
-                // No tiene, mostrar crear contraseña
                 document.getElementById('auth-create-password-overlay').classList.add('active');
             }
         },
@@ -2953,6 +2949,7 @@
             const userId = deviceStore._id;
             await window._fbSet(window._fbRef(window._fbDB, `passwords/${userId}`), { password: pw });
             localStorage.setItem(`auth_${userId}`, 'ok');
+            alert('GUÁRDATE BIEN LA CONTRASEÑA');
             document.getElementById('auth-create-password-overlay').classList.remove('active');
             this._proceedToBrowser();
         },
@@ -2963,7 +2960,7 @@
             const passRef = window._fbRef(window._fbDB, `passwords/${userId}`);
             const snap = await window._fbGet(passRef);
             if (!snap.exists() || snap.val().password !== pw) {
-                ui.showToast('ID o contraseña incorrectos.');
+                ui.showToast('Contraseña incorrecta.');
                 return;
             }
             localStorage.setItem(`auth_${userId}`, 'ok');
@@ -2979,23 +2976,18 @@
 
         closeForgot() {
             document.getElementById('auth-forgot-overlay').classList.remove('active');
-            // Volver al overlay anterior
             const userId = deviceStore._id;
             if (localStorage.getItem(`auth_${userId}`) !== 'ok') {
-                // Si no está logueado, redirigir a login o crear según corresponda (se puede volver a check o mostrar login)
                 this.check();
             }
         },
 
         _proceedToBrowser() {
-            // Inicializar navegador normalmente
             const userId = deviceStore._id;
             document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
             abManager.init(userId);
             friendsSystem.init(userId);
-            updatesManager.loadApplied().then(() => {
-                // Ya no cargamos applied aquí, se hará en initWaevo
-            });
+            updatesManager.loadApplied();
             sessionManager.restoreSession().then(restored => {
                 if (!restored) {
                     browser.init();
