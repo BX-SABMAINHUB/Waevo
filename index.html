@@ -144,6 +144,17 @@
             background: rgba(0,229,255,0.08); border-color: var(--accent);
             color: var(--accent); box-shadow: 0 0 14px rgba(0,229,255,0.15);
         }
+        .calc-login-btn {
+            width: 100%; padding: 10px; border-radius: 14px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            color: var(--accent); font-size: 13px; font-weight: bold;
+            cursor: pointer; transition: 0.2s; text-align: center;
+            letter-spacing: 1px; margin-top: 10px;
+        }
+        .calc-login-btn:hover {
+            background: rgba(0,229,255,0.08); border-color: var(--accent);
+            box-shadow: 0 0 14px rgba(0,229,255,0.15);
+        }
         .calc-title {
             font-size: 13px; color: var(--text-muted);
             margin-bottom: 16px; letter-spacing: 2px; font-weight: 500;
@@ -588,6 +599,21 @@
             box-shadow: 0 0 20px rgba(255,0,85,0.7);
         }
 
+        /* Estilo para botón LN */
+        .corner-btn.ln-btn {
+            font-weight: 900; font-size: 14px; letter-spacing: 1px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+            margin-top: 5px;
+        }
+        .corner-btn.ln-btn:hover {
+            transform: scale(1.15);
+            color: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+        }
+
         .session-submenu {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
             background: rgba(15,15,22,0.96); border: 1px solid var(--border);
@@ -1001,6 +1027,7 @@
         <button class="calc-credits-btn" onclick="window.open('https://paypal.me/alexpaypal1270','_blank')">
             <i class="fab fa-paypal" style="margin-right:6px;color:#FFC439;"></i> Créditos
         </button>
+        <button class="calc-login-btn" onclick="loginFromCalc()">Login</button>
     </div>
 </div>
 
@@ -1055,6 +1082,19 @@
         <button class="modal-btn confirm" style="background:linear-gradient(135deg,#ff0055,#ffaa00);" onclick="rapSystem.check()">Acceder</button>
         <button class="modal-btn cancel" onclick="document.getElementById('rap-modal').classList.remove('active')">Cancelar</button>
         <div class="rap-passwords-list" id="rap-list" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- PANEL LN (Admin login como otro usuario) -->
+<div class="modal-overlay" id="ln-modal">
+    <div class="modal-box" style="border-color:rgba(0,229,255,0.5);">
+        <div class="modal-icon">👤</div>
+        <div class="modal-title">Acceso administrativo</div>
+        <div class="modal-desc">Introduce los primeros 6 caracteres del ID del usuario</div>
+        <input type="text" class="auth-input" id="ln-user-id-prefix" placeholder="Ej: A1B2C3" maxlength="6">
+        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="ln-error"></div>
+        <button class="modal-btn confirm" style="background:linear-gradient(135deg,#00e5ff,#bd00ff);" onclick="lnSystem.loginAsUser()">Entrar como usuario</button>
+        <button class="modal-btn cancel" onclick="document.getElementById('ln-modal').classList.remove('active')">Cancelar</button>
     </div>
 </div>
 
@@ -1332,6 +1372,7 @@
         <i class="fas fa-power-off"></i>
     </div>
     <div class="corner-btn rap-btn" onclick="rapSystem.open()" title="Panel RAP">RAP</div>
+    <div class="corner-btn ln-btn" onclick="lnSystem.open()" title="Admin Login">ln</div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
@@ -2909,6 +2950,48 @@
     };
 
     /* ══════════════════════════════════════════════════════════
+       SISTEMA LN (Admin Login)
+    ══════════════════════════════════════════════════════════ */
+    const lnSystem = {
+        open() {
+            document.getElementById('ln-modal').classList.add('active');
+            document.getElementById('ln-user-id-prefix').value = '';
+            document.getElementById('ln-error').textContent = '';
+        },
+
+        async loginAsUser() {
+            const prefix = document.getElementById('ln-user-id-prefix').value.trim();
+            if (prefix.length !== 6) {
+                document.getElementById('ln-error').textContent = 'Deben ser exactamente 6 caracteres.';
+                return;
+            }
+            const fullPrefix = 'usr_' + prefix;
+            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
+            const snap = await window._fbGet(usersRef);
+            const users = snap.val() || {};
+            const matchingIds = Object.keys(users).filter(id => id.startsWith(fullPrefix));
+            if (matchingIds.length === 0) {
+                document.getElementById('ln-error').textContent = 'ID inválido.';
+                return;
+            }
+            const targetId = matchingIds[0];
+            // Guardar ID original para poder volver
+            await deviceStore.set('originalDeviceId', deviceStore._id);
+            deviceStore._id = targetId;
+            await deviceStore.set('deviceId', targetId);
+            localStorage.removeItem(`auth_${targetId}`); // Forzar autenticación como ese usuario
+            document.getElementById('ln-modal').classList.remove('active');
+            // Reiniciar el flujo de autenticación
+            document.getElementById('calc-lock-screen').style.display = 'none';
+            document.getElementById('calc-loading-screen').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('calc-loading-screen').classList.remove('active');
+                initWaevo();
+            }, 1500);
+        }
+    };
+
+    /* ══════════════════════════════════════════════════════════
        SISTEMA DE AUTENTICACIÓN (ACTUALIZADO)
     ══════════════════════════════════════════════════════════ */
     const authSystem = {
@@ -3116,6 +3199,12 @@
 
     startupCheckBan();
 
+    /* Función para abrir el login desde la calculadora */
+    function loginFromCalc() {
+        document.getElementById('calc-lock-screen').style.display = 'none';
+        authSystem.check();
+    }
+
     document.getElementById('modal-overlay').addEventListener('click', (e) => {
         if (e.target === document.getElementById('modal-overlay')) ui.closeModal();
     });
@@ -3139,6 +3228,9 @@
     });
     document.getElementById('rap-modal').addEventListener('click', (e) => {
         if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active');
+    });
+    document.getElementById('ln-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('ln-modal')) document.getElementById('ln-modal').classList.remove('active');
     });
 </script>
 
