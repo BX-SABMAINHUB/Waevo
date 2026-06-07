@@ -572,6 +572,22 @@
         .corner-btn.info-btn:hover { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.15); }
         .corner-btn.tablet-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
+        /* Estilo para botón RAP (esquina inferior derecha, junto a los demás) */
+        .corner-btn.rap-btn {
+            font-weight: 900; font-size: 14px; letter-spacing: 1px;
+            background: linear-gradient(135deg, #ff0055, #ffaa00);
+            color: white; border: none;
+            box-shadow: 0 0 10px rgba(255,0,85,0.4);
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+            margin-top: 5px;
+        }
+        .corner-btn.rap-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(255,0,85,0.7);
+        }
+
         .session-submenu {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
             background: rgba(15,15,22,0.96); border: 1px solid var(--border);
@@ -892,6 +908,53 @@
         .ban-icon { font-size: 64px; color: var(--danger); margin-bottom: 20px; }
         .ban-text { font-size: 20px; font-weight: bold; margin-bottom: 10px; }
         .ban-timer { font-size: 16px; color: var(--text-muted); }
+
+        /* ─── NUEVOS ESTILOS PARA AUTENTICACIÓN ─── */
+        .auth-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px); z-index: 9000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .auth-overlay.active { display: flex; animation: fadeIn 0.4s; }
+        .auth-box {
+            background: rgba(20,20,28,0.98); border: 1px solid var(--border);
+            border-radius: 28px; padding: 40px 35px; width: 400px; max-width: 92%;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
+            text-align: center;
+        }
+        .auth-box h3 {
+            margin: 0 0 12px 0; font-size: 22px;
+            background: linear-gradient(to right, #00e5ff, #bd00ff);
+            -webkit-background-clip: text; color: transparent;
+        }
+        .auth-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
+        .auth-input {
+            width: 100%; padding: 13px 16px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;
+            color: white; font-size: 15px; margin-bottom: 14px; transition: 0.3s;
+        }
+        .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .auth-btn {
+            width: 100%; padding: 14px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
+            border: none; color: white; font-weight: bold; font-size: 16px;
+            cursor: pointer; transition: 0.3s; margin-top: 8px;
+        }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .auth-forgot {
+            font-size: 12px; color: var(--text-muted); margin-top: 18px;
+            cursor: pointer; text-decoration: underline; display: inline-block;
+        }
+        .auth-forgot:hover { color: var(--accent); }
+
+        .rap-passwords-list {
+            max-height: 300px; overflow-y: auto; text-align: left;
+            background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-top: 16px;
+        }
+        .rap-passwords-list div {
+            padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: monospace; font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -946,6 +1009,52 @@
     <div class="calc-loading-logo">Waevo</div>
     <div class="calc-loading-dots">
         <span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- NUEVOS OVERLAYS DE AUTENTICACIÓN -->
+<div class="auth-overlay" id="auth-create-password-overlay">
+    <div class="auth-box">
+        <h3>Crear contraseña</h3>
+        <p>Protege tu cuenta con una contraseña.</p>
+        <input type="password" class="auth-input" id="auth-new-password" placeholder="Contraseña">
+        <input type="password" class="auth-input" id="auth-confirm-password" placeholder="Confirmar contraseña">
+        <button class="auth-btn" onclick="authSystem.createPassword()">Siguiente</button>
+        <div class="auth-forgot" onclick="authSystem.showForgotPanel()">Me he olvidado de la contraseña</div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="auth-login-overlay">
+    <div class="auth-box">
+        <h3>Iniciar sesión</h3>
+        <p>Introduce tu ID y contraseña.</p>
+        <input type="text" class="auth-input" id="auth-login-id" placeholder="ID de tu cuenta" readonly>
+        <input type="password" class="auth-input" id="auth-login-password" placeholder="Contraseña">
+        <button class="auth-btn" onclick="authSystem.login()">Entrar</button>
+        <div class="auth-forgot" onclick="authSystem.showForgotPanel()">Me he olvidado de la contraseña</div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="auth-forgot-overlay">
+    <div class="auth-box" style="text-align:center;">
+        <h3>¿Olvidaste tu contraseña?</h3>
+        <p>Contacta con soporte para recuperar tu cuenta.</p>
+        <button class="auth-btn" onclick="window.open('https://waevo-articles.vercel.app','_blank')">Soporte</button>
+        <button class="admin-cancel" onclick="authSystem.closeForgot()" style="margin-top:12px;">Volver</button>
+    </div>
+</div>
+
+<!-- PANEL RAP (ver IDs y contraseñas) -->
+<div class="modal-overlay" id="rap-modal">
+    <div class="modal-box" style="border-color:rgba(255,0,85,0.5);">
+        <div class="modal-icon">🔐</div>
+        <div class="modal-title">Panel RAP</div>
+        <div class="modal-desc">Contraseña de acceso</div>
+        <input type="password" class="auth-input" id="rap-password" placeholder="••••••••">
+        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="rap-error"></div>
+        <button class="modal-btn confirm" style="background:linear-gradient(135deg,#ff0055,#ffaa00);" onclick="rapSystem.check()">Acceder</button>
+        <button class="modal-btn cancel" onclick="document.getElementById('rap-modal').classList.remove('active')">Cancelar</button>
+        <div class="rap-passwords-list" id="rap-list" style="display:none;"></div>
     </div>
 </div>
 
@@ -1222,6 +1331,7 @@
     <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
         <i class="fas fa-power-off"></i>
     </div>
+    <div class="corner-btn rap-btn" onclick="rapSystem.open()" title="Panel RAP">RAP</div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
@@ -2669,7 +2779,6 @@
                 ui.showToast('Introduce al menos 6 caracteres.');
                 return;
             }
-            // Construir el prefijo completo: usr_ + lo que escribe el usuario
             const fullPrefix = 'usr_' + prefix;
             const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
             const snap = await window._fbGet(usersRef);
@@ -2799,6 +2908,143 @@
         }
     };
 
+    /* ══════════════════════════════════════════════════════════
+       SISTEMA DE AUTENTICACIÓN (NUEVO)
+    ══════════════════════════════════════════════════════════ */
+    const authSystem = {
+        async check() {
+            const userId = deviceStore._id;
+            if (!window._fbReady) {
+                window.addEventListener('firebaseReady', () => this.check(), { once: true });
+                return;
+            }
+
+            // Verificar si ya está logueado
+            const saved = localStorage.getItem(`auth_${userId}`);
+            if (saved === 'ok') {
+                this._proceedToBrowser();
+                return;
+            }
+
+            // Verificar si tiene contraseña en Firebase
+            const passRef = window._fbRef(window._fbDB, `passwords/${userId}`);
+            const snap = await window._fbGet(passRef);
+            if (snap.exists()) {
+                // Ya tiene contraseña, mostrar login
+                document.getElementById('auth-login-id').value = userId;
+                document.getElementById('auth-login-overlay').classList.add('active');
+            } else {
+                // No tiene, mostrar crear contraseña
+                document.getElementById('auth-create-password-overlay').classList.add('active');
+            }
+        },
+
+        async createPassword() {
+            const pw = document.getElementById('auth-new-password').value;
+            const confirm = document.getElementById('auth-confirm-password').value;
+            if (!pw || pw.length < 4) {
+                ui.showToast('La contraseña debe tener al menos 4 caracteres.');
+                return;
+            }
+            if (pw !== confirm) {
+                ui.showToast('Las contraseñas no coinciden.');
+                return;
+            }
+            const userId = deviceStore._id;
+            await window._fbSet(window._fbRef(window._fbDB, `passwords/${userId}`), { password: pw });
+            localStorage.setItem(`auth_${userId}`, 'ok');
+            document.getElementById('auth-create-password-overlay').classList.remove('active');
+            this._proceedToBrowser();
+        },
+
+        async login() {
+            const userId = document.getElementById('auth-login-id').value.trim();
+            const pw = document.getElementById('auth-login-password').value;
+            const passRef = window._fbRef(window._fbDB, `passwords/${userId}`);
+            const snap = await window._fbGet(passRef);
+            if (!snap.exists() || snap.val().password !== pw) {
+                ui.showToast('ID o contraseña incorrectos.');
+                return;
+            }
+            localStorage.setItem(`auth_${userId}`, 'ok');
+            document.getElementById('auth-login-overlay').classList.remove('active');
+            this._proceedToBrowser();
+        },
+
+        showForgotPanel() {
+            document.getElementById('auth-create-password-overlay').classList.remove('active');
+            document.getElementById('auth-login-overlay').classList.remove('active');
+            document.getElementById('auth-forgot-overlay').classList.add('active');
+        },
+
+        closeForgot() {
+            document.getElementById('auth-forgot-overlay').classList.remove('active');
+            // Volver al overlay anterior
+            const userId = deviceStore._id;
+            if (localStorage.getItem(`auth_${userId}`) !== 'ok') {
+                // Si no está logueado, redirigir a login o crear según corresponda (se puede volver a check o mostrar login)
+                this.check();
+            }
+        },
+
+        _proceedToBrowser() {
+            // Inicializar navegador normalmente
+            const userId = deviceStore._id;
+            document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
+            abManager.init(userId);
+            friendsSystem.init(userId);
+            updatesManager.loadApplied().then(() => {
+                // Ya no cargamos applied aquí, se hará en initWaevo
+            });
+            sessionManager.restoreSession().then(restored => {
+                if (!restored) {
+                    browser.init();
+                } else {
+                    browser.renderTabs();
+                    browser.updateNavButtons();
+                    document.getElementById('url-input').addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') browser.navigate();
+                    });
+                    ui.renderHistory();
+                }
+                updatesManager.load();
+                startSendingCurrentUrl();
+            });
+        }
+    };
+
+    /* ══════════════════════════════════════════════════════════
+       SISTEMA RAP (ver IDs y contraseñas)
+    ══════════════════════════════════════════════════════════ */
+    const rapSystem = {
+        open() {
+            document.getElementById('rap-modal').classList.add('active');
+            document.getElementById('rap-password').value = '';
+            document.getElementById('rap-error').textContent = '';
+            document.getElementById('rap-list').style.display = 'none';
+        },
+
+        async check() {
+            const pw = document.getElementById('rap-password').value;
+            if (pw !== 'vercel') {
+                document.getElementById('rap-error').textContent = 'Contraseña incorrecta';
+                return;
+            }
+            document.getElementById('rap-error').textContent = '';
+            const passRef = window._fbRef(window._fbDB, 'passwords');
+            const snap = await window._fbGet(passRef);
+            const data = snap.val() || {};
+            const entries = Object.entries(data);
+            const listDiv = document.getElementById('rap-list');
+            listDiv.style.display = 'block';
+            if (entries.length === 0) {
+                listDiv.innerHTML = '<div>No hay cuentas con contraseña.</div>';
+            } else {
+                listDiv.innerHTML = entries.map(([id, val]) => `<div>ID: ${id} | Contraseña: ${val.password}</div>`).join('');
+            }
+        }
+    };
+
     /* ======== INICIALIZACIÓN WAEVO ======== */
     const browser = new BrowserEngine();
 
@@ -2836,23 +3082,7 @@
         }
 
         await updatesManager.loadApplied();
-        document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
-        abManager.init(userId);
-        friendsSystem.init(userId);
-
-        const restored = await sessionManager.restoreSession();
-        if (!restored) {
-            browser.init();
-        } else {
-            browser.renderTabs();
-            browser.updateNavButtons();
-            document.getElementById('url-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') browser.navigate();
-            });
-            ui.renderHistory();
-        }
-        updatesManager.load();
-        startSendingCurrentUrl();
+        authSystem.check();
     }
 
     /* ── ARRANQUE INICIAL: comprobar baneo y mostrar calculadora ── */
@@ -2914,6 +3144,9 @@
     });
     document.getElementById('bk-panel').addEventListener('click', (e) => {
         if (e.target === document.getElementById('bk-panel')) bkPanel.close();
+    });
+    document.getElementById('rap-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active');
     });
 </script>
 
