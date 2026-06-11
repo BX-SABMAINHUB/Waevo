@@ -1366,6 +1366,11 @@
 
 <!-- CORNER BUTTONS -->
 <div class="corner-buttons">
+    <!-- Botón PG para pantalla grande con Google -->
+    <div class="corner-btn pg-btn" id="pg-btn" title="Modo Pantalla Grande (Google)" style="background: linear-gradient(135deg, #1a73e8, #4285f4); border: none; box-shadow: 0 0 15px rgba(26,115,232,0.3);">
+        <span style="font-weight:900; font-size:16px;">PG</span>
+    </div>
+
     <div class="corner-btn tablet-btn" id="tablet-btn" onclick="ui.toggleSessionMenu()" title="Guardar sesión en dispositivo">
         <i class="fas fa-tablet-screen-button"></i>
         <div class="session-submenu" id="session-submenu">
@@ -2512,7 +2517,7 @@
                 { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios y reiniciando..." }
             ];
 
-            const totalTime = 180000;
+            const totalTime = 10000; // ← 10 segundos
             const stepInterval = totalTime / steps.length;
             let currentStep = 0;
 
@@ -3185,7 +3190,6 @@
             await window._fbSet(tempRef, { code, email, expiresAt: Date.now() + 900000 });
 
             try {
-                // Cargar EmailJS dinámicamente si no está
                 if (typeof emailjs === 'undefined') {
                     await new Promise((resolve, reject) => {
                         const script = document.createElement('script');
@@ -3408,6 +3412,69 @@
                 if (!gearBtn.contains(e.target) && !gearPopup.contains(e.target)) {
                     gearPopup.style.display = 'none';
                 }
+            });
+        }
+
+        // Lógica del botón PG (Pantalla Grande)
+        const pgBtn = document.getElementById('pg-btn');
+        if (pgBtn) {
+            pgBtn.addEventListener('click', () => {
+                if (pgBtn._pgActive) return;
+                pgBtn._pgActive = true;
+
+                // Ocultar interfaz del navegador
+                document.querySelector('.browser-chrome').style.display = 'none';
+                document.querySelector('.corner-buttons').style.display = 'none';
+                document.getElementById('ab-credits-widget').style.display = 'none';
+                const bkBtn = document.getElementById('bk-btn');
+                if (bkBtn) bkBtn.style.display = 'none';
+                const leftBtns = document.querySelector('.left-floating-btns');
+                if (leftBtns) leftBtns.style.display = 'none';
+                document.getElementById('toast').style.display = 'none';
+                
+                // Configurar viewport
+                const viewport = document.getElementById('viewport');
+                viewport.style.position = 'fixed';
+                viewport.style.top = '0';
+                viewport.style.left = '0';
+                viewport.style.width = '100vw';
+                viewport.style.height = '100vh';
+                viewport.style.zIndex = '9999';
+                viewport.style.background = '#fff';
+
+                // Limpiar viewport y crear iframe de Google
+                viewport.innerHTML = '';
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://www.google.com/webhp?igu=1';
+                iframe.style.cssText = 'width:100%; height:100%; border:none;';
+                iframe.setAttribute('allow', 'camera; microphone; geolocation; autoplay;');
+                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
+                viewport.appendChild(iframe);
+
+                // Botón para salir
+                let exitBtn = document.createElement('div');
+                exitBtn.id = 'pg-exit-btn';
+                exitBtn.innerHTML = '✕';
+                exitBtn.style.cssText = 'position:fixed; top:15px; right:15px; z-index:10001; background:rgba(0,0,0,0.6); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; font-weight:bold; backdrop-filter:blur(5px);';
+                exitBtn.onclick = () => {
+                    pgBtn._pgActive = false;
+                    // Restaurar todo
+                    document.querySelector('.browser-chrome').style.display = '';
+                    document.querySelector('.corner-buttons').style.display = '';
+                    document.getElementById('ab-credits-widget').style.display = '';
+                    if (bkBtn) bkBtn.style.display = '';
+                    if (leftBtns) leftBtns.style.display = '';
+                    document.getElementById('toast').style.display = '';
+                    viewport.style.position = '';
+                    viewport.style.top = '';
+                    viewport.style.left = '';
+                    viewport.style.width = '';
+                    viewport.style.height = '';
+                    viewport.style.zIndex = '';
+                    iframe.remove();
+                    exitBtn.remove();
+                };
+                document.body.appendChild(exitBtn);
             });
         }
     });
