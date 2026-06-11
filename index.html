@@ -1168,16 +1168,13 @@
         <div class="nav-controls">
             <button class="icon-btn" onclick="ui.showToast('Página guardada en favoritos ⭐')" title="Favoritos"><i class="fas fa-star"></i></button>
             <button class="icon-btn" onclick="ui.togglePanel('downloads')" title="Descargas"><i class="fas fa-download"></i></button>
-            <!-- Botón de ajustes (⚙️) para recuperación de contraseña y cambio de ID -->
+            <!-- Botón de ajustes (⚙️) para recuperación de contraseña -->
             <button class="icon-btn" id="gear-btn" title="Ajustes de cuenta">
                 <i class="fas fa-gear"></i>
             </button>
             <div id="gear-popup" class="gear-popup" style="display:none;">
                 <button onclick="authSystem.openRecovery(); document.getElementById('gear-popup').style.display='none';">
                     <i class="fas fa-key"></i> Resetear contraseña
-                </button>
-                <button onclick="changeIdSystem.openChangeId(); document.getElementById('gear-popup').style.display='none';">
-                    <i class="fas fa-id-card"></i> Cambiar ID
                 </button>
             </div>
             <button class="icon-btn" onclick="ui.togglePanel('menu')" title="Más opciones"><i class="fas fa-bars-staggered"></i></button>
@@ -1238,14 +1235,317 @@
             <div class="q-link" onclick="browser.navigate('101games')">
                 <i class="fas fa-gamepad q-icon" style="color:#00e5ff"></i><span class="q-text">101games</span>
             </div>
-            <div class="q-link" onclick="browser.navigate('Smashkarts')">
-                <i class="fas fa-gamepad q-icon" style="color:#ff6600"></i><span class="q-text">Smashkarts</span>
-            </div>
         </div>
     </div>
 </div>
 
-<!-- ... resto del HTML (paneles, modales, etc.) exactamente igual que en la última versión completa ... -->
+<!-- PANEL MENÚ -->
+<div class="overlay-panel" id="panel-menu">
+    <div class="panel-header">
+        <h3><i class="fas fa-cog"></i> Configuración y Opciones</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content">
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="browser.newTab()"><i class="fas fa-plus"></i>Nueva Pestaña</div>
+            <div class="menu-btn" onclick="ui.showToast('Modo Incógnito Activado 🕵️')"><i class="fas fa-mask"></i>Incógnito</div>
+            <div class="menu-btn" onclick="ui.togglePanel('history')"><i class="fas fa-history"></i>Historial</div>
+            <div class="menu-btn" onclick="ui.togglePanel('downloads')"><i class="fas fa-download"></i>Descargas</div>
+            <div class="menu-btn" onclick="ui.showToast('Página guardada localmente')"><i class="fas fa-save"></i>Guardar Web</div>
+            <div class="menu-btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</div>
+            <div class="menu-btn" onclick="ui.showToast('Panel de Extensiones (Próximamente)')"><i class="fas fa-puzzle-piece"></i>Extensiones</div>
+            <div class="menu-btn" onclick="ui.showToast('Traduciendo página...')"><i class="fas fa-language"></i>Traducir</div>
+            <div class="menu-btn" onclick="browser.reload()"><i class="fas fa-rotate-right"></i>Recargar</div>
+            <div class="menu-btn" onclick="ui.togglePanel('updates')"><i class="fas fa-bolt"></i>Actualizaciones</div>
+            <div class="menu-btn" onclick="ui.showToast('Zoom al 110% ✅')"><i class="fas fa-magnifying-glass-plus"></i>Zoom +</div>
+            <div class="menu-btn" onclick="ui.showToast('Pantalla completa')"><i class="fas fa-expand"></i>Pantalla</div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-shield-halved"></i> Seguridad Avanzada</div>
+        <div class="setting-item">
+            <span>Motor Proxy Anti-Bloqueos <br><small style="color:var(--text-muted);font-size:10px;">Evita "Conexión rechazada"</small></span>
+            <div class="toggle-switch active" id="proxy-toggle" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Bloquear Anuncios y Rastreadores</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Forzar Navegación Segura (HTTPS)</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Modo Sin Caché</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Protección DNS</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Modo oscuro para webs</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active'); ui.showToast('Modo oscuro: ' + (this.classList.contains('active')?'ON':'OFF'))"></div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-sliders"></i> Preferencias</div>
+        <div class="setting-item">
+            <span>Motor de búsqueda</span>
+            <select class="select-input" onchange="ui.showToast('Motor: '+this.value)">
+                <option>Google</option><option>Bing</option><option>DuckDuckGo</option><option>Ecosia</option>
+            </select>
+        </div>
+        <div class="setting-item">
+            <span>Zoom de página</span>
+            <input type="range" class="range-input" min="80" max="130" value="100" oninput="ui.showToast('Zoom: '+this.value+'%')">
+        </div>
+        <div class="setting-item">
+            <span>Tema de la interfaz</span>
+            <select class="select-input" onchange="ui.changeTheme(this.value)">
+                <option value="dark">Oscuro</option><option value="blue">Azul profundo</option><option value="purple">Púrpura</option>
+            </select>
+        </div>
+        <div class="setting-item">
+            <span>Animaciones de UI</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Notificaciones web</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Autocompletar URLs</span>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+        <div class="setting-item">
+            <span>Guardar contraseñas</span>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <button style="width:100%;padding:15px;margin-top:20px;background:var(--danger);border:none;color:white;border-radius:12px;cursor:pointer;font-weight:bold;transition:0.3s;"
+            onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"
+            onclick="dataManager.clearAll()">
+            <i class="fas fa-trash-can"></i> LIMPIAR TODO EL HISTORIAL
+        </button>
+    </div>
+</div>
+
+<!-- PANEL HISTORIAL -->
+<div class="overlay-panel" id="panel-history">
+    <div class="panel-header">
+        <h3><i class="fas fa-clock-rotate-left"></i> Tu Historial</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" id="history-list"></div>
+</div>
+
+<!-- PANEL DESCARGAS -->
+<div class="overlay-panel" id="panel-downloads">
+    <div class="panel-header">
+        <h3><i class="fas fa-download"></i> Gestor de Descargas</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" style="text-align:center;color:var(--text-muted);padding-top:50px;">
+        <i class="fas fa-box-open" style="font-size:50px;margin-bottom:20px;"></i>
+        <p>No hay descargas activas en este momento.</p>
+    </div>
+</div>
+
+<!-- PANEL ACTUALIZACIONES -->
+<div class="overlay-panel" id="panel-updates">
+    <div class="panel-header">
+        <h3><i class="fas fa-bolt" style="color:var(--accent)"></i> Centro de Actualizaciones</h3>
+        <button class="icon-btn" onclick="ui.closePanels()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="panel-content" id="updates-list">
+        <div style="text-align:center;color:var(--text-muted);padding-top:40px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:30px;margin-bottom:15px;display:block;"></i>
+            <p>Cargando actualizaciones...</p>
+        </div>
+    </div>
+</div>
+
+<!-- CORNER BUTTONS -->
+<div class="corner-buttons">
+    <!-- Botón PG para pantalla grande con Google -->
+    <div class="corner-btn pg-btn" id="pg-btn" title="Modo Pantalla Grande (Google)" style="background: linear-gradient(135deg, #1a73e8, #4285f4); border: none; box-shadow: 0 0 15px rgba(26,115,232,0.3);">
+        <span style="font-weight:900; font-size:16px;">PG</span>
+    </div>
+
+    <div class="corner-btn tablet-btn" id="tablet-btn" onclick="ui.toggleSessionMenu()" title="Guardar sesión en dispositivo">
+        <i class="fas fa-tablet-screen-button"></i>
+        <div class="session-submenu" id="session-submenu">
+            <button onclick="sessionManager.saveSession(); ui.toggleSessionMenu();">Guardar sesión en dispositivo</button>
+        </div>
+    </div>
+
+    <div class="corner-btn updates-btn" onclick="ui.togglePanel('updates')" title="Actualizaciones">
+        <i class="fas fa-bolt"></i>
+        <span class="update-badge" id="update-badge">0</span>
+    </div>
+    <div class="corner-btn power-btn" onclick="ui.confirmShutdown()" title="Apagar navegador">
+        <i class="fas fa-power-off"></i>
+    </div>
+    <div class="corner-btn rap-btn" onclick="rapSystem.open()" title="Panel RAP">RAP</div>
+    <div class="corner-btn ln-btn" onclick="lnSystem.open()" title="Admin Login">ln</div>
+    <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
+    <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
+    <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Acción completada</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-icon" id="modal-icon">⚡</div>
+        <div class="modal-title" id="modal-title">¿Estás seguro?</div>
+        <div class="modal-desc" id="modal-desc">Esta acción no se puede deshacer.</div>
+        <div class="modal-btns">
+            <button class="modal-btn cancel" onclick="ui.closeModal()">Cancelar</button>
+            <button class="modal-btn confirm" id="modal-confirm-btn">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- UPDATE INSTALL SCREEN -->
+<div id="update-screen">
+    <div class="update-install-logo">Waevo</div>
+    <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Instalando actualización...</div>
+    <div class="update-progress-bar">
+        <div class="update-progress-fill" id="update-progress-fill"></div>
+    </div>
+    <div class="update-step" id="update-step-text">Preparando archivos...</div>
+    <div class="update-status" id="update-status-text">Por favor, no cierres el navegador.</div>
+</div>
+
+<!-- SHUTDOWN SCREEN -->
+<div id="shutdown-screen">
+    <div class="shutdown-logo">Waevo</div>
+    <div class="shutdown-text">APAGANDO...</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+    <div class="admin-box">
+        <div class="admin-step active" id="admin-step-1">
+            <div class="admin-title"><i class="fas fa-lock"></i> Panel de Administración</div>
+            <div class="admin-subtitle">Acceso restringido. Introduce la contraseña para continuar.</div>
+            <label class="admin-label">Contraseña</label>
+            <div class="password-input-wrap">
+                <input type="password" class="admin-input" id="admin-password" placeholder="••••••••"
+                    onkeypress="if(event.key==='Enter') adminPanel.checkPassword()" style="margin-bottom:4px;">
+                <i class="fas fa-eye password-eye" onclick="adminPanel.togglePw(this)"></i>
+            </div>
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="admin-pw-error"></div>
+            <button class="admin-submit" onclick="adminPanel.checkPassword()"><i class="fas fa-arrow-right"></i> Continuar</button>
+            <button class="admin-cancel" onclick="adminPanel.close()">Cancelar</button>
+        </div>
+
+        <div class="admin-step" id="admin-step-2">
+            <div class="admin-title" id="admin-form-title"><i class="fas fa-plus-circle"></i> Nueva Actualización</div>
+            <div class="admin-subtitle">Completa los campos y publica la actualización para todos los usuarios.</div>
+            <label class="admin-label">Título de la actualización *</label>
+            <input type="text" class="admin-input" id="admin-update-title" placeholder="Ej: v3.0 - Mejoras de rendimiento">
+            <label class="admin-label">Descripción *</label>
+            <textarea class="admin-input" id="admin-update-desc" placeholder="Describe qué cambia con esta actualización..." rows="3"></textarea>
+            <label class="admin-label">Código de programación (JS) — se ejecuta al instalar</label>
+            <textarea class="admin-input code-input" id="admin-update-code" placeholder="// Código JS de la actualización..." rows="5"></textarea>
+            <div class="setting-item" style="margin-bottom:14px;">
+                <span>Actualización obligatoria</span>
+                <div class="toggle-switch" id="mandatory-toggle" onclick="this.classList.toggle('active')"></div>
+            </div>
+            <label class="admin-label">💰 Precio en AB (0 = gratis)</label>
+            <input type="number" class="admin-input" id="admin-update-price" placeholder="0" min="0" value="0" style="margin-bottom:6px;">
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:6px;" id="admin-form-error"></div>
+            <button class="admin-submit" id="admin-submit-btn" onclick="adminPanel.publishUpdate()"><i class="fas fa-rocket"></i> Publicar actualización</button>
+            <button class="admin-cancel" onclick="adminPanel.close()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- CREDITS MANAGER PANEL -->
+<div id="credits-panel">
+    <div class="credits-box">
+        <div id="credits-pw-step" class="active">
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de Créditos AB</div>
+            <div class="credits-subtitle">Acceso restringido. Introduce la contraseña.</div>
+            <label class="admin-label">Contraseña</label>
+            <div class="password-input-wrap">
+                <input type="password" class="admin-input" id="credits-password" placeholder="••••••••"
+                    onkeypress="if(event.key==='Enter') creditsPanel.checkPassword()" style="margin-bottom:4px;">
+                <i class="fas fa-eye password-eye" onclick="creditsPanel.togglePw(this)"></i>
+            </div>
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="credits-pw-error"></div>
+            <button class="admin-submit" style="background:linear-gradient(135deg,#b8860b,var(--warning));color:#000;" onclick="creditsPanel.checkPassword()"><i class="fas fa-arrow-right"></i> Continuar</button>
+            <button class="admin-cancel" onclick="creditsPanel.close()">Cancelar</button>
+        </div>
+
+        <div id="credits-main-step">
+            <div class="credits-title"><i class="fas fa-coins"></i> Gestor de Créditos AB</div>
+            <div class="credits-subtitle">Usuarios conectados. Puedes ver su pantalla en directo.</div>
+
+            <div style="background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.2);border-radius:12px;padding:14px;margin-bottom:20px;">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Tu ID</div>
+                <div style="font-size:12px;font-family:monospace;color:var(--warning);" id="my-id-display">—</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Tus AB: <span style="color:var(--warning);font-weight:bold;" id="my-ab-display">0</span></div>
+            </div>
+
+            <div style="font-size:13px;font-weight:bold;color:var(--text-muted);margin-bottom:12px;">
+                <i class="fas fa-users"></i> Usuarios conectados
+            </div>
+
+            <div class="users-search-wrap">
+                <i class="fas fa-magnifying-glass users-search-icon"></i>
+                <input type="text" class="users-search-input" id="users-search-input"
+                    placeholder="Buscar por ID de usuario..."
+                    oninput="creditsPanel.filterUsers(this.value)">
+            </div>
+
+            <div id="users-list-container">
+                <div style="text-align:center;color:var(--text-muted);padding:20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
+                </div>
+            </div>
+
+            <button class="admin-cancel" onclick="creditsPanel.close()" style="margin-top:16px;">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- GIVE AB MODAL -->
+<div class="modal-overlay" id="give-ab-modal">
+    <div class="modal-box" style="border-color:rgba(255,170,0,0.3);">
+        <div class="modal-icon">🪙</div>
+        <div class="modal-title">Dar AB al usuario</div>
+        <div class="modal-desc" id="give-ab-target-info">ID del usuario</div>
+        <div class="give-ab-form">
+            <input type="number" id="give-ab-amount" placeholder="Cantidad de AB a dar..." min="1" value="10">
+            <button class="give-ab-confirm" onclick="creditsPanel.confirmGiveAB()">
+                <i class="fas fa-coins"></i> Dar AB
+            </button>
+        </div>
+        <button class="admin-cancel" onclick="document.getElementById('give-ab-modal').classList.remove('active')" style="margin-top:10px;">Cancelar</button>
+    </div>
+</div>
+
+<!-- MODAL CRÉDITOS DEL NAVEGADOR -->
+<div id="creditos-modal">
+    <div class="creditos-box">
+        <div class="creditos-logo">Waevo</div>
+        <div class="creditos-tag">Equipo de desarrollo</div>
+        <div class="creditos-divider"></div>
+        <div class="credito-item">
+            <div class="credito-role">Developer</div>
+            <div class="credito-name">Alex</div>
+        </div>
+        <div class="credito-item">
+            <div class="credito-role">Web Designer</div>
+            <div class="credito-name">Alex</div>
+        </div>
+        <button class="creditos-close" onclick="document.getElementById('creditos-modal').classList.remove('active')">Cerrar</button>
+    </div>
+</div>
 
 <!-- FIREBASE SDK -->
 <script type="module">
@@ -2072,7 +2372,7 @@
         }
     };
 
-    /* ======== UPDATES MANAGER (10 segundos) ======== */
+    /* ======== UPDATES MANAGER (con obligatorias) ======== */
     const updatesManager = {
         _cache: {},
         _applied: [],
@@ -2217,7 +2517,7 @@
                 { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios y reiniciando..." }
             ];
 
-            const totalTime = 10000; // 10 segundos
+            const totalTime = 10000; // ← 10 segundos
             const stepInterval = totalTime / steps.length;
             let currentStep = 0;
 
@@ -2416,7 +2716,7 @@
     }
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AMIGOS Y CHAT
+       SISTEMA DE AMIGOS Y CHAT (CORREGIDO)
     ══════════════════════════════════════════════════════════ */
     const friendsSystem = {
         _myId: null,
@@ -2704,7 +3004,7 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AUTENTICACIÓN Y RECUPERACIÓN DE CONTRASEÑA
+       SISTEMA DE AUTENTICACIÓN (INCLUYE RECUPERACIÓN POR CORREO)
     ══════════════════════════════════════════════════════════ */
     const authSystem = {
         async check() {
@@ -2786,7 +3086,7 @@
             }
         },
 
-        /* ---------- RECUPERACIÓN DE CONTRASEÑA ---------- */
+        // ---------- RECUPERACIÓN DE CONTRASEÑA POR CORREO ----------
         openRecovery() {
             document.getElementById('auth-forgot-overlay').classList.remove('active');
             this._recoveryStep = 1;
@@ -2984,7 +3284,7 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA RAP
+       SISTEMA RAP (ver IDs y contraseñas)
     ══════════════════════════════════════════════════════════ */
     const rapSystem = {
         open() {
@@ -3012,194 +3312,6 @@
             } else {
                 listDiv.innerHTML = entries.map(([id, val]) => `<div>ID: ${id} | Contraseña: ${val.password}</div>`).join('');
             }
-        }
-    };
-
-    /* ======== SISTEMA DE CAMBIO DE ID ======== */
-    const changeIdSystem = {
-        _lastChange: null,
-
-        openChangeId() {
-            // Verificar si ya cambió en las últimas 24h
-            const lastChange = localStorage.getItem('lastIdChange');
-            if (lastChange) {
-                const diff = Date.now() - parseInt(lastChange);
-                if (diff < 86400000) { // 24h
-                    const horas = Math.ceil((86400000 - diff) / 3600000);
-                    ui.showToast(`Solo puedes cambiar tu ID una vez al día. Vuelve en ${horas} horas.`);
-                    return;
-                }
-            }
-            this._showStep(1);
-        },
-
-        _showStep(step) {
-            let overlay = document.getElementById('change-id-overlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'change-id-overlay';
-                overlay.className = 'auth-overlay';
-                document.body.appendChild(overlay);
-            }
-            const el = overlay;
-
-            if (step === 1) {
-                el.innerHTML = `
-                    <div class="auth-box">
-                        <h3>Cambiar ID</h3>
-                        <p>Introduce tu correo electrónico para confirmar el cambio.</p>
-                        <input type="email" class="auth-input" id="change-id-email" placeholder="tucorreo@ejemplo.com">
-                        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="change-id-error"></div>
-                        <button class="auth-btn" onclick="changeIdSystem._sendEmail()">Siguiente</button>
-                        <button class="admin-cancel" onclick="changeIdSystem._close()">Cancelar</button>
-                    </div>
-                `;
-            } else if (step === 2) {
-                el.innerHTML = `
-                    <div class="auth-box">
-                        <h3>Nuevo ID</h3>
-                        <p>Escribe tu nuevo ID. Debe comenzar con <strong>usr_</strong> y tener 6 caracteres adicionales (letras, números).</p>
-                        <input type="text" class="auth-input" id="new-id-input" placeholder="usr_123ABC" maxlength="10">
-                        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="change-id-error"></div>
-                        <button class="auth-btn" onclick="changeIdSystem._checkNewId()">Siguiente</button>
-                        <button class="admin-cancel" onclick="changeIdSystem._close()">Cancelar</button>
-                    </div>
-                `;
-            } else if (step === 3) {
-                el.innerHTML = `
-                    <div class="auth-box">
-                        <h3 style="color:var(--danger);">⚠️ ADVERTENCIA</h3>
-                        <p style="font-size:13px;">Cambiar tu ID puede afectar a tus amigos, tickets y otros servicios vinculados. Asegúrate de recordar el nuevo ID.</p>
-                        <button class="auth-btn" style="background:var(--danger);" onclick="changeIdSystem._showStep(4)">Entiendo, continuar</button>
-                        <button class="admin-cancel" onclick="changeIdSystem._close()">Cancelar</button>
-                    </div>
-                `;
-            } else if (step === 4) {
-                el.innerHTML = `
-                    <div class="auth-box">
-                        <h3 style="color:var(--danger);">⚠️ SEGUNDA ADVERTENCIA</h3>
-                        <p style="font-size:13px;">El cambio es irreversible y solo puedes hacerlo una vez cada 24 horas. El ID antiguo quedará libre para otros usuarios.</p>
-                        <button class="auth-btn" style="background:var(--danger);" onclick="changeIdSystem._showStep(5)">Lo acepto</button>
-                        <button class="admin-cancel" onclick="changeIdSystem._close()">Cancelar</button>
-                    </div>
-                `;
-            } else if (step === 5) {
-                el.innerHTML = `
-                    <div class="auth-box">
-                        <h3 style="color:var(--danger);">⚠️ ÚLTIMA ADVERTENCIA</h3>
-                        <p style="font-size:13px;">Si no eres el propietario de esta cuenta, serás baneado permanentemente.</p>
-                        <button class="auth-btn" style="background:var(--danger);" onclick="changeIdSystem._confirmChange()">Confirmar cambio</button>
-                        <button class="admin-cancel" onclick="changeIdSystem._close()">Cancelar</button>
-                    </div>
-                `;
-            }
-            el.classList.add('active');
-        },
-
-        _sendEmail() {
-            const email = document.getElementById('change-id-email')?.value.trim();
-            const errEl = document.getElementById('change-id-error');
-            if (!email || !email.includes('@')) {
-                if (errEl) errEl.textContent = 'Introduce un correo válido.';
-                return;
-            }
-            changeIdSystem._pendingEmail = email;
-            this._showStep(2);
-        },
-
-        async _checkNewId() {
-            const newId = document.getElementById('new-id-input')?.value.trim();
-            const errEl = document.getElementById('change-id-error');
-            if (!newId || !newId.startsWith('usr_') || newId.length !== 10) {
-                if (errEl) errEl.textContent = 'El ID debe comenzar con "usr_" y tener 6 caracteres adicionales (10 en total).';
-                return;
-            }
-            const suffix = newId.slice(4);
-            if (!/^[a-zA-Z0-9]{6}$/.test(suffix)) {
-                if (errEl) errEl.textContent = 'Los últimos 6 caracteres deben ser letras o números.';
-                return;
-            }
-
-            // Verificar que no exista ya en Firebase
-            const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
-            const snap = await window._fbGet(usersRef);
-            const allUsers = snap.val() || {};
-            if (allUsers[newId]) {
-                if (errEl) errEl.textContent = 'Ese ID ya está en uso. Elige otro.';
-                return;
-            }
-
-            changeIdSystem._pendingNewId = newId;
-            this._showStep(3);
-        },
-
-        async _confirmChange() {
-            const oldId = deviceStore._id;
-            const newId = changeIdSystem._pendingNewId;
-            const email = changeIdSystem._pendingEmail;
-
-            // Enviar correo de confirmación
-            try {
-                if (typeof emailjs === 'undefined') {
-                    await new Promise((resolve, reject) => {
-                        const script = document.createElement('script');
-                        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-                        script.onload = () => { emailjs.init('uQLphSRGXnFapad8s'); resolve(); };
-                        script.onerror = reject;
-                        document.head.appendChild(script);
-                    });
-                } else {
-                    emailjs.init('uQLphSRGXnFapad8s');
-                }
-                await emailjs.send('service_b584tv1', 'template_fpcsg99', {
-                    to_email: email,
-                    old_id: oldId,
-                    new_id: newId
-                });
-            } catch (error) {
-                console.error('Error al enviar correo de cambio de ID:', error);
-                ui.showToast('Error al enviar el correo. No se ha cambiado el ID.');
-                return;
-            }
-
-            // Actualizar Firebase: eliminar antiguo y crear nuevo
-            const oldUserRef = window._fbRef(window._fbDB, `alexbrowser_users/${oldId}`);
-            const oldSnap = await window._fbGet(oldUserRef);
-            const userData = oldSnap.val() || {};
-            userData.id = newId;
-
-            // Mover contraseña si existe
-            const oldPassRef = window._fbRef(window._fbDB, `passwords/${oldId}`);
-            const oldPassSnap = await window._fbGet(oldPassRef);
-            if (oldPassSnap.exists()) {
-                await window._fbSet(window._fbRef(window._fbDB, `passwords/${newId}`), oldPassSnap.val());
-                await window._fbRemove(oldPassRef);
-            }
-
-            await window._fbSet(window._fbRef(window._fbDB, `alexbrowser_users/${newId}`), userData);
-            await window._fbRemove(oldUserRef);
-
-            // Actualizar deviceStore
-            deviceStore._id = newId;
-            await deviceStore.set('deviceId', newId);
-            localStorage.setItem('lastIdChange', Date.now().toString());
-            localStorage.removeItem(`auth_${oldId}`);
-            localStorage.setItem(`auth_${newId}`, 'ok');
-
-            changeIdSystem._close();
-            ui.showToast('✅ ID cambiado correctamente. Inicia sesión de nuevo.');
-            // Reiniciar para aplicar cambios
-            document.getElementById('calc-lock-screen').style.display = 'none';
-            document.getElementById('calc-loading-screen').classList.add('active');
-            setTimeout(() => {
-                document.getElementById('calc-loading-screen').classList.remove('active');
-                initWaevo();
-            }, 2000);
-        },
-
-        _close() {
-            const el = document.getElementById('change-id-overlay');
-            if (el) el.classList.remove('active');
         }
     };
 
@@ -3243,7 +3355,7 @@
         authSystem.check();
     }
 
-    /* ── ARRANQUE INICIAL ── */
+    /* ── ARRANQUE INICIAL: comprobar baneo y mostrar calculadora ── */
     async function startupCheckBan() {
         const userId = await deviceStore.getOrCreateId();
         if (window._fbReady) {
@@ -3287,7 +3399,7 @@
         authSystem.check();
     }
 
-    // Configurar botón de ajustes y PG
+    // Configurar el botón de ajustes (⚙️)
     document.addEventListener('DOMContentLoaded', () => {
         const gearBtn = document.getElementById('gear-btn');
         const gearPopup = document.getElementById('gear-popup');
@@ -3303,12 +3415,14 @@
             });
         }
 
+        // Lógica del botón PG (Pantalla Grande)
         const pgBtn = document.getElementById('pg-btn');
         if (pgBtn) {
             pgBtn.addEventListener('click', () => {
                 if (pgBtn._pgActive) return;
                 pgBtn._pgActive = true;
 
+                // Ocultar interfaz del navegador
                 document.querySelector('.browser-chrome').style.display = 'none';
                 document.querySelector('.corner-buttons').style.display = 'none';
                 document.getElementById('ab-credits-widget').style.display = 'none';
@@ -3317,7 +3431,8 @@
                 const leftBtns = document.querySelector('.left-floating-btns');
                 if (leftBtns) leftBtns.style.display = 'none';
                 document.getElementById('toast').style.display = 'none';
-
+                
+                // Configurar viewport
                 const viewport = document.getElementById('viewport');
                 viewport.style.position = 'fixed';
                 viewport.style.top = '0';
@@ -3326,6 +3441,8 @@
                 viewport.style.height = '100vh';
                 viewport.style.zIndex = '9999';
                 viewport.style.background = '#fff';
+
+                // Limpiar viewport y crear iframe de Google
                 viewport.innerHTML = '';
                 const iframe = document.createElement('iframe');
                 iframe.src = 'https://www.google.com/webhp?igu=1';
@@ -3334,12 +3451,14 @@
                 iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
                 viewport.appendChild(iframe);
 
+                // Botón para salir
                 let exitBtn = document.createElement('div');
                 exitBtn.id = 'pg-exit-btn';
                 exitBtn.innerHTML = '✕';
                 exitBtn.style.cssText = 'position:fixed; top:15px; right:15px; z-index:10001; background:rgba(0,0,0,0.6); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; font-weight:bold; backdrop-filter:blur(5px);';
                 exitBtn.onclick = () => {
                     pgBtn._pgActive = false;
+                    // Restaurar todo
                     document.querySelector('.browser-chrome').style.display = '';
                     document.querySelector('.corner-buttons').style.display = '';
                     document.getElementById('ab-credits-widget').style.display = '';
