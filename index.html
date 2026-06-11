@@ -1168,6 +1168,15 @@
         <div class="nav-controls">
             <button class="icon-btn" onclick="ui.showToast('Página guardada en favoritos ⭐')" title="Favoritos"><i class="fas fa-star"></i></button>
             <button class="icon-btn" onclick="ui.togglePanel('downloads')" title="Descargas"><i class="fas fa-download"></i></button>
+            <!-- Botón de ajustes (⚙️) para recuperación de contraseña -->
+            <button class="icon-btn" id="gear-btn" title="Ajustes de cuenta">
+                <i class="fas fa-gear"></i>
+            </button>
+            <div id="gear-popup" class="gear-popup" style="display:none;">
+                <button onclick="authSystem.openRecovery(); document.getElementById('gear-popup').style.display='none';">
+                    <i class="fas fa-key"></i> Resetear contraseña
+                </button>
+            </div>
             <button class="icon-btn" onclick="ui.togglePanel('menu')" title="Más opciones"><i class="fas fa-bars-staggered"></i></button>
         </div>
     </div>
@@ -2975,13 +2984,11 @@
                 return;
             }
             const targetId = matchingIds[0];
-            // Guardar ID original para poder volver
             await deviceStore.set('originalDeviceId', deviceStore._id);
             deviceStore._id = targetId;
             await deviceStore.set('deviceId', targetId);
-            localStorage.removeItem(`auth_${targetId}`); // Forzar autenticación como ese usuario
+            localStorage.removeItem(`auth_${targetId}`);
             document.getElementById('ln-modal').classList.remove('active');
-            // Reiniciar el flujo de autenticación
             document.getElementById('calc-lock-screen').style.display = 'none';
             document.getElementById('calc-loading-screen').classList.add('active');
             setTimeout(() => {
@@ -2992,7 +2999,7 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE AUTENTICACIÓN (ACTUALIZADO)
+       SISTEMA DE AUTENTICACIÓN (INCLUYE RECUPERACIÓN POR CORREO)
     ══════════════════════════════════════════════════════════ */
     const authSystem = {
         async check() {
@@ -3054,7 +3061,16 @@
         showForgotPanel() {
             document.getElementById('auth-create-password-overlay').classList.remove('active');
             document.getElementById('auth-login-overlay').classList.remove('active');
-            document.getElementById('auth-forgot-overlay').classList.add('active');
+            const forgotOverlay = document.getElementById('auth-forgot-overlay');
+            forgotOverlay.innerHTML = `
+                <div class="auth-box" style="text-align:center;">
+                    <h3>¿Olvidaste tu contraseña?</h3>
+                    <p>Contacta con soporte para recuperar tu cuenta.</p>
+                    <button class="auth-btn" onclick="window.open('https://waevo-articles.vercel.app','_blank')">Soporte</button>
+                    <button class="admin-cancel" onclick="authSystem.closeForgot()" style="margin-top:12px;">Volver</button>
+                </div>
+            `;
+            forgotOverlay.classList.add('active');
         },
 
         closeForgot() {
@@ -3063,6 +3079,181 @@
             if (localStorage.getItem(`auth_${userId}`) !== 'ok') {
                 this.check();
             }
+        },
+
+        // ---------- RECUPERACIÓN DE CONTRASEÑA POR CORREO ----------
+        openRecovery() {
+            document.getElementById('auth-forgot-overlay').classList.remove('active');
+            this._recoveryStep = 1;
+            this._recoveryEmail = '';
+            this._recoveryCode = '';
+            this._showRecoveryStep();
+        },
+
+        _showRecoveryStep() {
+            let overlay = document.getElementById('auth-recovery-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'auth-recovery-overlay';
+                overlay.className = 'auth-overlay';
+                document.body.appendChild(overlay);
+            }
+            const el = overlay;
+
+            if (this._recoveryStep === 1) {
+                el.innerHTML = `
+                    <div class="auth-box">
+                        <h3>Recuperar contraseña</h3>
+                        <p>Introduce tu correo electrónico para recibir un código de verificación.</p>
+                        <input type="email" class="auth-input" id="recovery-email" placeholder="tucorreo@ejemplo.com">
+                        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="recovery-error"></div>
+                        <button class="auth-btn" onclick="authSystem._sendRecoveryEmail()">Siguiente</button>
+                        <button class="admin-cancel" onclick="authSystem.closeRecovery()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                `;
+            } else if (this._recoveryStep === 2) {
+                el.innerHTML = `
+                    <div class="auth-box">
+                        <h3 style="color:var(--danger);">⚠️ ADVERTENCIA</h3>
+                        <p style="font-size:13px;">Si no eres el propietario original de esta cuenta y estás intentando acceder sin autorización, <strong>serás sancionado permanentemente</strong> en todos los servicios de Waevo.</p>
+                        <p style="font-size:12px;color:var(--text-muted);">Tu ID y dirección IP quedarán registrados.</p>
+                        <button class="auth-btn" style="background:var(--danger);" onclick="authSystem._recoveryStep = 3; authSystem._showRecoveryStep();">Entiendo y acepto</button>
+                        <button class="admin-cancel" onclick="authSystem.closeRecovery()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                `;
+            } else if (this._recoveryStep === 3) {
+                el.innerHTML = `
+                    <div class="auth-box">
+                        <h3 style="color:var(--danger);">⚠️ ÚLTIMA ADVERTENCIA</h3>
+                        <p style="font-size:13px;">El uso fraudulento del sistema de recuperación de contraseñas constituye una violación grave de los términos de servicio. Las sanciones incluyen:</p>
+                        <ul style="text-align:left;font-size:12px;color:var(--text-muted);margin-bottom:16px;">
+                            <li>Baneo permanente de tu ID</li>
+                            <li>Eliminación de todos tus datos</li>
+                            <li>Posibles acciones legales</li>
+                        </ul>
+                        <button class="auth-btn" style="background:var(--danger);" onclick="authSystem._confirmRecovery()">Soy el propietario, enviar código</button>
+                        <button class="admin-cancel" onclick="authSystem.closeRecovery()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                `;
+            } else if (this._recoveryStep === 4) {
+                el.innerHTML = `
+                    <div class="auth-box">
+                        <h3>Verificar código</h3>
+                        <p>Hemos enviado un código de 6 dígitos a <strong>${this._recoveryEmail}</strong>. Revísalo e introdúcelo aquí.</p>
+                        <input type="text" class="auth-input" id="recovery-code" placeholder="Código de 6 dígitos" maxlength="6">
+                        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="recovery-error"></div>
+                        <button class="auth-btn" onclick="authSystem._verifyCode()">Verificar</button>
+                        <button class="admin-cancel" onclick="authSystem.closeRecovery()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                `;
+            } else if (this._recoveryStep === 5) {
+                const userId = deviceStore._id;
+                el.innerHTML = `
+                    <div class="auth-box">
+                        <h3>Nueva contraseña</h3>
+                        <p>Introduce tu nueva contraseña para la cuenta <strong>${userId}</strong>.</p>
+                        <input type="password" class="auth-input" id="new-password" placeholder="Nueva contraseña">
+                        <input type="password" class="auth-input" id="confirm-password" placeholder="Confirmar contraseña">
+                        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:8px;" id="recovery-error"></div>
+                        <button class="auth-btn" onclick="authSystem._changePassword()">Cambiar contraseña</button>
+                        <button class="admin-cancel" onclick="authSystem.closeRecovery()" style="margin-top:8px;">Cancelar</button>
+                    </div>
+                `;
+            }
+            el.classList.add('active');
+        },
+
+        _sendRecoveryEmail() {
+            const email = document.getElementById('recovery-email')?.value.trim();
+            const errEl = document.getElementById('recovery-error');
+            if (!email || !email.includes('@')) {
+                if (errEl) errEl.textContent = 'Introduce un correo electrónico válido.';
+                return;
+            }
+            authSystem._recoveryEmail = email;
+            authSystem._recoveryStep = 2;
+            authSystem._showRecoveryStep();
+        },
+
+        async _confirmRecovery() {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            authSystem._recoveryCode = code;
+            const userId = deviceStore._id;
+            const email = authSystem._recoveryEmail;
+
+            const tempRef = window._fbRef(window._fbDB, `recovery_codes/${userId}`);
+            await window._fbSet(tempRef, { code, email, expiresAt: Date.now() + 900000 });
+
+            try {
+                // Cargar EmailJS dinámicamente si no está
+                if (typeof emailjs === 'undefined') {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+                        script.onload = () => { emailjs.init('uQLphSRGXnFapad8s'); resolve(); };
+                        script.onerror = reject;
+                        document.head.appendChild(script);
+                    });
+                } else {
+                    emailjs.init('uQLphSRGXnFapad8s');
+                }
+
+                await emailjs.send('service_b584tv1', 'template_byledi8', {
+                    email: email,
+                    code: code,
+                    user_id: userId
+                });
+            } catch (error) {
+                console.error('Error al enviar el correo:', error);
+                await window._fbRemove(tempRef);
+                const errEl = document.getElementById('recovery-error');
+                if (errEl) errEl.textContent = 'Error al enviar el correo. Verifica la dirección e inténtalo de nuevo.';
+                authSystem._recoveryStep = 1;
+                authSystem._showRecoveryStep();
+                return;
+            }
+
+            authSystem._recoveryStep = 4;
+            authSystem._showRecoveryStep();
+        },
+
+        async _verifyCode() {
+            const inputCode = document.getElementById('recovery-code')?.value.trim();
+            const errEl = document.getElementById('recovery-error');
+            if (!inputCode) { if (errEl) errEl.textContent = 'Introduce el código.'; return; }
+
+            const userId = deviceStore._id;
+            const tempRef = window._fbRef(window._fbDB, `recovery_codes/${userId}`);
+            const snap = await window._fbGet(tempRef);
+            if (!snap.exists()) { if (errEl) errEl.textContent = 'No hay un código activo.'; return; }
+            const data = snap.val();
+            if (Date.now() > data.expiresAt) { await window._fbRemove(tempRef); if (errEl) errEl.textContent = 'Código expirado.'; return; }
+            if (data.code !== inputCode) { if (errEl) errEl.textContent = 'Código incorrecto.'; return; }
+
+            await window._fbRemove(tempRef);
+            authSystem._recoveryStep = 5;
+            authSystem._showRecoveryStep();
+        },
+
+        async _changePassword() {
+            const newPw = document.getElementById('new-password')?.value;
+            const confirmPw = document.getElementById('confirm-password')?.value;
+            const errEl = document.getElementById('recovery-error');
+            if (!newPw || newPw.length < 4) { if (errEl) errEl.textContent = 'Mínimo 4 caracteres.'; return; }
+            if (newPw !== confirmPw) { if (errEl) errEl.textContent = 'Las contraseñas no coinciden.'; return; }
+
+            const userId = deviceStore._id;
+            await window._fbSet(window._fbRef(window._fbDB, `passwords/${userId}`), { password: newPw });
+            localStorage.setItem(`auth_${userId}`, 'ok');
+            ui.showToast('✅ Contraseña cambiada correctamente.');
+            authSystem.closeRecovery();
+            authSystem._proceedToBrowser();
+        },
+
+        closeRecovery() {
+            const el = document.getElementById('auth-recovery-overlay');
+            if (el) el.classList.remove('active');
+            authSystem._recoveryStep = 0;
         },
 
         _proceedToBrowser() {
@@ -3199,12 +3390,29 @@
 
     startupCheckBan();
 
-    /* Función para abrir el login desde la calculadora */
     function loginFromCalc() {
         document.getElementById('calc-lock-screen').style.display = 'none';
         authSystem.check();
     }
 
+    // Configurar el botón de ajustes (⚙️)
+    document.addEventListener('DOMContentLoaded', () => {
+        const gearBtn = document.getElementById('gear-btn');
+        const gearPopup = document.getElementById('gear-popup');
+        if (gearBtn && gearPopup) {
+            gearBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                gearPopup.style.display = gearPopup.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', (e) => {
+                if (!gearBtn.contains(e.target) && !gearPopup.contains(e.target)) {
+                    gearPopup.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Cerrar modales
     document.getElementById('modal-overlay').addEventListener('click', (e) => {
         if (e.target === document.getElementById('modal-overlay')) ui.closeModal();
     });
