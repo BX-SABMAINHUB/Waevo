@@ -1276,7 +1276,18 @@
     const shopSystem = {
         open() { document.getElementById('shop-overlay').classList.add('active'); },
         close() { document.getElementById('shop-overlay').classList.remove('active'); },
-        buy(pack) { console.log('Comprar pack:', pack); }
+        buy(pack) {
+            // Simulación de compra (sin pasarela de pago real)
+            let ab = 0;
+            if (pack === 'ab_pack_3') ab = 3;
+            else if (pack === 'ab_pack_8') ab = 8;
+            else if (pack === 'ab_pack_20') ab = 20;
+            if (ab > 0) {
+                ui.showToast(`✅ Compra simulada: +${ab} AB añadidos (demo)`);
+            } else {
+                ui.showToast('Error en el pack seleccionado.');
+            }
+        }
     };
 
     /* ── PANEL BK (BLOQUEO DE USUARIOS) ── */
@@ -1467,15 +1478,19 @@
        CREDITS PANEL (botón ++)
     ====================================================== */
     const creditsPanel = {
-        _targetUserId: null, _allUsers: [],
+        _targetUserId: null, _allUsers: [], _usersListenerUnsubscribe: null,
         open() {
             document.getElementById('credits-panel').classList.add('active');
             document.getElementById('credits-pw-step').classList.add('active');
             document.getElementById('credits-main-step').classList.remove('active');
             document.getElementById('credits-password').value = '';
             document.getElementById('credits-pw-error').textContent = '';
+            this._usersListenerUnsubscribe = null;
         },
-        close() { document.getElementById('credits-panel').classList.remove('active'); },
+        close() {
+            document.getElementById('credits-panel').classList.remove('active');
+            if (this._usersListenerUnsubscribe) { this._usersListenerUnsubscribe(); this._usersListenerUnsubscribe = null; }
+        },
         togglePw(el) {
             const input = document.getElementById('credits-password');
             if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
@@ -1527,8 +1542,9 @@
         },
         loadUsers() {
             if (!window._fbReady) return;
+            if (this._usersListenerUnsubscribe) this._usersListenerUnsubscribe();
             const usersRef = window._fbRef(window._fbDB, 'alexbrowser_users');
-            window._fbOnValue(usersRef, snap => {
+            this._usersListenerUnsubscribe = window._fbOnValue(usersRef, snap => {
                 const data = snap.val();
                 const container = document.getElementById('users-list-container');
                 if (!data) {
@@ -1704,7 +1720,7 @@
                 if (cleanUrl.includes('youtube.com/watch?v=')) {
                     finalUrl = cleanUrl.replace('watch?v=', 'embed/');
                     ui.showToast("Optimizando vídeo de YouTube...");
-                } else { finalUrl = cleanUrl; } // Eliminado el uso de proxy
+                } else { finalUrl = cleanUrl; }
             } else {
                 this.lastSearchQuery = query;
                 finalUrl = `https://www.google.com/search?igu=1&q=${encodeURIComponent(query)}`;
@@ -1813,7 +1829,7 @@
             if (!list.length) { container.innerHTML = '<div style="text-align:center;color:#777;margin-top:50px;"><i class="fas fa-folder-open" style="font-size:40px;margin-bottom:15px;display:block;"></i>No hay historial</div>'; return; }
             container.innerHTML = list.map(item => {
                 let displayUrl = item.url.length > 40 ? item.url.substring(0, 40) + "..." : item.url;
-                let safeUrl = item.url.replace(/'/g, "\\'").replace(/"/g, """);
+                let safeUrl = item.url.replace(/'/g, "\\'").replace(/"/g, "");
                 return `<div class="history-item" onclick="document.getElementById('url-input').value='${safeUrl}';browser.navigate();ui.closePanels()">
                     <i class="fas fa-link" style="color:var(--accent);"></i>
                     <div style="flex:1;overflow:hidden;">
@@ -2036,23 +2052,28 @@
     ══════════════════════════════════════════════════════════ */
     const friendsSystem = {
         _myId: null, _friends: {}, _requests: [], _currentChat: null,
+        _chatListenerUnsubscribe: null, _requestsListenerUnsubscribe: null, _friendsListenerUnsubscribe: null,
         init(myId) {
             this._myId = myId;
             if (!window._fbReady) { window.addEventListener('firebaseReady', () => this._startListeners(), { once: true }); } 
             else { this._startListeners(); }
         },
         _startListeners() {
+            if (this._requestsListenerUnsubscribe) this._requestsListenerUnsubscribe();
             const requestsRef = window._fbRef(window._fbDB, `friendRequests/${this._myId}`);
-            window._fbOnValue(requestsRef, snap => { const data = snap.val(); this._requests = data ? Object.entries(data).map(([key, val]) => ({ key, ...val })) : []; });
+            this._requestsListenerUnsubscribe = window._fbOnValue(requestsRef, snap => { const data = snap.val(); this._requests = data ? Object.entries(data).map(([key, val]) => ({ key, ...val })) : []; });
+
+            if (this._friendsListenerUnsubscribe) this._friendsListenerUnsubscribe();
             const friendsRef = window._fbRef(window._fbDB, `friendships/${this._myId}`);
-            window._fbOnValue(friendsRef, snap => { this._friends = snap.val() || {}; });
+            this._friendsListenerUnsubscribe = window._fbOnValue(friendsRef, snap => { this._friends = snap.val() || {}; });
             this._listenChat();
         },
         _listenChat() {
+            if (this._chatListenerUnsubscribe) this._chatListenerUnsubscribe();
             if (!this._currentChat) return;
             const chatId = this._getChatId(this._myId, this._currentChat);
             const chatRef = window._fbRef(window._fbDB, `chats/${chatId}`);
-            window._fbOnValue(chatRef, snap => {
+            this._chatListenerUnsubscribe = window._fbOnValue(chatRef, snap => {
                 const data = snap.val(); this._renderChatMessages(data ? Object.values(data).sort((a,b) => a.timestamp - b.timestamp) : []);
             });
         },
@@ -2122,7 +2143,7 @@
             await window._fbPush(window._fbRef(window._fbDB, `chats/${this._getChatId(this._myId, this._currentChat)}`), { from: this._myId, imageUrl: url, timestamp: Date.now() });
         },
         async _setNickname(friendId) { const newNick = prompt('Ponle un apodo a este amigo:'); if (!newNick) return; await window._fbUpdate(window._fbRef(window._fbDB, `friendships/${this._myId}/${friendId}`), { nickname: newNick }); ui.showToast('Apodo actualizado.'); },
-        close() { document.getElementById('friends-chat-overlay').classList.remove('active'); this._currentChat = null; }
+        close() { document.getElementById('friends-chat-overlay').classList.remove('active'); this._currentChat = null; if (this._chatListenerUnsubscribe) { this._chatListenerUnsubscribe(); this._chatListenerUnsubscribe = null; } }
     };
 
     /* ══════════════════════════════════════════════════════════
@@ -2303,25 +2324,27 @@
 
     async function initWaevo() {
         const userId = await deviceStore.getOrCreateId();
-        if (window._fbReady) {
-            const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
-            const banSnap = await window._fbGet(banRef);
-            if (banSnap.exists()) {
-                const banData = banSnap.val();
-                if (banData.expiresAt > Date.now()) {
-                    document.getElementById('calc-loading-screen').classList.remove('active');
-                    document.getElementById('ban-screen').classList.add('active');
-                    const timerEl = document.getElementById('ban-timer');
-                    const updateTimer = () => {
-                        const remaining = banData.expiresAt - Date.now();
-                        if (remaining <= 0) { document.getElementById('ban-screen').classList.remove('active'); window._fbRemove(banRef); location.reload(); return; }
-                        const days = Math.floor(remaining / 86400000); const hours = Math.floor((remaining % 86400000) / 3600000); const minutes = Math.floor((remaining % 3600000) / 60000); const seconds = Math.floor((remaining % 60000) / 1000);
-                        timerEl.textContent = `Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-                    };
-                    updateTimer(); setInterval(updateTimer, 1000);
-                    return;
-                } else { await window._fbRemove(banRef); }
-            }
+        // Esperar a que Firebase esté listo antes de comprobar bans
+        if (!window._fbReady) {
+            await new Promise(resolve => window.addEventListener('firebaseReady', resolve, { once: true }));
+        }
+        const banRef = window._fbRef(window._fbDB, `bans/${userId}`);
+        const banSnap = await window._fbGet(banRef);
+        if (banSnap.exists()) {
+            const banData = banSnap.val();
+            if (banData.expiresAt > Date.now()) {
+                document.getElementById('calc-loading-screen').classList.remove('active');
+                document.getElementById('ban-screen').classList.add('active');
+                const timerEl = document.getElementById('ban-timer');
+                const updateTimer = () => {
+                    const remaining = banData.expiresAt - Date.now();
+                    if (remaining <= 0) { document.getElementById('ban-screen').classList.remove('active'); window._fbRemove(banRef); location.reload(); return; }
+                    const days = Math.floor(remaining / 86400000); const hours = Math.floor((remaining % 86400000) / 3600000); const minutes = Math.floor((remaining % 3600000) / 60000); const seconds = Math.floor((remaining % 60000) / 1000);
+                    timerEl.textContent = `Tiempo restante: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                };
+                updateTimer(); setInterval(updateTimer, 1000);
+                return;
+            } else { await window._fbRemove(banRef); }
         }
         await updatesManager.loadApplied();
         document.getElementById('calc-loading-screen').classList.remove('active');
