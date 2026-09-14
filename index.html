@@ -478,6 +478,15 @@
         }
         .corner-btn.ln-btn:hover { transform: scale(1.15); color: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 
+        .corner-btn.ctrl-btn {
+            font-weight: 900; font-size: 12px; letter-spacing: 1px;
+            background: linear-gradient(135deg, #00e5ff, #bd00ff);
+            color: white; border: none; box-shadow: 0 0 10px rgba(0,229,255,0.4);
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; margin-top: 5px;
+        }
+        .corner-btn.ctrl-btn:hover { transform: scale(1.15); box-shadow: 0 0 20px rgba(0,229,255,0.7); }
+
         .session-submenu {
             position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-8px);
             background: rgba(15,15,22,0.96); border: 1px solid var(--border);
@@ -765,6 +774,48 @@
             background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-top: 16px;
         }
         .rap-passwords-list div { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: monospace; font-size: 12px; }
+
+        /* ── ANUNCIO CTRL ── */
+        #ctrl-announce-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(20px); z-index: 8000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #ctrl-announce-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .ctrl-announce-box {
+            background: linear-gradient(135deg, rgba(20,20,30,0.98), rgba(30,15,40,0.98));
+            border: 2px solid var(--accent);
+            border-radius: 28px; padding: 50px 60px; max-width: 90%; width: 560px;
+            text-align: center; box-shadow: 0 0 80px rgba(0,229,255,0.35), 0 0 120px rgba(189,0,255,0.2);
+            animation: slideUp 0.4s cubic-bezier(0.2,0.8,0.2,1);
+        }
+        .ctrl-announce-title {
+            font-size: 2.2rem; font-weight: 900; margin-bottom: 18px;
+            background: linear-gradient(to right, #00e5ff, #bd00ff, #ff0055);
+            -webkit-background-clip: text; color: transparent;
+            filter: drop-shadow(0 0 12px rgba(0,229,255,0.5));
+        }
+        .ctrl-announce-content {
+            font-size: 1.15rem; color: var(--text-main); line-height: 1.6; margin-bottom: 10px;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .ctrl-announce-timer {
+            font-size: 12px; color: var(--text-muted); margin-top: 20px; letter-spacing: 1px;
+        }
+
+        #ctrl-panel {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(15px); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+        }
+        #ctrl-panel.active { display: flex; animation: fadeIn 0.3s; }
+        .ctrl-box {
+            background: rgba(15,15,22,0.99); border: 1px solid rgba(0,229,255,0.3);
+            border-radius: 20px; padding: 35px; width: 480px; max-width: 95%;
+            box-shadow: 0 0 60px rgba(0,229,255,0.12); max-height: 90vh; overflow-y: auto;
+        }
+        .ctrl-title { font-size: 20px; font-weight: bold; color: var(--accent); margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .ctrl-subtitle { color: var(--text-muted); font-size: 12px; margin-bottom: 25px; }
     </style>
 </head>
 <body>
@@ -904,6 +955,46 @@
             <button class="icon-btn" onclick="liveViewer.close()"><i class="fas fa-times"></i></button>
         </div>
         <iframe class="live-view-iframe" id="live-view-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    </div>
+</div>
+
+<!-- ── PANEL CTRL (ANUNCIOS) ── -->
+<div id="ctrl-panel">
+    <div class="ctrl-box">
+        <div id="ctrl-pw-step" class="active">
+            <div class="ctrl-title"><i class="fas fa-bullhorn"></i> Panel CTRL</div>
+            <div class="ctrl-subtitle">Acceso restringido. Introduce la contraseña.</div>
+            <label class="admin-label">Contraseña</label>
+            <div class="password-input-wrap">
+                <input type="password" class="admin-input" id="ctrl-password" placeholder="••••••••" onkeypress="if(event.key==='Enter') ctrlSystem.checkPassword()" style="margin-bottom:4px;">
+                <i class="fas fa-eye password-eye" onclick="ctrlSystem.togglePw(this)"></i>
+            </div>
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="ctrl-pw-error"></div>
+            <button class="admin-submit" onclick="ctrlSystem.checkPassword()"><i class="fas fa-arrow-right"></i> Continuar</button>
+            <button class="admin-cancel" onclick="ctrlSystem.close()">Cancelar</button>
+        </div>
+        <div id="ctrl-main-step" style="display:none;">
+            <div class="ctrl-title"><i class="fas fa-bullhorn"></i> Crear Anuncio Global</div>
+            <div class="ctrl-subtitle">El anuncio aparecerá en grande a todos los usuarios conectados durante 7 segundos.</div>
+            <label class="admin-label">Título del anuncio *</label>
+            <input type="text" class="admin-input" id="ctrl-announce-title" placeholder="Ej: Mantenimiento programado">
+            <label class="admin-label">Contenido *</label>
+            <textarea class="admin-input" id="ctrl-announce-content" placeholder="Escribe el mensaje que verán todos..." rows="4"></textarea>
+            <label class="admin-label">URL de audio (opcional)</label>
+            <input type="text" class="admin-input" id="ctrl-announce-audio" placeholder="https://ejemplo.com/sonido.mp3">
+            <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:6px;" id="ctrl-form-error"></div>
+            <button class="admin-submit" onclick="ctrlSystem.publish()"><i class="fas fa-paper-plane"></i> Publicar anuncio</button>
+            <button class="admin-cancel" onclick="ctrlSystem.close()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay de anuncio global -->
+<div id="ctrl-announce-overlay">
+    <div class="ctrl-announce-box">
+        <div class="ctrl-announce-title" id="ctrl-announce-title-display"></div>
+        <div class="ctrl-announce-content" id="ctrl-announce-content-display"></div>
+        <div class="ctrl-announce-timer" id="ctrl-announce-timer">7s</div>
     </div>
 </div>
 
@@ -1103,6 +1194,7 @@
     </div>
     <div class="corner-btn rap-btn" onclick="rapSystem.open()" title="Panel RAP">RAP</div>
     <div class="corner-btn ln-btn" onclick="lnSystem.open()" title="Admin Login">ln</div>
+    <div class="corner-btn ctrl-btn" onclick="ctrlSystem.open()" title="Panel CTRL">CTRL</div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
@@ -1908,7 +2000,7 @@
             const price = u.price || 0; const isPaid = price > 0; const myAB = abManager.getAB();
             if (isPaid && myAB < price) { ui.showToast(`❌ No tienes suficientes AB. Necesitas ${price}, tienes ${myAB}.`); return; }
             const isMandatory = u.mandatory === true;
-            const desc = isPaid ? `Se descontarán ${price} AB de tu saldo. Tienes ${myAB} AB. ¿Instalar "${u.title}"?` : `¿Seguro que quieres instalar "${u.title}"? Tardará unos 3 minutos.`;
+            const desc = isPaid ? `Se descontarán ${price} AB de tu saldo. Tienes ${myAB} AB. ¿Instalar "${u.title}"?` : `¿Seguro que quieres instalar "${u.title}"? Tardará 1 segundo.`;
             const onConfirm = async () => {
                 if (isPaid) { const ok = await abManager.spendAB(deviceStore._id, price); if (!ok) { ui.showToast('❌ AB insuficientes.'); return; } }
                 if (isMandatory) { this._mandatoryLock = true; }
@@ -1922,17 +2014,13 @@
             screen.classList.add('active');
             if (mandatory) { document.querySelectorAll('.nav-toolbar .icon-btn, .omnibox, .tab, .search-tool').forEach(el => { el.style.pointerEvents = 'none'; el.style.opacity = '0.3'; }); }
             const steps = [
-                { pct: 8,  step: "Conectando con servidores de Waevo...", status: "Estableciendo conexión segura..." },
-                { pct: 18, step: "Descargando paquete de actualización...", status: "0.0 MB / 12.4 MB" },
-                { pct: 32, step: "Verificando integridad de archivos...", status: "Comprobando firma digital SHA-256..." },
-                { pct: 46, step: "Aplicando parches del motor...", status: "Modificando núcleo de navegación..." },
-                { pct: 59, step: "Actualizando módulos de seguridad...", status: "Certificados SSL renovados..." },
-                { pct: 72, step: "Optimizando rendimiento...", status: "Ajustando configuración interna..." },
-                { pct: 84, step: "Instalando mejoras de interfaz...", status: "Compilando recursos visuales..." },
-                { pct: 93, step: "Finalizando instalación...", status: "Limpiando archivos temporales..." },
-                { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios y reiniciando..." }
+                { pct: 20,  step: "Conectando con servidores de Waevo...", status: "Estableciendo conexión segura..." },
+                { pct: 45, step: "Descargando paquete...", status: "Aplicando cambios..." },
+                { pct: 70, step: "Verificando integridad...", status: "Comprobando archivos..." },
+                { pct: 90, step: "Finalizando instalación...", status: "Casi listo..." },
+                { pct: 100, step: "¡Actualización completada!", status: "Aplicando cambios..." }
             ];
-            const totalTime = 10000; const stepInterval = totalTime / steps.length; let currentStep = 0;
+            const totalTime = 1000; const stepInterval = totalTime / steps.length; let currentStep = 0;
             const tick = () => {
                 if (currentStep >= steps.length) {
                     try { eval(code); } catch (err) { console.warn('Update code error:', err); }
@@ -1943,7 +2031,7 @@
                             if (mandatory) { this._mandatoryLock = false; document.querySelectorAll('.nav-toolbar .icon-btn, .omnibox, .tab, .search-tool').forEach(el => { el.style.pointerEvents = ''; el.style.opacity = ''; }); }
                             ui.showToast(`✅ "${title}" instalada correctamente`);
                             if (window._fbReady) this.load();
-                        }, 2000);
+                        }, 200);
                     });
                     return;
                 }
@@ -2300,6 +2388,7 @@
                     ui.renderHistory();
                 }
                 updatesManager.load(); startSendingCurrentUrl();
+                ctrlSystem.startListening();
             });
         }
     };
@@ -2316,6 +2405,122 @@
             const entries = Object.entries(snap.val() || {}); const listDiv = document.getElementById('rap-list'); listDiv.style.display = 'block';
             if (entries.length === 0) { listDiv.innerHTML = '<div>No hay cuentas registradas.</div>'; } 
             else { listDiv.innerHTML = entries.map(([id, val]) => `<div style="padding:10px 0;"><strong>ID:</strong> ${id}<br><strong>PW:</strong> ${val.password}<br><strong>Benji Key:</strong> ${val.benjiKey || 'N/A'}</div>`).join(''); }
+        }
+    };
+
+    /* ══════════════════════════════════════════════════════════
+       SISTEMA CTRL (ANUNCIOS GLOBALES)
+    ══════════════════════════════════════════════════════════ */
+    const ctrlSystem = {
+        _listener: null,
+        _lastShownId: null,
+        _audio: null,
+
+        open() {
+            document.getElementById('ctrl-panel').classList.add('active');
+            document.getElementById('ctrl-pw-step').style.display = 'block';
+            document.getElementById('ctrl-pw-step').classList.add('active');
+            document.getElementById('ctrl-main-step').style.display = 'none';
+            document.getElementById('ctrl-password').value = '';
+            document.getElementById('ctrl-pw-error').textContent = '';
+            document.getElementById('ctrl-announce-title').value = '';
+            document.getElementById('ctrl-announce-content').value = '';
+            document.getElementById('ctrl-announce-audio').value = '';
+            document.getElementById('ctrl-form-error').textContent = '';
+        },
+        close() {
+            document.getElementById('ctrl-panel').classList.remove('active');
+        },
+        togglePw(el) {
+            const input = document.getElementById('ctrl-password');
+            if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
+            else { input.type = 'password'; el.className = 'fas fa-eye password-eye'; }
+        },
+        checkPassword() {
+            const pw = document.getElementById('ctrl-password').value;
+            if (pw === 'waevo') {
+                document.getElementById('ctrl-pw-step').style.display = 'none';
+                document.getElementById('ctrl-pw-step').classList.remove('active');
+                document.getElementById('ctrl-main-step').style.display = 'block';
+            } else {
+                document.getElementById('ctrl-pw-error').textContent = '❌ Contraseña incorrecta.';
+                document.getElementById('ctrl-password').style.borderColor = 'var(--danger)';
+                setTimeout(() => document.getElementById('ctrl-password').style.borderColor = '', 1500);
+            }
+        },
+        async publish() {
+            const title = document.getElementById('ctrl-announce-title').value.trim();
+            const content = document.getElementById('ctrl-announce-content').value.trim();
+            const audio = document.getElementById('ctrl-announce-audio').value.trim();
+            if (!title || !content) {
+                document.getElementById('ctrl-form-error').textContent = '❌ Título y contenido son obligatorios.';
+                return;
+            }
+            document.getElementById('ctrl-form-error').textContent = '';
+            if (!window._fbReady) { ui.showToast('Firebase no disponible.'); return; }
+            const announce = {
+                title,
+                content,
+                audio: audio || null,
+                timestamp: Date.now(),
+                by: deviceStore._id || 'admin'
+            };
+            try {
+                await window._fbPush(window._fbRef(window._fbDB, 'ctrl_announcements'), announce);
+                this.close();
+                ui.showToast('✅ Anuncio publicado a todos los usuarios');
+            } catch (err) {
+                document.getElementById('ctrl-form-error').textContent = '❌ Error: ' + err.message;
+            }
+        },
+        startListening() {
+            if (!window._fbReady) {
+                window.addEventListener('firebaseReady', () => this.startListening(), { once: true });
+                return;
+            }
+            if (this._listener) return;
+            const ref = window._fbRef(window._fbDB, 'ctrl_announcements');
+            this._listener = window._fbOnValue(ref, (snap) => {
+                const data = snap.val();
+                if (!data) return;
+                const entries = Object.entries(data).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+                if (entries.length === 0) return;
+                const [id, ann] = entries[0];
+                // Solo mostrar si es reciente (últimos 15 segundos) y no lo hemos mostrado ya
+                if (Date.now() - (ann.timestamp || 0) > 15000) return;
+                if (this._lastShownId === id) return;
+                this._lastShownId = id;
+                this.showAnnouncement(ann);
+            });
+        },
+        showAnnouncement(ann) {
+            const overlay = document.getElementById('ctrl-announce-overlay');
+            document.getElementById('ctrl-announce-title-display').textContent = ann.title || '';
+            document.getElementById('ctrl-announce-content-display').textContent = ann.content || '';
+            const timerEl = document.getElementById('ctrl-announce-timer');
+            overlay.classList.add('active');
+
+            // Audio
+            if (ann.audio && ann.audio.startsWith('http')) {
+                try {
+                    if (this._audio) { this._audio.pause(); this._audio = null; }
+                    this._audio = new Audio(ann.audio);
+                    this._audio.volume = 0.8;
+                    this._audio.play().catch(() => {});
+                } catch (e) {}
+            }
+
+            let remaining = 7;
+            timerEl.textContent = remaining + 's';
+            const interval = setInterval(() => {
+                remaining--;
+                timerEl.textContent = remaining + 's';
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    overlay.classList.remove('active');
+                    if (this._audio) { this._audio.pause(); this._audio = null; }
+                }
+            }, 1000);
         }
     };
 
@@ -2403,6 +2608,7 @@
     document.getElementById('bk-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('bk-panel')) bkPanel.close(); });
     document.getElementById('rap-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active'); });
     document.getElementById('ln-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ln-modal')) document.getElementById('ln-modal').classList.remove('active'); });
+    document.getElementById('ctrl-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('ctrl-panel')) ctrlSystem.close(); });
 </script>
 
 </body>
