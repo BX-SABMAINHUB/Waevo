@@ -8,27 +8,26 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 10000;
 
-// 1. Servir los archivos de Ultraviolet PRIMERO y con prioridad.
-// Esto asegura que cualquier ruta que empiece por /uv/ sea atendida aquí.
+// 1. Servir los archivos de Ultraviolet con prioridad
+// Esto asegura que /uv/uv.sw.js se sirva como JavaScript y con la cabecera correcta.
 app.use('/uv', express.static(join(__dirname, 'uv'), {
     setHeaders: (res, path) => {
-        // Permite al Service Worker controlar el prefijo /service/
         if (path.endsWith('uv.sw.js')) {
             res.set('Service-Worker-Allowed', '/service/');
         }
-        // Asegura que los archivos .js se sirvan con el tipo MIME correcto
         if (path.endsWith('.js')) {
             res.set('Content-Type', 'application/javascript');
         }
     }
 }));
 
-// 2. Servir el resto de archivos estáticos (tu index.html, CSS, etc.)
+// 2. Servir tu archivo index.html y el resto de archivos estáticos
+// Al poner esto después, el index.html se servirá para la ruta raíz.
 app.use(express.static(__dirname));
 
-// 3. Redirigir cualquier otra ruta a tu index.html para que la SPA cargue bien
+// 3. Redirigir cualquier otra ruta a index.html (útil si usas rutas de cliente)
 app.get('*', (req, res) => {
-    // Si la ruta no es de /uv/, enviamos el index.html
+    // Evitar que las rutas de /uv/ caigan aquí
     if (!req.path.startsWith('/uv/')) {
         res.sendFile(join(__dirname, 'index.html'));
     }
