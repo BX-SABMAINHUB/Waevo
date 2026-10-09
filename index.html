@@ -1921,16 +1921,15 @@
          Cuando navegas a una web que bloquea ser embebida en iframes
          (por cabeceras X-Frame-Options o CSP frame-ancestors), Waevo
          detecta el dominio y automáticamente la carga a través de
-         nuestro servicio de proxy, permitiendo verla correctamente.
+         nuestro Cloudflare Worker, permitiendo verla correctamente.
        
-       ▸ CÓMO USAR TU PROPIO PROXY:
-         Modifica `_proxyBase` con la URL de tu servicio y ajusta el
-         método `wrap()` a la firma que espere tu proxy.
+       ▸ TU WORKER:
+         https://steep-tooth-8e4e.alexsanchezfollia.workers.dev/?url=URL
        ══════════════════════════════════════════════════════════ */
     const proxySystem = {
-        // ⚙️ CONFIGURACIÓN — cambia esto por tu propio proxy
-        _proxyBase: 'https://api.mrscraper.com',
-        _token: 'atk_506e1b0aa6e52d8f1ee1065f42fb6cf455cd41532aefeaf1a22838559fb867d8',
+        // ⚙️ CONFIGURACIÓN — Tu Cloudflare Worker personal
+        _proxyBase: 'https://steep-tooth-8e4e.alexsanchezfollia.workers.dev/?url=',
+        _token: '', // Tu Worker no necesita token
         _enabled: true,
 
         // Dominios que bloquean iframes con X-Frame-Options: DENY o SAMEORIGIN
@@ -1968,7 +1967,8 @@
                 const hostname = urlObj.hostname.toLowerCase();
 
                 // Ya está proxeada → no volver a proxear
-                if (hostname.includes('mrscraper.com')) return false;
+                if (hostname.includes('workers.dev')) return false;
+                if (hostname.includes('alexsanchezfollia')) return false;
 
                 // En whitelist → no proxear
                 if (this._whitelistDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
@@ -1987,12 +1987,12 @@
         },
 
         /**
-         * Envuelve una URL con nuestro servicio de proxy.
-         * ⚙️ Modifica este método si usas otro formato de proxy.
+         * Envuelve una URL con nuestro Cloudflare Worker.
+         * Formato: https://tu-worker.workers.dev/?url=URL_CODIFICADA
          */
         wrap(url) {
             if (!url) return url;
-            return `${this._proxyBase}?token=${this._token}&geoCode=us&html=true&super=true&proxyCountry=us&url=${encodeURIComponent(url)}`;
+            return `${this._proxyBase}${encodeURIComponent(url)}`;
         },
 
         /**
@@ -2116,7 +2116,7 @@
             const frame = document.getElementById(`view-${this.activeTabId}`);
 
             // ── SISTEMA DE PROXY AUTOMÁTICO ──
-            // Si la web usa X-Frame-Options, la cargamos a través de nuestro proxy
+            // Si la web usa X-Frame-Options, la cargamos a través de nuestro Worker
             const frameUrl = proxySystem.getFrameUrl(url);
             const usingProxy = (frameUrl !== url);
 
