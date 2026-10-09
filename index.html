@@ -1070,6 +1070,25 @@
         .ctrl-title { font-size: 19px; font-weight: 800; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.2px; }
         .ctrl-subtitle { color: var(--text-muted); font-size: 11.5px; margin-bottom: 26px; line-height: 1.5; }
     </style>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ULTRAVIOLET — Scripts y configuración                    -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <script src="https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@2.1.0/dist/uv.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@2.1.0/dist/uv.handler.js"></script>
+    <script>
+        // Configuración del cliente UV (debe coincidir con la del SW)
+        self.__uv$config = {
+            bare: 'https://grim-billy-fxmusicbots-f08a58fc.koyeb.app/',
+            prefix: '/service/',
+            encodeUrl: Ultraviolet.codec.xor.encode,
+            decodeUrl: Ultraviolet.codec.xor.decode,
+            handler: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@2.1.0/dist/uv.handler.js',
+            bundle: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@2.1.0/dist/uv.bundle.js',
+            config: 'https://cdn.jsdelivr.net/npm/@titaniumnetwork-dev/ultraviolet@2.1.0/dist/uv.config.js',
+            sw: '/uv/uv.sw.js',
+        };
+    </script>
 </head>
 <body>
 
@@ -1275,7 +1294,7 @@
         <div class="ptpw-title" style="font-size:19px; margin-bottom:6px;">
             <i class="fas fa-shield-halved"></i> Gestor de Webs con Proxy Forzado
         </div>
-        <div class="ptpw-subtitle">Añade dominios aquí. Cuando navegues a ellos en Waevo, se cargarán automáticamente a través del Worker proxy.</div>
+        <div class="ptpw-subtitle">Añade dominios aquí. Cuando navegues a ellos en Waevo, se cargarán automáticamente a través de Ultraviolet.</div>
 
         <div class="ptpw-add-row">
             <input type="text" id="ptpw-new-site" placeholder="ejemplo.com" onkeypress="if(event.key==='Enter') ptpwSystem.addSite()">
@@ -2049,7 +2068,7 @@
        ▸ Botón "ptpw" en la esquina inferior derecha.
        ▸ Contraseña: "vercel"
        ▸ Permite añadir dominios que se cargarán SIEMPRE
-         a través del Worker proxy, aunque no estén en la
+         a través de Ultraviolet, aunque no estén en la
          blacklist automática.
        ══════════════════════════════════════════════════════════ */
     const ptpwSystem = {
@@ -2142,40 +2161,21 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE PROXY AUTOMÁTICO — para webs con X-Frame-Options
+       SISTEMA DE PROXY — Ultraviolet (UV)
        ══════════════════════════════════════════════════════════
        ▸ CÓMO FUNCIONA:
-         Cuando navegas a una web que bloquea ser embebida en iframes
-         (por cabeceras X-Frame-Options o CSP frame-ancestors), Waevo
-         detecta el dominio y automáticamente la carga a través de
-         nuestro Cloudflare Worker, permitiendo verla correctamente.
-       ▸ TU WORKER:
-         https://steep-tooth-8e4e.alexsanchezfollia.workers.dev/?url=URL
+         Ultraviolet usa un Service Worker que intercepta TODAS
+         las peticiones (HTML, CSS, JS, fetch, XHR, WebSocket) y
+         las redirige al backend Bare Server. Esto permite que
+         webs como TikTok, Facebook o Instagram funcionen
+         correctamente, incluso con JavaScript dinámico.
+       ▸ TU BACKEND:
+         https://grim-billy-fxmusicbots-f08a58fc.koyeb.app/
        ══════════════════════════════════════════════════════════ */
     const proxySystem = {
-        // ⚙️ CONFIGURACIÓN — Tu Cloudflare Worker personal
-        _proxyBase: 'https://steep-tooth-8e4e.alexsanchezfollia.workers.dev/?url=',
-        _token: '', // Tu Worker no necesita token
         _enabled: true,
 
-        // Dominios que bloquean iframes con X-Frame-Options: DENY o SAMEORIGIN
-        // Se usa proxy automáticamente para todos ellos
-        _blockedDomains: [
-            'facebook.com', 'twitter.com', 'x.com', 'instagram.com', 'linkedin.com',
-            'reddit.com', 'discord.com', 'netflix.com', 'spotify.com', 'slack.com',
-            'tiktok.com', 'pinterest.com', 'twitch.tv', 'snapchat.com',
-            'whatsapp.com', 'telegram.org', 'messenger.com',
-            'outlook.com', 'yahoo.com', 'paypal.com', 'ebay.com',
-            'amazon.com', 'github.com', 'gitlab.com',
-            'stackoverflow.com', 'medium.com', 'quora.com',
-            'booking.com', 'airbnb.com', 'tripadvisor.com',
-            'apple.com', 'microsoft.com',
-            'chase.com', 'bankofamerica.com', 'wellsfargo.com',
-            'gmail.com'
-        ],
-
-        // Dominios que NO deben pasar por el proxy (tienen su propio workaround
-        // o funcionan bien directamente dentro de un iframe)
+        // Dominios que NO deben pasar por el proxy (funcionan bien directamente)
         _whitelistDomains: [
             'google.com', 'youtube.com', 'youtu.be', 'wikipedia.org',
             'waevo-youtube.vercel.app', 'waevo-articles.vercel.app',
@@ -2183,50 +2183,51 @@
         ],
 
         /**
-         * Comprueba si una URL necesita pasar por nuestro proxy
-         * para saltarse la protección X-Frame-Options.
+         * Comprueba si una URL debe pasar por Ultraviolet.
+         * Por defecto, TODAS las webs pasan por el proxy,
+         * excepto las de la whitelist y las URLs ya proxeadas.
          */
         needsProxy(url) {
             if (!this._enabled || !url || url === 'about:start') return false;
             try {
+                // Ya está proxeada por UV → no volver a proxear
+                if (url.startsWith('/service/')) return false;
+
                 const urlObj = new URL(url);
                 const hostname = urlObj.hostname.toLowerCase();
 
-                // Ya está proxeada → no volver a proxear
+                // Si ya apunta al backend → no proxear
+                if (hostname.includes('koyeb.app')) return false;
                 if (hostname.includes('workers.dev')) return false;
-                if (hostname.includes('alexsanchezfollia')) return false;
-
-                // ── Lista personalizada PTPW (máxima prioridad) ──
-                try {
-                    const customSites = ptpwSystem.getSites();
-                    if (customSites.some(d => hostname === d || hostname.endsWith('.' + d))) {
-                        return true;
-                    }
-                } catch (e) {}
 
                 // En whitelist → no proxear
                 if (this._whitelistDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
                     return false;
                 }
 
-                // En blacklist → proxear
-                if (this._blockedDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
-                    return true;
-                }
-
-                return false;
+                // Todo lo demás → SÍ proxear con UV
+                return true;
             } catch (e) {
                 return false;
             }
         },
 
         /**
-         * Envuelve una URL con nuestro Cloudflare Worker.
-         * Formato: https://tu-worker.workers.dev/?url=URL_CODIFICADA
+         * Convierte una URL normal en una URL proxeada por Ultraviolet.
+         * UV codifica la URL con su propio codec y le añade el prefijo.
          */
         wrap(url) {
             if (!url) return url;
-            return `${this._proxyBase}${encodeURIComponent(url)}`;
+            try {
+                if (typeof self.__uv$config === 'undefined' || typeof Ultraviolet === 'undefined') {
+                    console.warn('[UV] No está cargado todavía. Devolviendo URL original.');
+                    return url;
+                }
+                return self.__uv$config.prefix + self.__uv$config.encodeUrl(url);
+            } catch (e) {
+                console.error('[UV] wrap error:', e);
+                return url;
+            }
         },
 
         /**
@@ -2290,8 +2291,8 @@
                 if (proxySystem.needsProxy(currentTab.url)) {
                     secIcon.className = "fas fa-shield-halved site-info-icon";
                     secIcon.style.color = "var(--warning)";
-                    secIcon.title = "Proxy activo — Web con X-Frame-Options";
-                    secIcon.onclick = () => ui.showToast('🛡️ Conexión a través de proxy (X-Frame-Options).');
+                    secIcon.title = "Ultraviolet activo — Navegación proxeada";
+                    secIcon.onclick = () => ui.showToast('🛡️ Navegando con Ultraviolet.');
                 } else {
                     secIcon.className = "fas fa-lock site-info-icon";
                     secIcon.style.color = "var(--success)";
@@ -2349,8 +2350,7 @@
             document.getElementById('start-page').classList.remove('active');
             const frame = document.getElementById(`view-${this.activeTabId}`);
 
-            // ── SISTEMA DE PROXY AUTOMÁTICO ──
-            // Si la web usa X-Frame-Options (o está en la lista PTPW), la cargamos a través del Worker
+            // ── ULTRAVIOLET: si needsProxy, usamos el Service Worker ──
             const frameUrl = proxySystem.getFrameUrl(url);
             const usingProxy = (frameUrl !== url);
 
@@ -2359,14 +2359,13 @@
 
             document.getElementById('url-input').value = rawInput || title;
 
-            // Indicador visual + toast si estamos usando el proxy
             const secIcon = document.getElementById('security-icon');
             if (usingProxy) {
                 secIcon.className = "fas fa-shield-halved site-info-icon";
                 secIcon.style.color = "var(--warning)";
-                secIcon.title = "Proxy activo — Web con X-Frame-Options";
-                secIcon.onclick = () => ui.showToast('🛡️ Conexión a través de proxy para saltar X-Frame-Options.');
-                ui.showToast('🛡️ Proxy activado para esta web');
+                secIcon.title = "Ultraviolet activo — Navegación proxeada";
+                secIcon.onclick = () => ui.showToast('🛡️ Navegando con Ultraviolet.');
+                ui.showToast('🛡️ Ultraviolet activado');
             } else {
                 secIcon.className = "fas fa-lock site-info-icon";
                 secIcon.style.color = "var(--success)";
@@ -3148,6 +3147,26 @@
     document.getElementById('ctrl-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('ctrl-panel')) ctrlSystem.close(); });
     document.getElementById('ptpw-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ptpw-modal')) ptpwSystem.close(); });
     document.getElementById('ptpw-dashboard').addEventListener('click', (e) => { if (e.target === document.getElementById('ptpw-dashboard')) ptpwSystem.closeDashboard(); });
+</script>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- REGISTRO DEL SERVICE WORKER DE ULTRAVIOLET              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/uv/uv.sw.js', {
+                scope: '/service/'
+            }).then(reg => {
+                console.log('✅ UV Service Worker registrado:', reg.scope);
+            }).catch(err => {
+                console.error('❌ Error UV SW:', err);
+                console.warn('Asegúrate de haber creado el archivo /uv/uv.sw.js en tu repo.');
+            });
+        });
+    } else {
+        console.error('❌ Tu navegador no soporta Service Workers.');
+    }
 </script>
 
 </body>
