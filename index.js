@@ -8,29 +8,33 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 10000;
 
-// 1. Servir los archivos de Ultraviolet con prioridad
-// Esto asegura que /uv/uv.sw.js se sirva como JavaScript y con la cabecera correcta.
+// 1. Servir archivos de Ultraviolet PRIMERO
 app.use('/uv', express.static(join(__dirname, 'uv'), {
     setHeaders: (res, path) => {
+        // Permite al Service Worker controlar /service/
         if (path.endsWith('uv.sw.js')) {
             res.set('Service-Worker-Allowed', '/service/');
         }
+        // Asegura el tipo MIME correcto
         if (path.endsWith('.js')) {
             res.set('Content-Type', 'application/javascript');
         }
     }
 }));
 
-// 2. Servir tu archivo index.html y el resto de archivos estáticos
-// Al poner esto después, el index.html se servirá para la ruta raíz.
+// 2. Servir el resto de archivos estáticos (index.html, CSS, etc.)
 app.use(express.static(__dirname));
 
-// 3. Redirigir cualquier otra ruta a index.html (útil si usas rutas de cliente)
+// 3. 🚨 BLOQUEO ANTI-BUCLE: Evitar que /service/ devuelva el index.html
+// Si el Service Worker falla, esta ruta atrapará la petición y evitará el "navegador dentro del navegador"
+app.use('/service', (req, res) => {
+    console.error('⚠️ Petición a /service/ llegó al servidor. El Service Worker NO está funcionando.');
+    res.status(503).send('Error: El proxy no está activo. Por favor, recarga la página (Ctrl+F5) y verifica la consola.');
+});
+
+// 4. Catch-all para la app
 app.get('*', (req, res) => {
-    // Evitar que las rutas de /uv/ caigan aquí
-    if (!req.path.startsWith('/uv/')) {
-        res.sendFile(join(__dirname, 'index.html'));
-    }
+    res.sendFile(join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
