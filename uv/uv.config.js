@@ -1,11 +1,10 @@
-/*global Ultraviolet*/
 self.__uv$config = {
+    bare: 'https://grim-billy-fxmusicbots-f08a58fc.koyeb.app/',
     prefix: '/service/',
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
-    handler: '/uv.handler.js',
-    client: '/uv.client.js',
-    bundle: '/uv.bundle.js',
-    config: '/uv.config.js',
-    sw: '/uv.sw.js',
+    handler: '/uv/uv.handler.js',
+    bundle: '/uv/uv.bundle.js',
+    config: '/uv/uv.config.js',
+    sw: '/uv/uv.sw.js',
 };
