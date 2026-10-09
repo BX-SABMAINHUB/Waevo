@@ -258,9 +258,6 @@
         .corner-btn.ctrl-btn { font-weight: 800; font-size: 9.5px; letter-spacing: 0.6px; background: linear-gradient(135deg, #00e5ff, #bd00ff); color: white; border: none; box-shadow: 0 4px 16px rgba(0,229,255,0.30); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--anim-speed); }
         .corner-btn.ctrl-btn:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 8px 26px rgba(0,229,255,0.5); }
 
-        .corner-btn.ptpw-btn { font-weight: 800; font-size: 9px; letter-spacing: 0.4px; background: rgba(139, 92, 246, 0.14); border: 1px solid rgba(139, 92, 246, 0.35); color: rgba(196, 181, 253, 0.85); text-transform: lowercase; }
-        .corner-btn.ptpw-btn:hover { transform: translateY(-3px) scale(1.06); background: rgba(139, 92, 246, 0.30); border-color: rgba(139, 92, 246, 0.75); box-shadow: 0 6px 22px rgba(139, 92, 246, 0.45); color: white; }
-
         .session-submenu { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px); background: rgba(16,16,24,0.97); border: 1px solid var(--border-strong); border-radius: 14px; padding: 8px; display: none; z-index: 1000; box-shadow: var(--shadow-deep); backdrop-filter: blur(16px); }
         .session-submenu.active { display: block; animation: fadeIn 0.2s; }
         .session-submenu button { display: block; width: 100%; padding: 9px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; color: white; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: var(--anim-speed); white-space: nowrap; font-family: inherit; }
@@ -394,29 +391,6 @@
         .users-search-input::placeholder { color: var(--text-faint); }
         .users-search-input:focus { border-color: rgba(255,179,71,0.5); background: rgba(0,0,0,0.35); outline: none; box-shadow: 0 0 0 3px rgba(255,179,71,0.07); }
         .users-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 12px; pointer-events: none; }
-
-        #ptpw-modal { position: fixed; inset: 0; background: rgba(2,2,6,0.92); backdrop-filter: blur(18px); z-index: 7000; display: none; align-items: center; justify-content: center; }
-        #ptpw-modal.active { display: flex; animation: fadeIn 0.25s; }
-        .ptpw-box { background: linear-gradient(160deg, rgba(22,22,32,0.99), rgba(12,12,18,0.99)); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: var(--radius-lg); padding: 34px; width: 420px; max-width: 95%; box-shadow: 0 0 70px rgba(139,92,246,0.18), var(--shadow-deep); animation: slideUp 0.35s cubic-bezier(0.2,0.9,0.25,1); }
-        .ptpw-title { font-size: 19px; font-weight: 800; color: #c4b5fd; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.2px; }
-        .ptpw-subtitle { color: var(--text-muted); font-size: 11.5px; margin-bottom: 26px; line-height: 1.5; }
-
-        #ptpw-dashboard { position: fixed; inset: 0; background: rgba(2,2,6,0.94); backdrop-filter: blur(18px); z-index: 7500; display: none; align-items: center; justify-content: center; }
-        #ptpw-dashboard.active { display: flex; animation: fadeIn 0.25s; }
-        .ptpw-dash-box { background: linear-gradient(160deg, rgba(20,20,30,0.99), rgba(11,11,17,0.99)); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: var(--radius-lg); padding: 34px; width: 540px; max-width: 95%; box-shadow: 0 0 80px rgba(139,92,246,0.20), var(--shadow-deep); max-height: 88vh; overflow-y: auto; }
-        .ptpw-add-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .ptpw-add-row input { flex: 1; padding: 12px 16px; background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; color: white; font-size: 13.5px; font-family: inherit; transition: var(--anim-speed); }
-        .ptpw-add-row input::placeholder { color: var(--text-faint); }
-        .ptpw-add-row input:focus { border-color: rgba(139,92,246,0.65); box-shadow: 0 0 0 3px rgba(139,92,246,0.12); background: rgba(0,0,0,0.4); }
-        .ptpw-add-row button { padding: 12px 20px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6, #a78bfa); border: none; color: white; font-weight: 700; font-size: 13px; cursor: pointer; transition: var(--anim-speed); font-family: inherit; white-space: nowrap; }
-        .ptpw-add-row button:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(139,92,246,0.45); filter: brightness(1.08); }
-
-        .ptpw-sites-list { max-height: 320px; overflow-y: auto; background: rgba(0,0,0,0.25); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; }
-        .ptpw-site-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 14px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.055); border-radius: 11px; margin-bottom: 6px; transition: var(--anim-speed); }
-        .ptpw-site-row:hover { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.28); }
-        .ptpw-site-domain { font-size: 12.5px; font-family: ui-monospace, monospace; color: var(--text-main); flex: 1; word-break: break-all; }
-        .ptpw-remove-btn { padding: 7px 12px; border-radius: 8px; background: rgba(255,45,107,0.10); border: 1px solid rgba(255,45,107,0.22); color: var(--danger); font-size: 11px; font-weight: 700; cursor: pointer; transition: var(--anim-speed); font-family: inherit; white-space: nowrap; }
-        .ptpw-remove-btn:hover { background: rgba(255,45,107,0.24); transform: translateY(-1px); }
 
         #ban-screen { position: fixed; inset: 0; background: radial-gradient(circle at 50% 45%, #1a0309, #000); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
         #ban-screen.active { display: flex; }
@@ -655,44 +629,6 @@
     </div>
 </div>
 
-<div id="ptpw-modal">
-    <div class="ptpw-box">
-        <div class="ptpw-title"><i class="fas fa-lock"></i> Acceso PTPW</div>
-        <div class="ptpw-subtitle">Introduce la contraseña para acceder al gestor de webs con proxy forzado.</div>
-        <label class="admin-label">Contraseña</label>
-        <div class="password-input-wrap">
-            <input type="password" class="admin-input" id="ptpw-password" placeholder="••••••••" onkeypress="if(event.key==='Enter') ptpwSystem.checkPassword()" style="margin-bottom:4px;">
-            <i class="fas fa-eye password-eye" onclick="ptpwSystem.togglePw(this)"></i>
-        </div>
-        <div style="color:var(--danger);font-size:12px;min-height:18px;margin-bottom:12px;" id="ptpw-error"></div>
-        <button class="admin-submit" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);" onclick="ptpwSystem.checkPassword()">
-            <i class="fas fa-arrow-right"></i> Continuar
-        </button>
-        <button class="admin-cancel" onclick="ptpwSystem.close()">Cancelar</button>
-    </div>
-</div>
-
-<div id="ptpw-dashboard">
-    <div class="ptpw-dash-box">
-        <div class="ptpw-title" style="font-size:19px; margin-bottom:6px;">
-            <i class="fas fa-shield-halved"></i> Gestor de Webs con Proxy Forzado
-        </div>
-        <div class="ptpw-subtitle">Añade dominios aquí. Cuando navegues a ellos en Waevo, se cargarán automáticamente a través de Ultraviolet.</div>
-
-        <div class="ptpw-add-row">
-            <input type="text" id="ptpw-new-site" placeholder="ejemplo.com" onkeypress="if(event.key==='Enter') ptpwSystem.addSite()">
-            <button onclick="ptpwSystem.addSite()"><i class="fas fa-plus"></i> Añadir</button>
-        </div>
-
-        <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">
-            <i class="fas fa-list"></i> Webs configuradas
-        </div>
-        <div class="ptpw-sites-list" id="ptpw-sites-list"></div>
-
-        <button class="admin-cancel" onclick="ptpwSystem.closeDashboard()">Cerrar</button>
-    </div>
-</div>
-
 <div class="browser-chrome">
     <div class="tabs-bar" id="tabs-container"></div>
 
@@ -890,7 +826,6 @@
     <div class="corner-btn rap-btn" onclick="rapSystem.open()" title="Panel RAP">RAP</div>
     <div class="corner-btn ln-btn" onclick="lnSystem.open()" title="Admin Login">ln</div>
     <div class="corner-btn ctrl-btn" onclick="ctrlSystem.open()" title="Panel CTRL">CTRL</div>
-    <div class="corner-btn ptpw-btn" onclick="ptpwSystem.open()" title="Panel PTPW">ptpw</div>
     <div class="corner-btn admin-btn" onclick="adminPanel.open()" title="">+</div>
     <div class="corner-btn credits-btn" onclick="creditsPanel.open()" title="">++</div>
     <div class="corner-btn info-btn" onclick="document.getElementById('creditos-modal').classList.add('active')" title="Créditos">Créditos</div>
@@ -1433,109 +1368,26 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA PTPW — Gestor de webs con proxy forzado
-       ══════════════════════════════════════════════════════════ */
-    const ptpwSystem = {
-        _SITES_KEY: 'waevo_proxy_sites',
-        open() {
-            document.getElementById('ptpw-modal').classList.add('active');
-            document.getElementById('ptpw-password').value = '';
-            document.getElementById('ptpw-error').textContent = '';
-            setTimeout(() => { const inp = document.getElementById('ptpw-password'); if (inp) inp.focus(); }, 120);
-        },
-        close() { document.getElementById('ptpw-modal').classList.remove('active'); },
-        togglePw(el) {
-            const input = document.getElementById('ptpw-password');
-            if (input.type === 'password') { input.type = 'text'; el.className = 'fas fa-eye-slash password-eye'; }
-            else { input.type = 'password'; el.className = 'fas fa-eye password-eye'; }
-        },
-        checkPassword() {
-            const pw = document.getElementById('ptpw-password').value;
-            if (pw === 'vercel') { this.close(); this.openDashboard(); }
-            else {
-                document.getElementById('ptpw-error').textContent = '❌ Contraseña incorrecta.';
-                document.getElementById('ptpw-password').style.borderColor = 'var(--danger)';
-                setTimeout(() => document.getElementById('ptpw-password').style.borderColor = '', 1500);
-            }
-        },
-        openDashboard() {
-            document.getElementById('ptpw-dashboard').classList.add('active');
-            document.getElementById('ptpw-new-site').value = '';
-            this.renderList();
-        },
-        closeDashboard() { document.getElementById('ptpw-dashboard').classList.remove('active'); },
-        getSites() {
-            try { const raw = localStorage.getItem(this._SITES_KEY); return raw ? JSON.parse(raw) : []; }
-            catch (e) { return []; }
-        },
-        saveSites(sites) { localStorage.setItem(this._SITES_KEY, JSON.stringify(sites)); },
-        addSite() {
-            let input = document.getElementById('ptpw-new-site').value.trim().toLowerCase();
-            if (!input) { ui.showToast('Escribe un dominio primero'); return; }
-            input = input.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].split('?')[0].split('#')[0].trim();
-            if (!input || !input.includes('.')) { ui.showToast('Dominio inválido. Ejemplo: ejemplo.com'); return; }
-            const sites = this.getSites();
-            if (sites.includes(input)) { ui.showToast('Ese dominio ya está en la lista'); return; }
-            sites.push(input);
-            this.saveSites(sites);
-            this.renderList();
-            document.getElementById('ptpw-new-site').value = '';
-            ui.showToast(`✅ Añadido: ${input}`);
-        },
-        removeSite(domain) {
-            const sites = this.getSites().filter(s => s !== domain);
-            this.saveSites(sites);
-            this.renderList();
-            ui.showToast(`🗑️ Eliminado: ${domain}`);
-        },
-        renderList() {
-            const sites = this.getSites();
-            const container = document.getElementById('ptpw-sites-list');
-            if (!container) return;
-            if (sites.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:var(--text-faint);padding:26px 20px;font-size:12px;"><i class="fas fa-inbox" style="font-size:28px;margin-bottom:10px;display:block;opacity:0.4;"></i>No hay webs añadidas todavía.<br><span style="font-size:11px;opacity:0.7;">Añade una para forzar el proxy en ella.</span></div>';
-                return;
-            }
-            container.innerHTML = sites.map(s => `
-                <div class="ptpw-site-row">
-                    <div class="ptpw-site-domain">
-                        <i class="fas fa-shield-halved" style="color:var(--warning);margin-right:8px;font-size:11px;"></i>${s}
-                    </div>
-                    <button class="ptpw-remove-btn" onclick="ptpwSystem.removeSite('${s.replace(/'/g, "\\'")}')">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                </div>
-            `).join('');
-        }
-    };
-
-    /* ══════════════════════════════════════════════════════════
        SISTEMA DE PROXY — Ultraviolet (UV)
        ══════════════════════════════════════════════════════════ */
     const proxySystem = {
         _enabled: true,
 
-        _whitelistDomains: [
-            'google.com', 'youtube.com', 'youtu.be', 'wikipedia.org',
-            'waevo-youtube.vercel.app', 'waevo-articles.vercel.app',
-            'managebac.com', 'managebac.cn'
-        ],
-
         needsProxy(url) {
             if (!this._enabled || !url || url === 'about:start') return false;
             try {
+                // Si ya está proxeada, no volver a proxear
                 if (url.startsWith('/service/')) return false;
 
                 const urlObj = new URL(url);
                 const hostname = urlObj.hostname.toLowerCase();
 
+                // Excluir el propio bare server y el host local
                 if (hostname.includes('koyeb.app')) return false;
                 if (hostname.includes('workers.dev')) return false;
                 if (hostname === location.hostname) return false;
 
-                if (this._whitelistDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
-                    return false;
-                }
+                // El resto: SIEMPRE proxear (incluye google.com, youtube.com, tiktok.com, etc.)
                 return true;
             } catch (e) { return false; }
         },
@@ -2435,8 +2287,6 @@
     document.getElementById('rap-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active'); });
     document.getElementById('ln-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ln-modal')) document.getElementById('ln-modal').classList.remove('active'); });
     document.getElementById('ctrl-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('ctrl-panel')) ctrlSystem.close(); });
-    document.getElementById('ptpw-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ptpw-modal')) ptpwSystem.close(); });
-    document.getElementById('ptpw-dashboard').addEventListener('click', (e) => { if (e.target === document.getElementById('ptpw-dashboard')) ptpwSystem.closeDashboard(); });
 </script>
 
 <!-- ═══════════════════════════════════════════════════════ -->
