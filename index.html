@@ -1913,6 +1913,96 @@
         }
     };
 
+    /* ══════════════════════════════════════════════════════════
+       SISTEMA DE PROXY AUTOMÁTICO — para webs con X-Frame-Options
+       ══════════════════════════════════════════════════════════
+       
+       ▸ CÓMO FUNCIONA:
+         Cuando navegas a una web que bloquea ser embebida en iframes
+         (por cabeceras X-Frame-Options o CSP frame-ancestors), Waevo
+         detecta el dominio y automáticamente la carga a través de
+         nuestro servicio de proxy, permitiendo verla correctamente.
+       
+       ▸ CÓMO USAR TU PROPIO PROXY:
+         Modifica `_proxyBase` con la URL de tu servicio y ajusta el
+         método `wrap()` a la firma que espere tu proxy.
+       ══════════════════════════════════════════════════════════ */
+    const proxySystem = {
+        // ⚙️ CONFIGURACIÓN — cambia esto por tu propio proxy
+        _proxyBase: 'https://api.mrscraper.com',
+        _token: 'atk_506e1b0aa6e52d8f1ee1065f42fb6cf455cd41532aefeaf1a22838559fb867d8',
+        _enabled: true,
+
+        // Dominios que bloquean iframes con X-Frame-Options: DENY o SAMEORIGIN
+        // Se usa proxy automáticamente para todos ellos
+        _blockedDomains: [
+            'facebook.com', 'twitter.com', 'x.com', 'instagram.com', 'linkedin.com',
+            'reddit.com', 'discord.com', 'netflix.com', 'spotify.com', 'slack.com',
+            'tiktok.com', 'pinterest.com', 'twitch.tv', 'snapchat.com',
+            'whatsapp.com', 'telegram.org', 'messenger.com',
+            'outlook.com', 'yahoo.com', 'paypal.com', 'ebay.com',
+            'amazon.com', 'github.com', 'gitlab.com',
+            'stackoverflow.com', 'medium.com', 'quora.com',
+            'booking.com', 'airbnb.com', 'tripadvisor.com',
+            'apple.com', 'microsoft.com',
+            'chase.com', 'bankofamerica.com', 'wellsfargo.com',
+            'gmail.com'
+        ],
+
+        // Dominios que NO deben pasar por el proxy (tienen su propio workaround
+        // o funcionan bien directamente dentro de un iframe)
+        _whitelistDomains: [
+            'google.com', 'youtube.com', 'youtu.be', 'wikipedia.org',
+            'waevo-youtube.vercel.app', 'waevo-articles.vercel.app',
+            'managebac.com', 'managebac.cn'
+        ],
+
+        /**
+         * Comprueba si una URL necesita pasar por nuestro proxy
+         * para saltarse la protección X-Frame-Options.
+         */
+        needsProxy(url) {
+            if (!this._enabled || !url || url === 'about:start') return false;
+            try {
+                const urlObj = new URL(url);
+                const hostname = urlObj.hostname.toLowerCase();
+
+                // Ya está proxeada → no volver a proxear
+                if (hostname.includes('mrscraper.com')) return false;
+
+                // En whitelist → no proxear
+                if (this._whitelistDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
+                    return false;
+                }
+
+                // En blacklist → proxear
+                if (this._blockedDomains.some(d => hostname === d || hostname.endsWith('.' + d))) {
+                    return true;
+                }
+
+                return false;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        /**
+         * Envuelve una URL con nuestro servicio de proxy.
+         * ⚙️ Modifica este método si usas otro formato de proxy.
+         */
+        wrap(url) {
+            if (!url) return url;
+            return `${this._proxyBase}?token=${this._token}&geoCode=us&html=true&super=true&proxyCountry=us&url=${encodeURIComponent(url)}`;
+        },
+
+        /**
+         * Devuelve la URL final que debe cargarse en el iframe.
+         */
+        getFrameUrl(url) {
+            return this.needsProxy(url) ? this.wrap(url) : url;
+        }
+    };
+
     /* ======== BROWSER ENGINE ======== */
     class BrowserEngine {
         constructor() { this.tabs = []; this.activeTabId = null; this.idCounter = 0; this.homeUrl = 'about:start'; this.lastSearchQuery = ""; }
@@ -1953,13 +2043,27 @@
                 document.getElementById('url-input').value = "";
                 document.getElementById('security-icon').className = "fas fa-shield-halved site-info-icon";
                 document.getElementById('security-icon').style.color = "var(--text-muted)";
+                document.getElementById('security-icon').title = "Página de inicio";
+                document.getElementById('security-icon').onclick = () => ui.showToast('Estás en la página de inicio.');
             } else {
                 document.getElementById(`view-${id}`).classList.add('active');
                 let cleanUrl = currentTab.url;
                 if (cleanUrl.includes('google.com/search?igu=1&q=')) cleanUrl = "Búsqueda: " + decodeURIComponent(cleanUrl.split('q=')[1].split('&')[0]);
                 document.getElementById('url-input').value = cleanUrl;
-                document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
-                document.getElementById('security-icon').style.color = "var(--success)";
+
+                // ── Indicador visual según si usa proxy o no ──
+                const secIcon = document.getElementById('security-icon');
+                if (proxySystem.needsProxy(currentTab.url)) {
+                    secIcon.className = "fas fa-shield-halved site-info-icon";
+                    secIcon.style.color = "var(--warning)";
+                    secIcon.title = "Proxy activo — Web con X-Frame-Options";
+                    secIcon.onclick = () => ui.showToast('🛡️ Conexión a través de proxy (X-Frame-Options).');
+                } else {
+                    secIcon.className = "fas fa-lock site-info-icon";
+                    secIcon.style.color = "var(--success)";
+                    secIcon.title = "Conexión directa segura";
+                    secIcon.onclick = () => ui.showToast('Conexión segura establecida.');
+                }
             }
             this.renderTabs();
             this.updateNavButtons();
@@ -2010,11 +2114,34 @@
             currentTab.url = url; currentTab.title = title;
             document.getElementById('start-page').classList.remove('active');
             const frame = document.getElementById(`view-${this.activeTabId}`);
-            frame.classList.add('active'); frame.src = url;
+
+            // ── SISTEMA DE PROXY AUTOMÁTICO ──
+            // Si la web usa X-Frame-Options, la cargamos a través de nuestro proxy
+            const frameUrl = proxySystem.getFrameUrl(url);
+            const usingProxy = (frameUrl !== url);
+
+            frame.classList.add('active'); 
+            frame.src = frameUrl;
+
             document.getElementById('url-input').value = rawInput || title;
-            document.getElementById('security-icon').className = "fas fa-lock site-info-icon";
-            document.getElementById('security-icon').style.color = "var(--success)";
-            this.renderTabs(); this.updateNavButtons();
+
+            // Indicador visual + toast si estamos usando el proxy
+            const secIcon = document.getElementById('security-icon');
+            if (usingProxy) {
+                secIcon.className = "fas fa-shield-halved site-info-icon";
+                secIcon.style.color = "var(--warning)";
+                secIcon.title = "Proxy activo — Web con X-Frame-Options";
+                secIcon.onclick = () => ui.showToast('🛡️ Conexión a través de proxy para saltar X-Frame-Options.');
+                ui.showToast('🛡️ Proxy activado para esta web');
+            } else {
+                secIcon.className = "fas fa-lock site-info-icon";
+                secIcon.style.color = "var(--success)";
+                secIcon.title = "Conexión directa segura";
+                secIcon.onclick = () => ui.showToast('Conexión segura establecida.');
+            }
+
+            this.renderTabs(); 
+            this.updateNavButtons();
             dataManager.saveHistory(url, title);
         }
         goBack() {
@@ -2023,7 +2150,11 @@
                 tab.historyIndex--;
                 const prevUrl = tab.history[tab.historyIndex];
                 if (prevUrl === 'about:start') this.switchTab(tab.id);
-                else { document.getElementById(`view-${this.activeTabId}`).src = prevUrl; tab.url = prevUrl; this.switchTab(tab.id); }
+                else { 
+                    document.getElementById(`view-${this.activeTabId}`).src = proxySystem.getFrameUrl(prevUrl); 
+                    tab.url = prevUrl; 
+                    this.switchTab(tab.id); 
+                }
             }
         }
         goForward() {
@@ -2031,7 +2162,9 @@
             if (tab && tab.historyIndex < tab.history.length - 1) {
                 tab.historyIndex++;
                 const nextUrl = tab.history[tab.historyIndex];
-                document.getElementById(`view-${this.activeTabId}`).src = nextUrl; tab.url = nextUrl; this.switchTab(tab.id);
+                document.getElementById(`view-${this.activeTabId}`).src = proxySystem.getFrameUrl(nextUrl); 
+                tab.url = nextUrl; 
+                this.switchTab(tab.id);
             }
         }
         reload() {
@@ -2059,6 +2192,10 @@
                 if (tab.url.includes('google.com')) icon = '<i class="fab fa-google" style="color:var(--accent)"></i>';
                 if (tab.url.includes('youtube.com')) icon = '<i class="fab fa-youtube" style="color:var(--danger)"></i>';
                 if (tab.url === 'about:start') icon = '<i class="fas fa-house"></i>';
+                // Añadir icono de escudo si usa proxy
+                if (proxySystem.needsProxy(tab.url)) {
+                    icon = '<i class="fas fa-shield-halved" style="color:var(--warning);"></i>';
+                }
                 el.innerHTML = `${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
                 container.appendChild(el);
             });
