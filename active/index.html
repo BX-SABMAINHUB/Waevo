@@ -251,6 +251,36 @@
         .session-submenu button { display: block; width: 100%; padding: 9px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; color: white; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: var(--anim-speed); white-space: nowrap; font-family: inherit; }
         .session-submenu button:hover { background: rgba(0,229,255,0.12); border-color: rgba(0,229,255,0.45); color: var(--accent); }
 
+        /* ── GEAR POPUP ── */
+        #gear-popup {
+            position: absolute; top: 50px; right: 60px;
+            background: var(--bg-panel);
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid var(--border-strong);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-soft);
+            min-width: 260px;
+            z-index: 1000;
+        }
+        .gear-item {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; padding: 10px 12px; border-radius: 10px;
+            font-size: 13px; color: var(--text-main);
+            transition: var(--anim-speed);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+        .gear-item:hover { background: rgba(255,255,255,0.05); }
+        .gear-item.danger { color: var(--danger); }
+        .gear-item.danger:hover { background: rgba(255,45,107,0.08); }
+        .gear-separator { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 0; }
+        .gear-label { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 13px; color: var(--text-main); }
+
         #creditos-modal { position: fixed; inset: 0; background: rgba(2,2,6,0.88); backdrop-filter: blur(18px); z-index: 4000; display: none; align-items: center; justify-content: center; }
         #creditos-modal.active { display: flex; animation: fadeIn 0.3s; }
         .creditos-box { background: linear-gradient(160deg, rgba(20,20,30,0.99), rgba(10,10,16,0.99)); border: 1px solid var(--border-strong); border-radius: 26px; padding: 46px 56px; text-align: center; box-shadow: var(--shadow-deep); animation: slideUp 0.35s cubic-bezier(0.2,0.9,0.25,1); min-width: 320px; }
@@ -625,9 +655,30 @@
             <button class="icon-btn" onclick="ui.showToast('Página guardada en favoritos ⭐')" title="Favoritos"><i class="fas fa-star"></i></button>
             <button class="icon-btn" onclick="ui.togglePanel('downloads')" title="Descargas"><i class="fas fa-download"></i></button>
             <button class="icon-btn" id="gear-btn" title="Ajustes de cuenta"><i class="fas fa-gear"></i></button>
-            <div id="gear-popup" class="gear-popup" style="display:none; position:absolute; top:50px; right:60px; background:var(--bg-panel); padding:10px; border-radius:12px; border:1px solid var(--border-strong); backdrop-filter:blur(16px); box-shadow: var(--shadow-soft);">
-                <button onclick="authSystem.showForgotPanel(); document.getElementById('gear-popup').style.display='none';" style="background:none; border:none; color:white; cursor:pointer; font-family:inherit; font-size:13px;">
-                    <i class="fas fa-key"></i> Gestionar Contraseña
+            <div id="gear-popup" style="display:none;">
+                <div class="gear-label">
+                    <i class="fas fa-user"></i>
+                    <div style="flex:1;">
+                        <div style="font-size:12.5px;font-weight:600;">Tu ID</div>
+                        <div id="gear-user-id" style="font-size:10.5px;font-family:ui-monospace,monospace;color:var(--text-faint);word-break:break-all;">cargando...</div>
+                    </div>
+                </div>
+                <div class="gear-separator"></div>
+                <div class="gear-label" style="padding:8px 12px;">
+                    <i class="fas fa-shield-halved" style="color:var(--accent);"></i>
+                    <span style="flex:1;">Activar Proxy (Ultraviolet)</span>
+                    <div class="toggle-switch active" id="proxy-toggle" onclick="proxySystem.toggleFromSwitch(this)"></div>
+                </div>
+                <div class="gear-separator"></div>
+                <button class="gear-item" onclick="authSystem.showForgotPanel(); document.getElementById('gear-popup').style.display='none';">
+                    <span><i class="fas fa-key" style="margin-right:8px;"></i> Gestionar Contraseña</span>
+                </button>
+                <button class="gear-item" onclick="dataManager.clearAll(); document.getElementById('gear-popup').style.display='none';">
+                    <span><i class="fas fa-trash-can" style="margin-right:8px;"></i> Limpiar Historial</span>
+                </button>
+                <div class="gear-separator"></div>
+                <button class="gear-item danger" onclick="ui.confirmShutdown(); document.getElementById('gear-popup').style.display='none';">
+                    <span><i class="fas fa-power-off" style="margin-right:8px;"></i> Apagar Waevo</span>
                 </button>
             </div>
             <button class="icon-btn" onclick="ui.togglePanel('menu')" title="Más opciones"><i class="fas fa-bars-staggered"></i></button>
@@ -1343,10 +1394,48 @@
     };
 
     /* ══════════════════════════════════════════════════════════
-       SISTEMA DE PROXY — Ultraviolet (UV)
+       SISTEMA DE PROXY — Ultraviolet (UV) con TOGGLE
        ══════════════════════════════════════════════════════════ */
     const proxySystem = {
-        _enabled: true,
+        _enabled: true,  // Estado actual
+
+        init() {
+            // Cargar estado guardado en localStorage
+            const saved = localStorage.getItem('waevo_proxy_enabled');
+            if (saved !== null) this._enabled = saved === '1';
+            this.updateSwitchUI();
+        },
+
+        toggle() {
+            this._enabled = !this._enabled;
+            localStorage.setItem('waevo_proxy_enabled', this._enabled ? '1' : '0');
+            this.updateSwitchUI();
+            ui.showToast(this._enabled ? '🛡️ Proxy ACTIVADO' : '⚠️ Proxy DESACTIVADO');
+            
+            // Recargar la pestaña activa para aplicar el cambio
+            const tab = browser.tabs.find(t => t.id === browser.activeTabId);
+            if (tab && tab.url && tab.url !== 'about:start') {
+                browser.reload();
+            }
+        },
+
+        toggleFromSwitch(el) {
+            this.toggle();
+            el.classList.toggle('active', this._enabled);
+        },
+
+        updateSwitchUI() {
+            const sw = document.getElementById('proxy-toggle');
+            if (sw) sw.classList.toggle('active', this._enabled);
+            
+            const icon = document.getElementById('security-icon');
+            if (icon && !this._enabled) {
+                icon.className = 'fas fa-triangle-exclamation site-info-icon';
+                icon.style.color = 'var(--danger)';
+                icon.title = 'Proxy desactivado — Navegación directa';
+                icon.onclick = () => ui.showToast('⚠️ Proxy desactivado. Actívalo en la rueda de ajustes.');
+            }
+        },
 
         needsProxy(url) {
             if (!this._enabled || !url || url === 'about:start') return false;
@@ -1432,7 +1521,12 @@
                 document.getElementById('url-input').value = cleanUrl;
 
                 const secIcon = document.getElementById('security-icon');
-                if (proxySystem.needsProxy(currentTab.url)) {
+                if (!proxySystem._enabled) {
+                    secIcon.className = "fas fa-triangle-exclamation site-info-icon";
+                    secIcon.style.color = "var(--danger)";
+                    secIcon.title = "Proxy desactivado — Navegación directa";
+                    secIcon.onclick = () => ui.showToast('⚠️ Proxy desactivado. Actívalo en la rueda de ajustes.');
+                } else if (proxySystem.needsProxy(currentTab.url)) {
                     secIcon.className = "fas fa-shield-halved site-info-icon";
                     secIcon.style.color = "var(--warning)";
                     secIcon.title = "Ultraviolet activo — Navegación proxeada";
@@ -1503,7 +1597,13 @@
             document.getElementById('url-input').value = rawInput || title;
 
             const secIcon = document.getElementById('security-icon');
-            if (usingProxy) {
+            if (!proxySystem._enabled) {
+                secIcon.className = "fas fa-triangle-exclamation site-info-icon";
+                secIcon.style.color = "var(--danger)";
+                secIcon.title = "Proxy desactivado — Navegación directa";
+                secIcon.onclick = () => ui.showToast('⚠️ Proxy desactivado. Actívalo en la rueda de ajustes.');
+                ui.showToast('⚠️ Cargando SIN proxy');
+            } else if (usingProxy) {
                 secIcon.className = "fas fa-shield-halved site-info-icon";
                 secIcon.style.color = "var(--warning)";
                 secIcon.title = "Ultraviolet activo — Navegación proxeada";
@@ -2040,6 +2140,8 @@
         _proceedToBrowser() {
             const userId = deviceStore._id;
             document.getElementById('ab-id-display').textContent = 'ID: ' + userId.slice(0, 14) + '…';
+            const gearId = document.getElementById('gear-user-id');
+            if (gearId) gearId.textContent = userId;
             abManager.init(userId);
             friendsSystem.init(userId);
             updatesManager.loadApplied();
@@ -2222,6 +2324,9 @@
             document.addEventListener('click', (e) => { if (!gearBtn.contains(e.target) && !gearPopup.contains(e.target)) { gearPopup.style.display = 'none'; } });
         }
 
+        // Inicializar el proxy y aplicar estado guardado
+        proxySystem.init();
+
         const pgBtn = document.getElementById('pg-btn');
         if (pgBtn) {
             pgBtn.addEventListener('click', () => {
@@ -2272,21 +2377,17 @@
         return;
     }
 
-    // El SW está en /active/uv-sw.js. Su scope natural es /active/.
-    // Registramos con scope /active/go/ (subdirectorio permitido).
     const SW_URL = './uv-sw.js';
-    const SW_SCOPE = './go/'; // relativo a la ubicación del HTML (/active/)
+    const SW_SCOPE = './go/';
 
     window.addEventListener('load', async () => {
         try {
-            // 1. Verificamos si ya hay un SW controlando esta página
             const existingReg = await navigator.serviceWorker.getRegistration();
             if (existingReg && existingReg.active) {
                 console.log('✅ UV SW ya estaba registrado:', existingReg.scope);
                 return;
             }
 
-            // 2. Registramos el SW
             const reg = await navigator.serviceWorker.register(SW_URL, {
                 scope: SWScopeResolve(SW_SCOPE)
             });
@@ -2299,7 +2400,6 @@
     });
 
     function SWScopeResolve(relative) {
-        // Resuelve ./go/ contra la URL actual para obtener el scope absoluto
         try {
             return new URL(relative, window.location.href).pathname;
         } catch (e) {
