@@ -1,0 +1,13 @@
+{
+  "headers": [
+    {
+      "source": "/uv/uv.sw.js",
+      "headers": [
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/service/"
+        }
+      ]
+    }
+  ]
+}
