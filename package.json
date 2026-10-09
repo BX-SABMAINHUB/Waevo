@@ -6,7 +6,6 @@
     "start": "node bare-server.js"
   },
   "dependencies": {
-    "@tomphttp/bare-server-node": "^2.0.1",
-    "express": "^4.18.2"
+    "@mercuryworkshop/bare-server-node": "^2.0.1"
   }
 }
