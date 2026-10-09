@@ -422,10 +422,10 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- ULTRAVIOLET — Cargado desde archivos RELATIVOS ./uv/    -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <script src="./uv/uv.bundle.js"></script>
-    <script src="./uv/uv.config.js"></script>
-    <!-- NO definimos self.__uv$config aquí: UV-Static ya lo hace en ./uv/uv.config.js -->
-    <script src="./uv/uv.handler.js"></script>
+    <script src="./uv/uv.bundle.js" charset="UTF-8" defer></script>
+    <script src="./uv/uv.config.js" charset="UTF-8" defer></script>
+    <script src="./uv/uv.handler.js" charset="UTF-8" defer></script>
+    <script src="./register-sw.js" charset="UTF-8" defer></script>
 </head>
 <body>
 
@@ -1353,6 +1353,7 @@
             if (!this._enabled || !url || url === 'about:start') return false;
             try {
                 if (url.startsWith('/service/')) return false;
+                if (url.startsWith('/go/')) return false;
                 const urlObj = new URL(url);
                 const hostname = urlObj.hostname.toLowerCase();
                 if (hostname.includes('koyeb.app')) return false;
@@ -2257,26 +2258,6 @@
     document.getElementById('rap-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active'); });
     document.getElementById('ln-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ln-modal')) document.getElementById('ln-modal').classList.remove('active'); });
     document.getElementById('ctrl-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('ctrl-panel')) ctrlSystem.close(); });
-</script>
-
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- REGISTRO DEL SERVICE WORKER DE ULTRAVIOLET              -->
-<!-- ═══════════════════════════════════════════════════════ -->
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./uv/uv.sw.js', {
-                scope: '/service/'
-            }).then(reg => {
-                console.log('✅ UV Service Worker registrado:', reg.scope);
-            }).catch(err => {
-                console.error('❌ Error UV SW:', err);
-                console.warn('Asegúrate de tener los 4 archivos en ./uv/: uv.bundle.js, uv.config.js, uv.handler.js y uv.sw.js');
-            });
-        });
-    } else {
-        console.error('❌ Tu navegador no soporta Service Workers.');
-    }
 </script>
 
 </body>
