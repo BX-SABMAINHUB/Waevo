@@ -1,11 +1,10 @@
-import { createBareServer } from '@mercuryworkshop/bare-server-node';
+import { createBareServer } from '@tomphttp/bare-server-node';
 import http from 'node:http';
 
 const bare = createBareServer('/');
 const server = http.createServer();
 
 server.on('request', (req, res) => {
-    // CORS para tu frontend
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', '*');
@@ -34,5 +33,5 @@ server.on('upgrade', (req, socket, head) => {
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {
-    console.log(`✅ Bare server Waevo (Mercury Workshop) en puerto ${port}`);
+    console.log(`✅ Bare server Waevo en puerto ${port}`);
 });
