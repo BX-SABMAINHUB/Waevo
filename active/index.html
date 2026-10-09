@@ -422,10 +422,9 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- ULTRAVIOLET — Cargado desde archivos RELATIVOS ./uv/    -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <script src="./uv/uv.bundle.js" charset="UTF-8" defer></script>
-    <script src="./uv/uv.config.js" charset="UTF-8" defer></script>
-    <script src="./uv/uv.handler.js" charset="UTF-8" defer></script>
-    <script src="./register-sw.js" charset="UTF-8" defer></script>
+    <script src="./uv/uv.bundle.js" charset="UTF-8"></script>
+    <script src="./uv/uv.config.js" charset="UTF-8"></script>
+    <script src="./uv/uv.handler.js" charset="UTF-8"></script>
 </head>
 <body>
 
@@ -1354,6 +1353,7 @@
             try {
                 if (url.startsWith('/service/')) return false;
                 if (url.startsWith('/go/')) return false;
+                if (url.startsWith('/active/go/')) return false;
                 const urlObj = new URL(url);
                 const hostname = urlObj.hostname.toLowerCase();
                 if (hostname.includes('koyeb.app')) return false;
@@ -2258,6 +2258,55 @@
     document.getElementById('rap-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('rap-modal')) document.getElementById('rap-modal').classList.remove('active'); });
     document.getElementById('ln-modal').addEventListener('click', (e) => { if (e.target === document.getElementById('ln-modal')) document.getElementById('ln-modal').classList.remove('active'); });
     document.getElementById('ctrl-panel').addEventListener('click', (e) => { if (e.target === document.getElementById('ctrl-panel')) ctrlSystem.close(); });
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- REGISTRO DEL SERVICE WORKER (INLINE, FUNCIONA EN STATIC SITE)   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+    'use strict';
+
+    if (!('serviceWorker' in navigator)) {
+        console.error('❌ Tu navegador no soporta Service Workers.');
+        return;
+    }
+
+    // El SW está en /active/uv-sw.js. Su scope natural es /active/.
+    // Registramos con scope /active/go/ (subdirectorio permitido).
+    const SW_URL = './uv-sw.js';
+    const SW_SCOPE = './go/'; // relativo a la ubicación del HTML (/active/)
+
+    window.addEventListener('load', async () => {
+        try {
+            // 1. Verificamos si ya hay un SW controlando esta página
+            const existingReg = await navigator.serviceWorker.getRegistration();
+            if (existingReg && existingReg.active) {
+                console.log('✅ UV SW ya estaba registrado:', existingReg.scope);
+                return;
+            }
+
+            // 2. Registramos el SW
+            const reg = await navigator.serviceWorker.register(SW_URL, {
+                scope: SWScopeResolve(SW_SCOPE)
+            });
+            console.log('✅ UV SW registrado correctamente. Scope:', reg.scope);
+
+        } catch (err) {
+            console.error('❌ Error al registrar el SW:', err);
+            console.warn('   Verifica que /active/uv-sw.js existe y que /active/uv/ contiene los 4 archivos de Ultraviolet.');
+        }
+    });
+
+    function SWScopeResolve(relative) {
+        // Resuelve ./go/ contra la URL actual para obtener el scope absoluto
+        try {
+            return new URL(relative, window.location.href).pathname;
+        } catch (e) {
+            return '/active/go/';
+        }
+    }
+})();
 </script>
 
 </body>
