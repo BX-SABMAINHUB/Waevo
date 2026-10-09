@@ -1,30 +1,27 @@
 import { createBareServer } from '@tomphttp/bare-server-node';
-import express from 'express';
 import http from 'node:http';
 
 const bare = createBareServer('/');
-const app = express();
+const server = http.createServer();
 
-// CORS para que tu frontend pueda llamar al servidor
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', '*');
-    next();
-});
-
-const server = http.createServer(app);
-
-// Manejar peticiones del Bare server
+// CORS para que tu frontend (waevo.onrender.com) pueda hablar con este servidor
 server.on('request', (req, res) => {
+    // Cabeceras CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+
+    // Si la petición es para el Bare server, la manejamos
     if (bare.shouldRoute(req)) {
         bare.routeRequest(req, res);
     } else {
-        res.writeHead(404);
-        res.end('Not found');
+        // Si no, respondemos un 200 simple para que Render sepa que estamos vivos
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Bare server is running.');
     }
 });
 
+// WebSockets (algunos sitios los usan)
 server.on('upgrade', (req, socket, head) => {
     if (bare.shouldRoute(req)) {
         bare.routeUpgrade(req, socket, head);
@@ -35,5 +32,5 @@ server.on('upgrade', (req, socket, head) => {
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {
-    console.log(`✅ Bare server Waevo en puerto ${port}`);
+    console.log(`✅ Bare server Waevo escuchando en el puerto ${port}`);
 });
