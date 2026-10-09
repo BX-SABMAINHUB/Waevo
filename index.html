@@ -60,21 +60,9 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(0,229,255,0.45); }
 
-        #shop-overlay {
-            position: fixed; inset: 0; background: rgba(3,3,7,0.82);
-            backdrop-filter: blur(18px) saturate(140%);
-            -webkit-backdrop-filter: blur(18px) saturate(140%);
-            z-index: 4000;
-            display: none; align-items: center; justify-content: center;
-        }
+        #shop-overlay { position: fixed; inset: 0; background: rgba(3,3,7,0.82); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); z-index: 4000; display: none; align-items: center; justify-content: center; }
         #shop-overlay.active { display: flex; animation: fadeIn 0.3s; }
-        .shop-box {
-            background: linear-gradient(160deg, rgba(22,22,32,0.98), rgba(12,12,18,0.98));
-            border: 1px solid var(--border-strong);
-            border-radius: var(--radius-lg); padding: 32px; width: 430px; max-width: 95%;
-            box-shadow: var(--shadow-deep), inset 0 1px 0 rgba(255,255,255,0.05);
-            animation: slideUp 0.35s cubic-bezier(0.2,0.9,0.25,1);
-        }
+        .shop-box { background: linear-gradient(160deg, rgba(22,22,32,0.98), rgba(12,12,18,0.98)); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 32px; width: 430px; max-width: 95%; box-shadow: var(--shadow-deep), inset 0 1px 0 rgba(255,255,255,0.05); animation: slideUp 0.35s cubic-bezier(0.2,0.9,0.25,1); }
         .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
         .shop-header h3 { margin: 0; font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; letter-spacing: 0.2px; }
         .shop-pack { background: rgba(255,255,255,0.028); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 20px 22px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; transition: var(--anim-speed); }
@@ -434,17 +422,16 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- ULTRAVIOLET — Cargado desde archivos LOCALES /uv/       -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <script src="/uv/bundle.js"></script>
+    <script src="/uv/uv.bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
     <script>
-        // Aseguramos la configuración correcta (por si acaso el archivo no está editado)
         self.__uv$config = {
             bare: 'https://grim-billy-fxmusicbots-f08a58fc.koyeb.app/',
             prefix: '/service/',
             encodeUrl: Ultraviolet.codec.xor.encode,
             decodeUrl: Ultraviolet.codec.xor.decode,
             handler: '/uv/uv.handler.js',
-            bundle: '/uv/bundle.js',
+            bundle: '/uv/uv.bundle.js',
             config: '/uv/uv.config.js',
             sw: '/uv/uv.sw.js',
         };
@@ -1376,18 +1363,12 @@
         needsProxy(url) {
             if (!this._enabled || !url || url === 'about:start') return false;
             try {
-                // Si ya está proxeada, no volver a proxear
                 if (url.startsWith('/service/')) return false;
-
                 const urlObj = new URL(url);
                 const hostname = urlObj.hostname.toLowerCase();
-
-                // Excluir el propio bare server y el host local
                 if (hostname.includes('koyeb.app')) return false;
                 if (hostname.includes('workers.dev')) return false;
                 if (hostname === location.hostname) return false;
-
-                // El resto: SIEMPRE proxear (incluye google.com, youtube.com, tiktok.com, etc.)
                 return true;
             } catch (e) { return false; }
         },
@@ -2301,7 +2282,7 @@
                 console.log('✅ UV Service Worker registrado:', reg.scope);
             }).catch(err => {
                 console.error('❌ Error UV SW:', err);
-                console.warn('Asegúrate de tener los 4 archivos en /uv/: bundle.js, uv.config.js, uv.handler.js y uv.sw.js');
+                console.warn('Asegúrate de tener los 4 archivos en /uv/: uv.bundle.js, uv.config.js, uv.handler.js y uv.sw.js');
             });
         });
     } else {
