@@ -434,7 +434,7 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- ULTRAVIOLET — Cargado desde archivos LOCALES /uv/       -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/bundle.js"></script>
     <script src="/uv/uv.config.js"></script>
     <script>
         // Aseguramos la configuración correcta (por si acaso el archivo no está editado)
@@ -444,7 +444,7 @@
             encodeUrl: Ultraviolet.codec.xor.encode,
             decodeUrl: Ultraviolet.codec.xor.decode,
             handler: '/uv/uv.handler.js',
-            bundle: '/uv/uv.bundle.js',
+            bundle: '/uv/bundle.js',
             config: '/uv/uv.config.js',
             sw: '/uv/uv.sw.js',
         };
@@ -2301,7 +2301,7 @@
                 console.log('✅ UV Service Worker registrado:', reg.scope);
             }).catch(err => {
                 console.error('❌ Error UV SW:', err);
-                console.warn('Asegúrate de tener los 4 archivos en /uv/: uv.bundle.js, uv.config.js, uv.handler.js y uv.sw.js');
+                console.warn('Asegúrate de tener los 4 archivos en /uv/: bundle.js, uv.config.js, uv.handler.js y uv.sw.js');
             });
         });
     } else {
