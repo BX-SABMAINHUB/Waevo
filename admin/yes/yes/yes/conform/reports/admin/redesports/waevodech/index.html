@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel AN — Waevo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+:root{--accent:#00e5ff;--accent2:#bd00ff;--danger:#ff2d6b;--success:#22e08a;--warning:#ffb347;--text:#f1f5f9;--muted:#8b95a8;--faint:#59606f;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13)}
+*{box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--text);background:radial-gradient(1200px 800px at 12% -10%,rgba(0,229,255,0.09),transparent 60%),radial-gradient(1000px 700px at 88% 110%,rgba(189,0,255,0.10),transparent 60%),linear-gradient(-45deg,#05050a,#0a0a12,#120a1d,#060b16);letter-spacing:0.1px;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.10);border-radius:10px}
+.screen-state{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999;background:rgba(2,2,6,0.97);font-size:16px;color:var(--muted)}
+.screen-state i{font-size:48px;color:var(--accent)}
+#panel{display:flex;flex-direction:column;min-height:100vh}
+.header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);position:sticky;top:0;z-index:10;backdrop-filter:blur(10px)}
+.title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:10px}
+.role-badge{font-size:10.5px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(0,229,255,0.15);color:var(--accent)}
+.actions{display:flex;align-items:center;gap:14px}
+.logged-info{font-size:11.5px;color:var(--faint)}.logged-info b{color:var(--text)}
+.btn-exit{padding:9px 18px;border-radius:11px;background:rgba(255,45,107,0.1);border:1px solid rgba(255,45,107,0.3);color:var(--danger);font-weight:700;cursor:pointer;font-family:inherit;font-size:12px;transition:0.2s}
+.btn-exit:hover{background:rgba(255,45,107,0.22)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px 24px;border-bottom:1px solid var(--border)}
+.stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-size:24px;font-weight:900;color:var(--accent)}
+.stat-label{font-size:10.5px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px}
+.tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2)}
+.tab-btn{padding:12px 18px;border:none;background:transparent;color:var(--muted);font-weight:600;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:0.2s;font-family:inherit}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.body{flex:1;padding:20px 24px;overflow-y:auto}
+.section-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.section-title:first-child{margin-top:0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success)}.dot.off{background:var(--danger);box-shadow:none}
+.user-card{display:grid;grid-template-columns:220px 1fr auto;gap:16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;align-items:center}
+.preview{width:220px;height:124px;background:#000;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.preview iframe{position:absolute;top:0;left:0;border:none;transform:scale(0.25);transform-origin:0 0;width:880px;height:496px;pointer-events:none}
+.live-label{position:absolute;bottom:4px;right:6px;font-size:9px;background:rgba(0,0,0,0.7);padding:2px 6px;border-radius:5px;color:var(--success);z-index:2}
+.offline-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:10px}
+.info{min-width:0}
+.name{font-size:14px;font-weight:700;margin-bottom:4px}
+.uid{font-size:10.5px;color:var(--faint);font-family:ui-monospace,monospace;word-break:break-all;margin-bottom:6px}
+.activity{font-size:11px;color:var(--muted);line-height:1.5}
+.activity code{background:rgba(0,229,255,0.1);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:10.5px}
+.btn-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:320px}
+.action-btn{padding:7px 12px;border-radius:9px;border:1px solid;font-size:11.5px;font-weight:700;cursor:pointer;transition:0.2s;font-family:inherit;background:transparent;white-space:nowrap}
+.action-btn.primary{background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.3);color:var(--accent)}.action-btn.primary:hover{background:rgba(0,229,255,0.22)}
+.action-btn.danger{background:rgba(255,45,107,0.1);border-color:rgba(255,45,107,0.3);color:var(--danger)}.action-btn.danger:hover{background:rgba(255,45,107,0.22)}
+.action-btn.warning{background:rgba(255,179,71,0.1);border-color:rgba(255,179,71,0.3);color:var(--warning)}.action-btn.warning:hover{background:rgba(255,179,71,0.22)}
+.action-btn.success{background:rgba(34,224,138,0.1);border-color:rgba(34,224,138,0.3);color:var(--success)}.action-btn.success:hover{background:rgba(34,224,138,0.22)}
+.audit-log{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:12px}
+.audit-header{display:flex;justify-content:space-between;margin-bottom:6px;color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.audit-action{font-weight:700;color:var(--accent);margin-bottom:4px}
+.audit-meta{font-family:ui-monospace,monospace;font-size:10.5px;color:var(--muted);word-break:break-all}
+.audit-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:700;margin-left:6px}
+.audit-badge.marc{background:rgba(0,229,255,0.15);color:var(--accent)}
+.audit-badge.alex{background:rgba(255,179,71,0.15);color:var(--warning)}
+.modal-overlay{position:fixed;inset:0;background:rgba(2,2,6,0.85);backdrop-filter:blur(14px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal-box{background:linear-gradient(160deg,rgba(22,22,32,0.99),rgba(12,12,18,0.99));border:1px solid var(--border2);border-radius:22px;padding:26px;max-width:600px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,0.75);max-height:80vh;overflow-y:auto}
+.modal-close{width:100%;padding:11px;border-radius:11px;background:rgba(255,255,255,0.07);border:none;color:var(--text);font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit;font-size:13px}
+.modal-close:hover{background:rgba(255,255,255,0.13)}
+.live-modal{max-width:90vw;width:1200px;height:80vh;padding:18px}
+.live-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.live-title{font-weight:700;color:var(--accent);font-size:13px}
+#live-iframe{width:100%;height:calc(100% - 44px);border:none;background:#000;border-radius:8px}
+.btn-close{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,0.07);border:none;color:var(--text);cursor:pointer;font-size:14px}
+@media (max-width:768px){
+  .user-card{grid-template-columns:1fr}.preview{width:100%;height:160px}
+  .preview iframe{transform:scale(0.32);width:900px;height:500px}
+  .btn-actions{justify-content:flex-start;max-width:none}
+  .stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="loading" class="screen-state"><i class="fas fa-spinner fa-spin"></i><p>Verificando acceso...</p></div>
+<div id="denied" class="screen-state" style="display:none"><i class="fas fa-shield-halved" style="color:var(--danger)"></i><p>Acceso denegado. Redirigiendo...</p></div>
+
+<div id="panel" style="display:none">
+  <header class="header">
+    <div class="title"><i class="fas fa-user-shield" style="color:var(--accent)"></i> Panel AN <span class="role-badge">Marc</span></div>
+    <div class="actions">
+      <span class="logged-info">Sesión: <b>Marc</b></span>
+      <button class="btn-exit" onclick="exitSession()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="stat-connected">0</div><div class="stat-label">Conectados</div></div>
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total usuarios</div></div>
+    <div class="stat"><div class="stat-num" id="stat-actions">0</div><div class="stat-label">Acciones registradas</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="users" onclick="switchTab('users')"><i class="fas fa-users"></i> Usuarios</button>
+    <button class="tab-btn" data-tab="audit" onclick="switchTab('audit')"><i class="fas fa-clipboard-list"></i> Actividades / Auditoría</button>
+  </div>
+
+  <div class="body" id="body"></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div id="modal-content"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="live-viewer">
+  <div class="modal-box live-modal">
+    <div class="live-header">
+      <div class="live-title" id="live-title">Pantalla</div>
+      <button class="btn-close" onclick="document.getElementById('live-viewer').classList.remove('active')"><i class="fas fa-times"></i></button>
+    </div>
+    <iframe id="live-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+</div>
+
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<script src="/uv/uv.handler.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, remove, update, get, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
+  authDomain: "kahoot-8529e.firebaseapp.com",
+  databaseURL: "https://kahoot-8529e-default-rtdb.firebaseio.com",
+  projectId: "kahoot-8529e",
+  storageBucket: "kahoot-8529e.firebasestorage.app",
+  messagingSenderId: "313414356056",
+  appId: "1:313414356056:web:4aab4587f7df9393008e2d",
+  measurementId: "G-8T4CPC1BQ3"
+};
+
+const db = getDatabase(initializeApp(firebaseConfig));
+
+// ─── Constantes de sesión ───
+const SESSION_KEY = 'waevo_admin_session';
+const REQUIRED_ROLE = 'AN';
+const REQUIRED_USER = 'Marc';
+const ACTOR = 'Marc';
+const OWNER_EXTRAS = false;
+
+// ─── Estado ───
+let users = [];
+let activity = [];
+let currentTab = 'users';
+const unsubs = [];
+let refreshTimer = null;
+
+// ─── Check de sesión ───
+function checkSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    return s && s.role === REQUIRED_ROLE && s.user === REQUIRED_USER;
+  } catch (e) { return false; }
+}
+
+// ─── Encode URL con UV (si está disponible) ───
+function getFrameUrl(url) {
+  if (!url || /^(about|blob|data|javascript):/i.test(url)) return url;
+  try {
+    if (typeof self !== 'undefined' && self.__uv$config && typeof self.__uv$config.encodeUrl === 'function') {
+      let p = self.__uv$config.prefix;
+      if (!p.startsWith('/')) p = '/' + p;
+      if (!p.endsWith('/')) p = p + '/';
+      return p + self.__uv$config.encodeUrl(url);
+    }
+  } catch (e) {}
+  return url;
+}
+
+// ─── Logger inmutable ───
+function logAction(action, target, metadata) {
+  push(ref(db, 'activity_logs'), {
+    timestamp: Date.now(),
+    actor: ACTOR,
+    action,
+    target_user: target || null,
+    metadata: metadata || null
+  }).catch(() => {});
+}
+
+// ─── Util ───
+function isOnline(u) { return u.lastSeen && (Date.now() - u.lastSeen < 15000); }
+function safeId(id) { return id.replace(/[^a-zA-Z0-9]/g, '_'); }
+
+// ─── Listeners ───
+function init() {
+  unsubs.push(onValue(ref(db, 'alexbrowser_users'), snap => {
+    const data = snap.val() || {};
+    users = Object.entries(data).map(([id, v]) => ({ id, ...v }));
+    if (currentTab === 'users') renderUsers();
+    updateStats();
+  }));
+
+  unsubs.push(onValue(ref(db, 'activity_logs'), snap => {
+    const data = snap.val() || {};
+    activity = Object.entries(data).map(([id, v]) => ({ id, ...v }))
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+      .slice(0, 300);
+    if (currentTab === 'audit') renderAudit();
+    updateStats();
+  }));
+
+  refreshTimer = setInterval(refreshPreviews, 800);
+}
+
+function updateStats() {
+  document.getElementById('stat-connected').textContent = users.filter(isOnline).length;
+  document.getElementById('stat-total').textContent = users.length;
+  document.getElementById('stat-actions').textContent = activity.length;
+}
+
+function renderUsers() {
+  const connected = users.filter(isOnline);
+  const disconnected = users.filter(u => !isOnline(u));
+  const body = document.getElementById('body');
+  let html = '';
+  html += `<div class="section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
+  html += connected.length ? connected.map(u => renderUserCard(u, true)).join('') :
+    `<div style="text-align:center;color:var(--muted);padding:20px;">Nadie conectado ahora mismo.</div>`;
+  if (disconnected.length) {
+    html += `<div class="section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;
+    html += disconnected.slice(0, 50).map(u => renderUserCard(u, false)).join('');
+  }
+  body.innerHTML = html;
+  connected.forEach(loadUserIframe);
+}
+
+function renderUserCard(u, online) {
+  const sid = safeId(u.id);
+  const lastSeen = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString() : '—';
+  const url = (u.currentUrl || 'about:start').slice(0, 60);
+  const safe = u.id.replace(/'/g, "\\'");
+  const isMe = u.id === (localStorage.getItem('waevo_my_id') || '');
+  return `<div class="user-card" data-uid="${u.id}">
+    <div class="preview" id="preview-${sid}">
+      ${online ? '' : '<div class="offline-label">Desconectado</div>'}
+      <div class="live-label">${online ? '🔴 LIVE' : 'OFFLINE'}</div>
+    </div>
+    <div class="info">
+      <div class="name">👤 ${u.id.slice(0, 18)}…${isMe ? ' (Tú)' : ''}</div>
+      <div class="uid">${u.id}</div>
+      <div class="activity">Últ. vez: ${lastSeen}<br>URL: <code>${url}</code></div>
+    </div>
+    <div class="btn-actions">
+      <button class="action-btn primary" onclick="viewScreen('${safe}')"><i class="fas fa-eye"></i> Pantalla</button>
+      <button class="action-btn warning" onclick="sendAnnouncement('${safe}')"><i class="fas fa-bullhorn"></i> Anuncio</button>
+      <button class="action-btn success" onclick="viewHistory('${safe}')"><i class="fas fa-history"></i> Historial</button>
+      ${online ? `<button class="action-btn danger" onclick="blockUser('${safe}')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
+      ${online ? `<button class="action-btn success" onclick="unblockUser('${safe}')"><i class="fas fa-unlock"></i> Desbloquear</button>` : ''}
+      ${OWNER_EXTRAS && online ? `<button class="action-btn warning" onclick="redirectUser('${safe}')"><i class="fas fa-external-link-alt"></i> Redirigir</button>` : ''}
+      ${OWNER_EXTRAS && online ? `<button class="action-btn danger" onclick="banUser('${safe}')"><i class="fas fa-ban"></i> Banear</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function loadUserIframe(u) {
+  const cont = document.getElementById(`preview-${safeId(u.id)}`);
+  if (!cont) return;
+  const cur = u.currentUrl || 'about:start';
+  if (cur === 'about:start') return;
+  const framed = getFrameUrl(cur);
+  let f = cont.querySelector('iframe');
+  if (f) {
+    if (f.dataset.url !== framed) { f.src = framed; f.dataset.url = framed; }
+  } else {
+    f = document.createElement('iframe');
+    f.src = framed; f.dataset.url = framed;
+    f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+    cont.insertBefore(f, cont.firstChild);
+  }
+}
+
+function refreshPreviews() {
+  users.filter(isOnline).forEach(u => {
+    const card = document.querySelector(`[data-uid="${u.id}"] .activity`);
+    if (card) {
+      const t = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString() : '—';
+      card.innerHTML = `Últ. vez: ${t}<br>URL: <code>${(u.currentUrl || 'about:start').slice(0, 60)}</code>`;
+    }
+    loadUserIframe(u);
+  });
+}
+
+function renderAudit() {
+  const body = document.getElementById('body');
+  if (!activity.length) {
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;">Sin actividades registradas.</div>';
+    return;
+  }
+  body.innerHTML = `<div class="section-title"><i class="fas fa-clipboard-list"></i> Registro de Actividades (${activity.length}) — solo lectura</div>` +
+    activity.map(a => {
+      const badge = a.actor === 'Alex' ? 'alex' : 'marc';
+      return `<div class="audit-log">
+        <div class="audit-header"><span>${new Date(a.timestamp).toLocaleString()}</span><span class="audit-badge ${badge}">${a.actor}</span></div>
+        <div class="audit-action">${a.action}</div>
+        ${a.target_user ? `<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Target: <code style="color:var(--accent)">${a.target_user}</code></div>` : ''}
+        ${a.metadata ? `<div class="audit-meta">${JSON.stringify(a.metadata)}</div>` : ''}
+      </div>`;
+    }).join('');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  if (tab === 'users') renderUsers(); else renderAudit();
+}
+
+// ─── Acciones ───
+function viewScreen(userId) {
+  const u = users.find(x => x.id === userId);
+  if (!u) return;
+  document.getElementById('live-title').textContent = `Pantalla de ${userId}`;
+  document.getElementById('live-iframe').src = getFrameUrl(u.currentUrl || 'about:start');
+  document.getElementById('live-viewer').classList.add('active');
+  logAction('VER_PANTALLA', userId, { url: u.currentUrl });
+}
+
+async function viewHistory(userId) {
+  const snap = await get(ref(db, `user_navigation_logs/${userId}`));
+  const data = snap.val() || {};
+  const entries = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 50);
+  const u = users.find(x => x.id === userId);
+  let html = `<div style="font-size:16px;font-weight:800;margin-bottom:14px;">Historial de ${userId}</div>`;
+  html += `<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Joined: ${u?.joined ? new Date(u.joined).toLocaleString() : '—'} | Últ. conexión: ${u?.lastSeen ? new Date(u.lastSeen).toLocaleString() : '—'}</div>`;
+  if (!entries.length) html += '<div style="color:var(--muted)">Sin navegaciones registradas.</div>';
+  else html += entries.map(e => `<div style="padding:8px;border-bottom:1px solid var(--border);font-size:11.5px;"><div style="color:var(--accent);font-weight:700">${e.title || '(sin título)'}</div><div style="color:var(--faint);font-family:monospace;word-break:break-all">${e.url}</div><div style="color:var(--faint);font-size:10px;margin-top:2px">${new Date(e.timestamp).toLocaleString()}</div></div>`).join('');
+  showModal(html);
+  logAction('VER_HISTORIAL', userId, null);
+}
+
+function blockUser(userId) {
+  const reason = prompt('Motivo del bloqueo (opcional):') || 'Bloqueado por un administrador';
+  push(ref(db, `user_commands/${userId}`), { type: 'block', reason, at: Date.now(), processed: false })
+    .then(() => { logAction('BLOQUEAR_PANTALLA', userId, { reason }); alert('Pantalla bloqueada'); });
+}
+
+function unblockUser(userId) {
+  push(ref(db, `user_commands/${userId}`), { type: 'unblock', at: Date.now(), processed: false })
+    .then(() => { logAction('DESBLOQUEAR_PANTALLA', userId, null); alert('Pantalla desbloqueada'); });
+}
+
+function sendAnnouncement(userId) {
+  const title = prompt('Título del anuncio:');
+  if (!title) return;
+  const content = prompt('Contenido del anuncio:');
+  if (!content) return;
+  push(ref(db, `user_commands/${userId}`), { type: 'announcement', title, content, at: Date.now(), processed: false })
+    .then(() => { logAction('ENVIAR_ANUNCIO', userId, { title }); alert('Anuncio enviado'); });
+}
+
+// ─── Modal helpers ───
+function showModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+// ─── Exponer para onclick ───
+function exitSession() {
+  sessionStorage.removeItem(SESSION_KEY);
+  window.location.href = '/';
+}
+Object.assign(window, { exitSession, switchTab, viewScreen, viewHistory, blockUser, unblockUser, sendAnnouncement, closeModal });
+
+// ─── Arranque ───
+if (!checkSession()) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('denied').style.display = 'flex';
+  setTimeout(() => window.location.replace('/'), 1500);
+} else {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('panel').style.display = 'flex';
+  init();
+}
+</script>
+</body>
+</html>
