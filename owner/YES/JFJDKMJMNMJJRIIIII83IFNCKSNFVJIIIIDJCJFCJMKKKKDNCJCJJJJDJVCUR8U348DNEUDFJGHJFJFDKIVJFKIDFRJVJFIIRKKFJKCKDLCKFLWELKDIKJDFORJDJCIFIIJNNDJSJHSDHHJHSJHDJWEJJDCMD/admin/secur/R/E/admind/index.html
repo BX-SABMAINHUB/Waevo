@@ -34,7 +34,6 @@ body{
 
 #panel{display:flex;flex-direction:column;min-height:100vh}
 
-/* ─── Header ─── */
 .header{
   padding:14px 24px;border-bottom:1px solid var(--border);
   display:flex;justify-content:space-between;align-items:center;
@@ -58,7 +57,6 @@ body{
 }
 .btn-exit:hover{background:rgba(255,45,107,0.22);transform:translateY(-1px)}
 
-/* ─── Stats ─── */
 .stats{
   display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
   padding:16px 24px;border-bottom:1px solid var(--border);
@@ -71,7 +69,6 @@ body{
 .stat-num{font-size:24px;font-weight:900;color:var(--warning)}
 .stat-label{font-size:10.5px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px}
 
-/* ─── Extra bar (exclusivo OWNER) ─── */
 .extra-bar{
   padding:12px 24px;background:rgba(255,179,71,0.05);
   border-bottom:1px solid rgba(255,179,71,0.18);
@@ -93,7 +90,6 @@ body{
 .extra-bar button.danger{background:rgba(255,45,107,0.12);border-color:rgba(255,45,107,0.3);color:var(--danger)}
 .extra-bar button.danger:hover{background:rgba(255,45,107,0.22)}
 
-/* ─── Tabs ─── */
 .tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.25)}
 .tab-btn{
   padding:12px 18px;border:none;background:transparent;color:var(--muted);
@@ -103,7 +99,6 @@ body{
 .tab-btn.active{color:var(--warning);border-bottom-color:var(--warning)}
 .tab-btn:hover{color:var(--text)}
 
-/* ─── Body ─── */
 .body{flex:1;padding:20px 24px;overflow-y:auto}
 .section-title{
   font-size:12px;font-weight:700;color:var(--muted);
@@ -115,7 +110,6 @@ body{
 .dot.off{background:var(--danger);box-shadow:none;animation:none}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* ─── User card ─── */
 .user-card{
   display:grid;grid-template-columns:220px 1fr auto;gap:16px;
   background:rgba(255,255,255,0.03);border:1px solid var(--border);
@@ -146,7 +140,7 @@ body{
 .uid{font-size:10.5px;color:var(--faint);font-family:ui-monospace,monospace;word-break:break-all;margin-bottom:6px}
 .activity{font-size:11px;color:var(--muted);line-height:1.5}
 .activity code{background:rgba(0,229,255,0.1);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:10.5px}
-.btn-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:340px}
+.btn-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:380px}
 .action-btn{
   padding:7px 12px;border-radius:9px;border:1px solid;
   font-size:11.5px;font-weight:700;cursor:pointer;transition:0.2s;
@@ -161,8 +155,31 @@ body{
 .action-btn.warning:hover{background:rgba(255,179,71,0.22);transform:translateY(-1px)}
 .action-btn.success{background:rgba(34,224,138,0.1);border-color:rgba(34,224,138,0.3);color:var(--success)}
 .action-btn.success:hover{background:rgba(34,224,138,0.22);transform:translateY(-1px)}
+/* Mic button — estado "grabando" */
+.action-btn.mic{background:rgba(189,0,255,0.12);border-color:rgba(189,0,255,0.35);color:var(--accent2)}
+.action-btn.mic:hover{background:rgba(189,0,255,0.24);transform:translateY(-1px)}
+.action-btn.mic.on{background:linear-gradient(135deg,#ff2d6b,#ff5c3d);border-color:rgba(255,45,107,0.8);color:white;animation:micPulse 1.2s infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,45,107,0.7)}50%{box-shadow:0 0 0 8px rgba(255,45,107,0)}}
 
-/* ─── Audit log ─── */
+/* Banner de grabación activa */
+#mic-recording-banner{
+  display:none;position:fixed;top:0;left:0;right:0;z-index:11000;
+  background:linear-gradient(90deg,#ff2d6b,#ff5c3d);
+  color:white;padding:12px 20px;text-align:center;font-weight:700;
+  box-shadow:0 6px 30px rgba(255,45,107,0.5);
+  align-items:center;justify-content:center;gap:14px;font-size:13px;
+}
+#mic-recording-banner.show{display:flex;animation:slideDown 0.3s}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+#mic-recording-banner i.fa-circle{animation:recPulse 1s infinite;font-size:10px}
+@keyframes recPulse{0%,100%{opacity:1}50%{opacity:0.3}}
+#mic-recording-banner button{
+  background:white;color:#ff2d6b;border:none;padding:7px 16px;
+  border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:12px;
+  transition:0.2s;
+}
+#mic-recording-banner button:hover{transform:scale(1.05);background:#ffe5ec}
+
 .audit-log{
   background:rgba(255,255,255,0.02);border:1px solid var(--border);
   border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:12px;
@@ -174,7 +191,6 @@ body{
 .audit-badge.marc{background:rgba(0,229,255,0.15);color:var(--accent)}
 .audit-badge.alex{background:rgba(255,179,71,0.15);color:var(--warning)}
 
-/* ─── Modales ─── */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(2,2,6,0.85);backdrop-filter:blur(14px);
   z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;
@@ -195,7 +211,10 @@ body{
 }
 .modal-close:hover{background:rgba(255,255,255,0.13)}
 
-/* ─── Live viewer ─── */
+/* KEY FIX: z-index del live viewer SIEMPRE por encima del panel (8500) */
+#live-viewer{
+  z-index:12000 !important;
+}
 .live-modal{max-width:92vw;width:1200px;height:82vh;padding:18px;display:flex;flex-direction:column}
 .live-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .live-title{font-weight:700;color:var(--warning);font-size:13px;display:flex;align-items:center;gap:8px}
@@ -207,9 +226,8 @@ body{
 }
 .live-actions button:hover{background:rgba(255,255,255,0.15)}
 .live-actions button.on{background:rgba(34,224,138,0.15);border-color:rgba(34,224,138,0.35);color:var(--success)}
-#live-iframe{width:100%;flex:1;border:none;background:#000;border-radius:8px}
+#live-iframe{width:100%;flex:1;border:none;background:#000;border-radius:8px;min-height:400px}
 
-/* ─── Input dentro de modal ─── */
 .modal-input{
   width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);
   border:1px solid var(--border);border-radius:11px;color:white;
@@ -226,7 +244,6 @@ body{
 .modal-btn.cancel{background:rgba(255,255,255,0.07);color:var(--text)}
 .modal-btn.cancel:hover{background:rgba(255,255,255,0.13)}
 
-/* ─── Responsive ─── */
 @media (max-width:768px){
   .user-card{grid-template-columns:1fr}
   .preview{width:100%;height:160px}
@@ -242,6 +259,14 @@ body{
 </style>
 </head>
 <body>
+
+<!-- ═══════════════ BANNER DE GRABACIÓN ACTIVA ═══════════════ -->
+<div id="mic-recording-banner">
+  <i class="fas fa-circle"></i>
+  <span>🎤 Grabando para <b id="mic-target-name">…</b> — <span id="mic-timer">0s</span></span>
+  <button onclick="stopMicAndSend()"><i class="fas fa-paper-plane"></i> Enviar y parar</button>
+  <button onclick="cancelMic()" style="background:rgba(255,255,255,0.2);color:white;"><i class="fas fa-times"></i> Cancelar</button>
+</div>
 
 <!-- ═══════════════ ESTADOS DE PANTALLA ═══════════════ -->
 <div id="loading" class="screen-state">
@@ -272,23 +297,22 @@ body{
     </div>
   </header>
 
-  <!-- Stats -->
   <div class="stats">
     <div class="stat"><div class="stat-num" id="stat-connected">0</div><div class="stat-label">Conectados</div></div>
     <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total usuarios</div></div>
     <div class="stat"><div class="stat-num" id="stat-actions">0</div><div class="stat-label">Acciones registradas</div></div>
   </div>
 
-  <!-- Extra bar (exclusivo OWNER) -->
+  <!-- Extra bar -->
   <div class="extra-bar">
     <input type="text" id="redirect-all-url" placeholder="URL para redirigir a TODOS los usuarios...">
     <button onclick="redirectAll()"><i class="fas fa-people-arrows"></i> Redirigir a todos</button>
     <button onclick="scheduleRedirect()"><i class="fas fa-clock"></i> Redirigir en 30s</button>
     <button onclick="exportLogs()"><i class="fas fa-file-export"></i> Exportar logs</button>
-    <button class="danger" onclick="globalBanner()"><i class="fas fa-bullhorn"></i> Banner global</button>
+    <button class="danger" onclick="globalAnnouncement()"><i class="fas fa-bullhorn"></i> 📢 Anuncio global</button>
+    <button class="danger" onclick="globalBanner()"><i class="fas fa-scroll"></i> Banner global</button>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="users" onclick="switchTab('users')">
       <i class="fas fa-users"></i> Usuarios
@@ -298,7 +322,6 @@ body{
     </button>
   </div>
 
-  <!-- Body dinámico -->
   <div class="body" id="body"></div>
 </div>
 
@@ -326,7 +349,7 @@ body{
   </div>
 </div>
 
-<!-- ═══════════════ UV (paths absolutos) ═══════════════ -->
+<!-- ═══════════════ UV ═══════════════ -->
 <script src="/uv/uv.bundle.js"></script>
 <script src="/uv/uv.config.js"></script>
 <script src="/uv/uv.handler.js"></script>
@@ -357,6 +380,7 @@ const SESSION_KEY = 'waevo_admin_session';
 const REQUIRED_ROLE = 'OWNER';
 const REQUIRED_USER = 'Alex';
 const ACTOR = 'Alex';
+const MIC_MAX_SECONDS = 30;
 
 /* ─── Estado ─── */
 let users = [];
@@ -367,6 +391,15 @@ let refreshTimer = null;
 let liveViewerInterval = null;
 let liveViewerUserId = null;
 let liveViewerPaused = false;
+
+/* ─── Estado del micrófono ─── */
+let micActiveUserId = null;
+let micStream = null;
+let mediaRecorder = null;
+let micChunks = [];
+let micTimerInterval = null;
+let micSecondsElapsed = 0;
+let micCancelled = false;
 
 /* ─── Check de sesión ─── */
 function checkSession() {
@@ -412,7 +445,6 @@ function escapeHtml(s) {
    LISTENERS
    ══════════════════════════════════════════════════════════════════════ */
 function init() {
-  // Usuarios
   unsubs.push(onValue(ref(db, 'alexbrowser_users'), snap => {
     const data = snap.val() || {};
     users = Object.entries(data).map(([id, v]) => ({ id, ...v }));
@@ -420,7 +452,6 @@ function init() {
     updateStats();
   }));
 
-  // Log de actividades
   unsubs.push(onValue(ref(db, 'activity_logs'), snap => {
     const data = snap.val() || {};
     activity = Object.entries(data)
@@ -431,7 +462,6 @@ function init() {
     updateStats();
   }));
 
-  // Refresco de previews cada 800ms
   refreshTimer = setInterval(refreshPreviews, 800);
 }
 
@@ -450,14 +480,11 @@ function renderUsers() {
   const body = document.getElementById('body');
 
   let html = '';
-
-  // Sección CONECTADOS (arriba)
   html += `<div class="section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
   html += connected.length
     ? connected.map(u => renderUserCard(u, true)).join('')
     : `<div style="text-align:center;color:var(--muted);padding:20px;">Nadie conectado ahora mismo.</div>`;
 
-  // Sección DESCONECTADOS (abajo)
   if (disconnected.length) {
     html += `<div class="section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;
     html += disconnected.slice(0, 80).map(u => renderUserCard(u, false)).join('');
@@ -467,8 +494,6 @@ function renderUsers() {
   }
 
   body.innerHTML = html;
-
-  // Cargar iframes de conectados
   connected.forEach(loadUserIframe);
 }
 
@@ -477,6 +502,13 @@ function renderUserCard(u, online) {
   const lastSeen = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString() : '—';
   const url = (u.currentUrl || 'about:start').slice(0, 60);
   const safe = String(u.id).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+  // 🔥 Estado del micrófono: si este usuario es el que estamos grabando, mostrar botón "on"
+  const isMicActive = micActiveUserId === u.id;
+  const micBtnClass = isMicActive ? 'action-btn mic on' : 'action-btn mic';
+  const micBtnContent = isMicActive
+    ? '<i class="fas fa-stop"></i> Parar'
+    : '<i class="fas fa-microphone"></i> Mic';
 
   const ownerExtras = `
     <button class="action-btn warning" onclick="redirectUser('${safe}')"><i class="fas fa-external-link-alt"></i> Redirigir</button>
@@ -500,7 +532,8 @@ function renderUserCard(u, online) {
       <button class="action-btn primary" onclick="viewScreen('${safe}')"><i class="fas fa-eye"></i> Pantalla</button>
       <button class="action-btn warning" onclick="sendAnnouncement('${safe}')"><i class="fas fa-bullhorn"></i> Anuncio</button>
       <button class="action-btn success" onclick="viewHistory('${safe}')"><i class="fas fa-history"></i> Historial</button>
-      ${online ? `<button class="action-btn danger" onclick="blockUser('${safe}')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
+      ${online ? `<button class="${micBtnClass}" id="mic-btn-${sid}" onclick="toggleMic('${safe}')" title="Hablar directamente a este usuario"><i class="fas fa-microphone"></i> ${micBtnContent}</button>` : ''}
+      ${online ? `<button class="action-btn danger" onclick="blockUser('${safe}')" title="Bloqueo permanente hasta desbloquear"><i class="fas fa-lock"></i> Bloquear (permanente)</button>` : ''}
       ${online ? `<button class="action-btn success" onclick="unblockUser('${safe}')"><i class="fas fa-unlock"></i> Desbloquear</button>` : ''}
       ${ownerExtras}
     </div>
@@ -580,7 +613,7 @@ function switchTab(tab) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   ACCIONES BÁSICAS
+   LIVE VIEWER
    ══════════════════════════════════════════════════════════════════════ */
 function viewScreen(userId) {
   const u = users.find(x => x.id === userId);
@@ -595,7 +628,6 @@ function viewScreen(userId) {
   iframe.src = getFrameUrl(u.currentUrl || 'about:start');
   document.getElementById('live-viewer').classList.add('active');
 
-  // Actualizar cada 800ms la URL del iframe
   if (liveViewerInterval) clearInterval(liveViewerInterval);
   liveViewerInterval = setInterval(async () => {
     if (liveViewerPaused) return;
@@ -628,6 +660,9 @@ function toggleLivePause() {
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   HISTORIAL
+   ══════════════════════════════════════════════════════════════════════ */
 async function viewHistory(userId) {
   const snap = await get(ref(db, `user_navigation_logs/${userId}`));
   const data = snap.val() || {};
@@ -661,29 +696,84 @@ async function viewHistory(userId) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   ACCIONES DE COMANDO (block / unblock / announcement)
+   BLOQUEO PERMANENTE (persiste aunque el usuario recargue)
    ══════════════════════════════════════════════════════════════════════ */
-function blockUser(userId) {
-  const reason = prompt('Motivo del bloqueo (opcional):') || 'Bloqueado por un administrador';
-  push(ref(db, `user_commands/${userId}`), {
-    type: 'block', reason, at: Date.now(), processed: false
-  }).then(() => {
-    logAction('BLOQUEAR_PANTALLA', userId, { reason });
+async function blockUser(userId) {
+  const reason = prompt('Motivo del bloqueo PERMANENTE (opcional):') || 'Bloqueado por el OWNER';
+
+  try {
+    // 1) Guardar bloqueo permanente en path dedicado
+    await set(ref(db, `permanent_blocks/${userId}`), {
+      active: true,
+      permanent: true,
+      reason,
+      by: 'Alex',
+      at: Date.now()
+    });
+
+    // 2) Escribir también en bans con expiración lejana (2099) como fallback
+    //    para que el index.html actual lo detecte al recargar (aunque no se haya
+    //    añadido la comprobación de permanent_blocks)
+    await set(ref(db, `bans/${userId}`), {
+      expiresAt: new Date('2099-12-31T23:59:59').getTime(),
+      bannedBy: 'Alex',
+      alias: reason,
+      type: 'permanent_block',
+      reason
+    });
+
+    // 3) Comando inmediato para que se aplique al instante en la sesión abierta
+    await push(ref(db, `user_commands/${userId}`), {
+      type: 'block',
+      reason,
+      at: Date.now(),
+      processed: false,
+      permanent: true
+    });
+
+    logAction('BLOQUEAR_PANTALLA_PERMANENTE', userId, { reason });
     showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🔒</div>
-      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Pantalla bloqueada</div>`);
-  }).catch(e => alert('Error: ' + e.message));
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Pantalla bloqueada PERMANENTEMENTE</div>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;">Resiste reinicios y recargas. Solo se puede quitar con "Desbloquear".</div>`);
+  } catch (e) {
+    alert('Error al bloquear: ' + e.message);
+  }
 }
 
-function unblockUser(userId) {
-  push(ref(db, `user_commands/${userId}`), {
-    type: 'unblock', at: Date.now(), processed: false
-  }).then(() => {
+async function unblockUser(userId) {
+  try {
+    // 1) Quitar bloqueo permanente
+    await remove(ref(db, `permanent_blocks/${userId}`));
+
+    // 2) Quitar ban SOLO si era de tipo permanent_block (no tocar bans normales)
+    try {
+      const banSnap = await get(ref(db, `bans/${userId}`));
+      if (banSnap.exists()) {
+        const b = banSnap.val();
+        if (b.type === 'permanent_block') {
+          await remove(ref(db, `bans/${userId}`));
+        }
+      }
+    } catch (e) { console.warn('No se pudo comprobar el ban:', e); }
+
+    // 3) Comando inmediato de desbloqueo
+    await push(ref(db, `user_commands/${userId}`), {
+      type: 'unblock',
+      at: Date.now(),
+      processed: false
+    });
+
     logAction('DESBLOQUEAR_PANTALLA', userId, null);
     showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🔓</div>
       <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Pantalla desbloqueada</div>`);
-  }).catch(e => alert('Error: ' + e.message));
+  } catch (e) {
+    alert('Error al desbloquear: ' + e.message);
+  }
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   ANUNCIO INDIVIDUAL
+   ══════════════════════════════════════════════════════════════════════ */
 function sendAnnouncement(userId) {
   const title = prompt('Título del anuncio:');
   if (!title) return;
@@ -696,6 +786,232 @@ function sendAnnouncement(userId) {
     showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">📢</div>
       <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Anuncio enviado</div>`);
   }).catch(e => alert('Error: ' + e.message));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   🌐 ANUNCIO GLOBAL (a TODOS los usuarios a la vez)
+   ══════════════════════════════════════════════════════════════════════ */
+function globalAnnouncement() {
+  const title = prompt('Título del anuncio GLOBAL (lo verán TODOS):');
+  if (!title) return;
+  const content = prompt('Contenido del anuncio GLOBAL:');
+  if (!content) return;
+  if (!confirm(`¿Enviar anuncio a TODOS los ${users.length} usuarios?\n\nTítulo: ${title}\nContenido: ${content}`)) return;
+
+  users.forEach(u => {
+    push(ref(db, `user_commands/${u.id}`), {
+      type: 'announcement',
+      title,
+      content,
+      at: Date.now(),
+      processed: false
+    }).catch(() => {});
+  });
+
+  logAction('ANUNCIO_GLOBAL', '*', { title, count: users.length });
+  showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">📢</div>
+    <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Anuncio enviado a ${users.length} usuarios</div>
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;word-break:break-word;">${escapeHtml(title)}</div>`);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   🎤 MICRÓFONO — Hablar directamente a un usuario
+   ══════════════════════════════════════════════════════════════════════ */
+async function toggleMic(userId) {
+  // Si ya estamos grabando para este mismo usuario → parar y enviar
+  if (micActiveUserId === userId && mediaRecorder && mediaRecorder.state === 'recording') {
+    stopMicAndSend();
+    return;
+  }
+  // Si estamos grabando para OTRO usuario → parar el anterior (enviando) y empezar con el nuevo
+  if (micActiveUserId && mediaRecorder && mediaRecorder.state === 'recording') {
+    stopMicAndSend();
+    setTimeout(() => startMicFor(userId), 300);
+    return;
+  }
+  // Si no estamos grabando → empezar
+  startMicFor(userId);
+}
+
+async function startMicFor(userId) {
+  const user = users.find(u => u.id === userId);
+  if (!user) { alert('Usuario no encontrado'); return; }
+
+  try {
+    // Pedir permiso al micrófono
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
+
+    // Configurar MediaRecorder con opus (buen ratio calidad/tamaño)
+    let mimeType = 'audio/webm;codecs=opus';
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = 'audio/webm';
+      if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = '';
+    }
+
+    const options = mimeType ? { mimeType, audioBitsPerSecond: 24000 } : {};
+    mediaRecorder = new MediaRecorder(micStream, options);
+    micChunks = [];
+    micActiveUserId = userId;
+    micCancelled = false;
+    micSecondsElapsed = 0;
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data && e.data.size > 0) micChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      // Si se canceló, no enviar
+      if (micCancelled) {
+        console.log('[Mic] Cancelado por el usuario');
+        cleanupMic();
+        return;
+      }
+
+      if (!micChunks.length) {
+        alert('No se grabó audio');
+        cleanupMic();
+        return;
+      }
+
+      try {
+        const blob = new Blob(micChunks, { type: micChunks[0].type || 'audio/webm' });
+        console.log('[Mic] Grabación finalizada, tamaño:', blob.size, 'bytes');
+
+        // Convertir a base64
+        const base64 = await blobToBase64(blob);
+        console.log('[Mic] Base64 tamaño:', base64.length, 'chars');
+
+        // Firebase Realtime tiene límite de 10MB por escritura. Verificar
+        if (base64.length > 8 * 1024 * 1024) {
+          alert('Grabación demasiado larga (máx ~5 min). Envía una más corta.');
+          cleanupMic();
+          return;
+        }
+
+        // Enviar comando al usuario
+        await push(ref(db, `user_commands/${userId}`), {
+          type: 'voice',
+          audio: base64,
+          duration: micSecondsElapsed,
+          at: Date.now(),
+          processed: false
+        });
+
+        logAction('MENSAJE_VOZ', userId, { duration: micSecondsElapsed, size: base64.length });
+        showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🎤</div>
+          <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Mensaje de voz enviado</div>
+          <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;">${micSecondsElapsed}s · ${Math.round(blob.size/1024)} KB</div>`);
+      } catch (err) {
+        console.error('[Mic] Error al procesar audio:', err);
+        alert('Error al enviar el audio: ' + err.message);
+      } finally {
+        cleanupMic();
+      }
+    };
+
+    mediaRecorder.onerror = e => {
+      console.error('[Mic] Error de grabación:', e);
+      alert('Error al grabar: ' + e.error?.message);
+      cleanupMic();
+    };
+
+    mediaRecorder.start();
+    updateMicUI(true, user.id, user);
+
+    // Timer de duración + auto-stop al llegar al máximo
+    micTimerInterval = setInterval(() => {
+      micSecondsElapsed++;
+      const timerEl = document.getElementById('mic-timer');
+      if (timerEl) timerEl.textContent = micSecondsElapsed + 's';
+      if (micSecondsElapsed >= MIC_MAX_SECONDS) {
+        console.log('[Mic] Máximo de', MIC_MAX_SECONDS, 'segundos alcanzado, enviando automáticamente');
+        stopMicAndSend();
+      }
+    }, 1000);
+
+    console.log('[Mic] Grabando para', userId);
+  } catch (err) {
+    console.error('[Mic] Error getUserMedia:', err);
+    if (err.name === 'NotAllowedError') {
+      alert('Debes permitir el acceso al micrófono en el navegador para poder hablar.');
+    } else if (err.name === 'NotFoundError') {
+      alert('No se encontró ningún micrófono conectado.');
+    } else {
+      alert('No se puede acceder al micrófono: ' + err.message);
+    }
+    cleanupMic();
+  }
+}
+
+function stopMicAndSend() {
+  if (!mediaRecorder) return;
+  if (mediaRecorder.state === 'recording') {
+    mediaRecorder.stop(); // dispara onstop → envía
+  } else {
+    cleanupMic();
+  }
+}
+
+function cancelMic() {
+  micCancelled = true;
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  } else {
+    cleanupMic();
+  }
+}
+
+function cleanupMic() {
+  if (micTimerInterval) { clearInterval(micTimerInterval); micTimerInterval = null; }
+  if (micStream) {
+    micStream.getTracks().forEach(t => t.stop());
+    micStream = null;
+  }
+  mediaRecorder = null;
+  micChunks = [];
+  micActiveUserId = null;
+  micSecondsElapsed = 0;
+  micCancelled = false;
+  updateMicUI(false, null, null);
+}
+
+function updateMicUI(active, userId, user) {
+  // Banner de grabación
+  const banner = document.getElementById('mic-recording-banner');
+  if (active) {
+    document.getElementById('mic-target-name').textContent = user ? user.id.slice(0, 18) + '…' : (userId || '');
+    document.getElementById('mic-timer').textContent = '0s';
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+
+  // Botones de micrófono en cada tarjeta
+  document.querySelectorAll('[id^="mic-btn-"]').forEach(btn => {
+    const btnUid = btn.id.replace('mic-btn-', '');
+    btn.classList.remove('on');
+    if (active && user && safeId(user.id) === btnUid) {
+      btn.classList.add('on');
+      btn.innerHTML = '<i class="fas fa-stop"></i> Parar';
+    } else {
+      btn.innerHTML = '<i class="fas fa-microphone"></i> Mic';
+    }
+  });
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -720,11 +1036,10 @@ function redirectAll() {
   if (!url) { alert('Introduce una URL primero'); return; }
   if (!confirm(`¿Redirigir a TODOS los ${users.length} usuarios a "${url}"?`)) return;
 
-  let count = 0;
   users.forEach(u => {
     push(ref(db, `user_commands/${u.id}`), {
       type: 'redirect', url, at: Date.now(), processed: false
-    }).then(() => count++).catch(() => {});
+    }).catch(() => {});
   });
   logAction('REDIRIGIR_TODOS', '*', { url, count: users.length });
   showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🚀</div>
@@ -764,7 +1079,8 @@ function banUser(userId) {
   set(ref(db, `bans/${userId}`), {
     expiresAt: Date.now() + hours * 3600000,
     bannedBy: 'Alex',
-    alias: reason
+    alias: reason,
+    type: 'timed_ban'
   }).then(() => {
     logAction('BANEAR_USUARIO', userId, { hours, reason });
     showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">⛔</div>
@@ -776,15 +1092,12 @@ function banUser(userId) {
 async function impersonate(userId) {
   if (!confirm(`¿Impersonar a ${userId}? Se cerrará tu sesión de OWNER y entrarás como ese usuario.`)) return;
 
-  // Guardar el ID original por si se quiere volver
   const currentId = localStorage.getItem('waevo_impersonator_id');
   if (!currentId) {
-    // No sabemos el ID original desde aquí, solo el rol; confiamos en que el SW del device lo tenga
     const deviceId = await getCurrentDeviceId();
     if (deviceId) localStorage.setItem('waevo_impersonator_id', deviceId);
   }
 
-  // Sobrescribir el deviceId en IndexedDB
   try {
     const dbOpen = indexedDB.open('AlexBrowserDB', 1);
     dbOpen.onupgradeneeded = e => e.target.result.createObjectStore('meta');
@@ -856,12 +1169,10 @@ function showModal(html) {
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('modal').classList.add('active');
 }
-
 function showSimpleModal(html) {
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('modal').classList.add('active');
 }
-
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
 }
@@ -870,23 +1181,24 @@ function closeModal() {
    SALIR
    ══════════════════════════════════════════════════════════════════════ */
 function exitSession() {
-  // Limpiar listeners
+  // Cortar micrófono si está activo
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    micCancelled = true;
+    try { mediaRecorder.stop(); } catch (e) {}
+  }
+  cleanupMic();
+
   unsubs.forEach(u => { try { u(); } catch (e) {} });
   if (refreshTimer) clearInterval(refreshTimer);
   if (liveViewerInterval) clearInterval(liveViewerInterval);
 
-  // Log de cierre
   logAction('CERRAR_SESION_OWNER', null, null);
-
-  // Borrar sesión
   sessionStorage.removeItem(SESSION_KEY);
-
-  // Volver a home
   window.location.href = '/';
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   EXPONER AL WINDOW (para onclick del HTML)
+   EXPONER AL WINDOW
    ══════════════════════════════════════════════════════════════════════ */
 Object.assign(window, {
   exitSession,
@@ -896,6 +1208,7 @@ Object.assign(window, {
   blockUser,
   unblockUser,
   sendAnnouncement,
+  globalAnnouncement,
   redirectUser,
   redirectAll,
   scheduleRedirect,
@@ -905,7 +1218,10 @@ Object.assign(window, {
   exportLogs,
   closeModal,
   toggleLivePause,
-  stopLiveViewer
+  stopLiveViewer,
+  toggleMic,
+  stopMicAndSend,
+  cancelMic
 });
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -918,7 +1234,6 @@ if (!checkSession()) {
 } else {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('panel').style.display = 'flex';
-  // Log de acceso al panel
   logAction('ACCEDER_PANEL_OWNER', null, { path: location.pathname });
   init();
 }
