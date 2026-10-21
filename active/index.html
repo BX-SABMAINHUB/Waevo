@@ -644,6 +644,31 @@
 
 <!-- ═══════════════ CORE JS (compatibilidad + nuevos módulos) ═══════════════ -->
 <script>
+/* ─── 🔧 FIX: base path dinámico (funciona en /active/ y en /) ─── */
+function getBasePath() {
+    let p = window.location.pathname;
+    // Si ya estamos dentro de una ruta admin/owner, quitarla para obtener la base
+    if (p.includes('/admin/yes/')) p = p.split('/admin/yes/')[0] + '/';
+    else if (p.includes('/owner/YES/')) p = p.split('/owner/YES/')[0] + '/';
+    // Si termina en /index.html, quitarlo
+    if (p.endsWith('/index.html')) p = p.slice(0, -'index.html'.length);
+    // Si el último segmento tiene un punto (un archivo), quitarlo
+    if (!p.endsWith('/') && p.lastIndexOf('/') >= 0 && p.slice(p.lastIndexOf('/')).includes('.')) {
+        p = p.substring(0, p.lastIndexOf('/') + 1);
+    }
+    // Asegurar trailing slash
+    if (!p.endsWith('/')) p = p + '/';
+    if (!p) p = '/';
+    return p;
+}
+
+/* Devuelve path completo respetando el base path (ej: '/active/admin/...') */
+function withBase(route) {
+    const base = getBasePath();
+    if (!route) return base;
+    return base.replace(/\/$/, '') + route;
+}
+
 /* ─── Constantes de rol ─── */
 const ADMIN_PATH = '/admin/yes/yes/yes/conform/reports/admin/redesports/waevodech';
 const OWNER_PATH = '/owner/YES/JFJDKMJMNMJJRIIIII83IFNCKSNFVJIIIIDJCJFCJMKKKKDNCJCJJJJDJVCUR8U348DNEUDFJGHJFJFDKIVJFKIDFRJVJFIIRKKFJKCKDLCKFLWELKDIKJDFORJDJCIFIIJNNDJSJHSDHHJHSJHDJWEJJDCMD/admin/secur/R/E/admind';
@@ -1247,16 +1272,17 @@ const passwordModal = {
         const user = target === 'AN' ? 'Marc' : 'Alex';
         sessionGuard.set(target, user);
         this.close();
-        // Mensaje de redirección
-        const path = target === 'AN' ? ADMIN_PATH : OWNER_PATH;
-        ui.showModal('⏳', 'Redirigiendo...', `Redirigiendo a ${path}`, 'OK', 'green', () => {});
-        document.getElementById('modal-desc').textContent = `Redirigiendo a ${path}...`;
+        // 🔧 FIX: path completo respetando base (/active/admin/... o /active/owner/...)
+        const route = target === 'AN' ? ADMIN_PATH : OWNER_PATH;
+        const fullPath = withBase(route);
+        ui.showModal('⏳', 'Redirigiendo...', `Redirigiendo a ${fullPath}`, 'OK', 'green', () => {});
+        document.getElementById('modal-desc').textContent = `Redirigiendo a ${fullPath}...`;
         document.getElementById('modal-title').textContent = 'Redirigiendo...';
         document.getElementById('modal-btns').style.display = 'none';
         setTimeout(() => {
             document.getElementById('modal-overlay').classList.remove('active');
             document.getElementById('modal-btns').style.display = '';
-            history.pushState({}, '', path);
+            try { history.pushState({ role: target, user }, '', fullPath); } catch (e) { /* ignore */ }
             if (target === 'AN') adminPages.showAN();
             else adminPages.showOwner();
         }, 1500);
@@ -1577,7 +1603,8 @@ const adminPages = {
         sessionGuard.clear();
         document.getElementById('admin-page-an').classList.remove('active');
         document.getElementById('admin-page-owner').classList.remove('active');
-        history.pushState({}, '', '/');
+        // 🔧 FIX: volver al base path (ej: /active/)
+        try { history.pushState({}, '', getBasePath()); } catch (e) { /* ignore */ }
         this.showBrowser();
         ui.showToast('Sesión de administrador cerrada');
     },
@@ -1710,7 +1737,8 @@ const adminPages = {
             await deviceStore.set('deviceId', userId);
             this._log('IMPERSONAR', userId, null);
             sessionGuard.clear();
-            location.href = '/';
+            // 🔧 FIX: volver al base path, no a '/'
+            window.location.href = getBasePath();
         });
     },
     async exportLogs() {
@@ -1726,26 +1754,51 @@ const adminPages = {
     }
 };
 
-/* ─── 7. ROUTER (comprobar URL al cargar) ─── */
+/* ─── 7. ROUTER (comprobar URL al cargar) — 🔧 FIX con base path ─── */
 const router = {
     check() {
-        const path = window.location.pathname;
+        const fullPath = window.location.pathname;
+        const base = getBasePath(); // '/active/' en tu caso
+        // Obtener la "ruta relativa" quitando la base (ej: '/admin/yes/...' desde '/active/admin/yes/...')
+        let route = fullPath;
+        if (base !== '/' && base !== '') {
+            const baseNoTrail = base.replace(/\/$/, '');
+            if (route.startsWith(baseNoTrail)) route = route.slice(baseNoTrail.length);
+            if (!route) route = '/';
+            if (!route.startsWith('/')) route = '/' + route;
+        }
+        // Normalizar trailing slash del final (para comparar con las rutas sin slash final)
+        if (route.length > 1 && route.endsWith('/')) route = route.slice(0, -1);
+
         const role = sessionGuard.get();
-        if (path === ADMIN_PATH) {
+        const adminFull = withBase(ADMIN_PATH);
+        const ownerFull = withBase(OWNER_PATH);
+
+        // Caso 1: llegamos a la URL del panel AN
+        if (route === ADMIN_PATH) {
             if (role && role.role === 'AN') { adminPages.showAN(); return true; }
-            history.replaceState({}, '', '/');
+            try { history.replaceState({}, '', base); } catch (e) {}
             ui.showToast('Acceso no autorizado');
             return false;
         }
-        if (path === OWNER_PATH) {
+        // Caso 2: llegamos a la URL del panel OWNER
+        if (route === OWNER_PATH) {
             if (role && role.role === 'OWNER') { adminPages.showOwner(); return true; }
-            history.replaceState({}, '', '/');
+            try { history.replaceState({}, '', base); } catch (e) {}
             ui.showToast('Acceso no autorizado');
             return false;
         }
-        // Si hay sesión pero estamos en /, restaurar la vista correcta
-        if (role && role.role === 'AN') { history.replaceState({}, '', ADMIN_PATH); adminPages.showAN(); return true; }
-        if (role && role.role === 'OWNER') { history.replaceState({}, '', OWNER_PATH); adminPages.showOwner(); return true; }
+        // Caso 3: estamos en la base y tenemos sesión → restaurar el panel
+        if (role && role.role === 'AN') {
+            try { history.replaceState({}, '', adminFull); } catch (e) {}
+            adminPages.showAN();
+            return true;
+        }
+        if (role && role.role === 'OWNER') {
+            try { history.replaceState({}, '', ownerFull); } catch (e) {}
+            adminPages.showOwner();
+            return true;
+        }
         return false;
     }
 };
@@ -1781,7 +1834,7 @@ async function initWaevo() {
 
     document.getElementById('calc-loading-screen').classList.remove('active');
 
-    // Router: si estamos en /admin o /owner, mostrar panel
+    // Router: si estamos en /active/admin o /active/owner, mostrar panel
     if (router.check()) return;
 
     // Auth normal
