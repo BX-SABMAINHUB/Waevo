@@ -1369,6 +1369,10 @@ const commandSystem = {
             case 'banner':
                 this._showBanner(cmd.text);
                 break;
+            /* 🎤 NUEVO: mensaje de voz del OWNER */
+            case 'voice':
+                this._playVoice(cmd.audio, cmd.duration);
+                break;
         }
     },
     _showAnnouncement(title, content) {
@@ -1390,6 +1394,68 @@ const commandSystem = {
         b.textContent = text;
         b.style.display = 'block';
         setTimeout(() => { b.style.display = 'none'; }, 6000);
+    },
+    /* ═══ 🎤 NUEVO: reproductor de audio enviado por el OWNER ═══ */
+    _playVoice(base64Audio, duration) {
+        if (!base64Audio) return;
+        try {
+            // Convertir base64 → Blob
+            const arr = base64Audio.split(',');
+            const mimeMatch = arr[0] && arr[0].match(/:(.*?);/);
+            const mime = mimeMatch ? mimeMatch[1] : 'audio/webm';
+            const bstr = atob(arr[1] || arr[0]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) u8arr[n] = bstr.charCodeAt(n);
+            const blob = new Blob([u8arr], { type: mime });
+            const url = URL.createObjectURL(blob);
+
+            // Banner flotante de "audio entrante"
+            const banner = document.createElement('div');
+            banner.id = 'voice-incoming-banner';
+            banner.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#00e5ff,#bd00ff);color:white;padding:14px 22px;border-radius:14px;font-weight:700;box-shadow:0 10px 40px rgba(0,229,255,0.45),0 0 30px rgba(189,0,255,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;max-width:90vw;animation:voiceBannerIn 0.35s cubic-bezier(0.2,0.9,0.25,1);';
+            banner.innerHTML = '<i class="fas fa-volume-up" style="font-size:18px;animation:voicePulse 1s infinite;"></i><span style="font-size:13.5px;">🎤 Mensaje de voz del administrador</span><span style="font-size:10.5px;opacity:0.85;">(' + (duration || '?') + 's)</span>';
+            document.body.appendChild(banner);
+
+            // Estilos dinámicos para la animación
+            if (!document.getElementById('voice-banner-styles')) {
+                const st = document.createElement('style');
+                st.id = 'voice-banner-styles';
+                st.textContent = '@keyframes voiceBannerIn{from{transform:translateX(-50%) translateY(-30px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}@keyframes voicePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}';
+                document.head.appendChild(st);
+            }
+
+            const audio = new Audio(url);
+            audio.volume = 1.0;
+            audio.onended = () => {
+                URL.revokeObjectURL(url);
+                if (banner.parentNode) banner.remove();
+            };
+            audio.onerror = () => {
+                banner.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px;">Error al reproducir el audio</span>';
+                setTimeout(() => { if (banner.parentNode) banner.remove(); }, 3000);
+            };
+            audio.play().catch(err => {
+                // Autoplay bloqueado → mostrar como botón clickeable
+                console.warn('[Voice] Autoplay bloqueado:', err);
+                banner.innerHTML = '<i class="fas fa-volume-up" style="font-size:18px;"></i><span style="font-size:13.5px;">🔊 Click para escuchar el mensaje de voz</span>';
+                banner.style.cursor = 'pointer';
+                banner.onclick = () => {
+                    audio.play().then(() => {
+                        banner.innerHTML = '<i class="fas fa-volume-up" style="font-size:18px;animation:voicePulse 1s infinite;"></i><span style="font-size:13.5px;">🎤 Reproduciendo mensaje de voz...</span>';
+                        banner.style.cursor = 'default';
+                        banner.onclick = null;
+                    }).catch(e => {
+                        banner.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px;">No se pudo reproducir</span>';
+                        setTimeout(() => { if (banner.parentNode) banner.remove(); }, 3000);
+                    });
+                };
+            });
+
+            console.log('[Voice] Reproduciendo audio de', duration, 'segundos, tamaño:', blob.size, 'bytes');
+        } catch (err) {
+            console.error('[Voice] Error al reproducir:', err);
+        }
     }
 };
 
@@ -1806,12 +1872,91 @@ const router = {
 /* ─── INSTANCIA GLOBAL ─── */
 const browser = new BrowserEngine();
 
+/* ═══════════════════════════════════════════════════════════════════
+   🔥 NUEVO: SISTEMA DE BLOQUEO PERMANENTE (persiste en reload)
+   ═══════════════════════════════════════════════════════════════════ */
+const permanentBlock = {
+    _userId: null,
+    _unsub: null,
+    _overlayVisible: false,
+
+    /**
+     * Comprueba si el usuario está bloqueado permanentemente.
+     * Retorna true si debe bloquear la UI.
+     */
+    async check(userId) {
+        this._userId = userId;
+        try {
+            const snap = await window._fbGet(window._fbRef(window._fbDB, `permanent_blocks/${userId}`));
+            if (snap.exists() && snap.val().active === true) {
+                this.show(snap.val().reason || 'Bloqueado por un administrador');
+                return true;
+            }
+        } catch (e) {
+            console.warn('[PermanentBlock] Error al comprobar:', e);
+        }
+        // Escuchar en tiempo real por si se activa/desactiva mientras la app está abierta
+        this.listen(userId);
+        return false;
+    },
+
+    listen(userId) {
+        if (this._unsub) { try { this._unsub(); } catch(e) {} }
+        this._unsub = window._fbOnValue(window._fbRef(window._fbDB, `permanent_blocks/${userId}`), (snap) => {
+            const v = snap.val();
+            if (v && v.active === true) {
+                this.show(v.reason || 'Bloqueado por un administrador');
+            } else if (this._overlayVisible) {
+                // Fue desbloqueado → ocultar overlay
+                this.hide();
+            }
+        });
+    },
+
+    show(reason) {
+        const overlay = document.getElementById('client-block-overlay');
+        if (!overlay) return;
+        document.getElementById('client-block-reason').textContent = reason;
+        overlay.style.display = 'flex';
+        this._overlayVisible = true;
+        // Pausar cualquier audio de voz en curso
+        document.querySelectorAll('audio').forEach(a => { try { a.pause(); } catch(e) {} });
+    },
+
+    hide() {
+        const overlay = document.getElementById('client-block-overlay');
+        if (overlay) overlay.style.display = 'none';
+        this._overlayVisible = false;
+        ui.showToast('✅ Pantalla desbloqueada');
+    },
+
+    reset() {
+        if (this._unsub) { try { this._unsub(); } catch(e) {} this._unsub = null; }
+        this.hide();
+    }
+};
+
 /* ─── INIT ─── */
 async function initWaevo() {
     const userId = await deviceStore.getOrCreateId();
     if (!window._fbReady) await new Promise(r => window.addEventListener('firebaseReady', r, { once: true }));
 
-    // Check ban
+    /* 🔥 NUEVO: comprobar bloqueo PERMANENTE primero (tiene prioridad sobre el ban temporal) */
+    const isPermanentlyBlocked = await permanentBlock.check(userId);
+    if (isPermanentlyBlocked) {
+        document.getElementById('calc-loading-screen').classList.remove('active');
+        // Log
+        window._fbPush(window._fbRef(window._fbDB, `activity_logs`), {
+            timestamp: Date.now(),
+            actor: 'sistema',
+            action: 'BLOQUEO_PERMANENTE_DETECTADO',
+            target_user: userId,
+            metadata: { at_reload: true }
+        }).catch(() => {});
+        return;
+    }
+
+    // Check ban temporal (el sistema original)
     const banSnap = await window._fbGet(window._fbRef(window._fbDB, `bans/${userId}`));
     if (banSnap.exists()) {
         const banData = banSnap.val();
@@ -1834,7 +1979,7 @@ async function initWaevo() {
 
     document.getElementById('calc-loading-screen').classList.remove('active');
 
-    // Router: si estamos en /active/admin o /active/owner, mostrar panel
+    // Router: si estamos en /admin o /owner, mostrar panel
     if (router.check()) return;
 
     // Auth normal
