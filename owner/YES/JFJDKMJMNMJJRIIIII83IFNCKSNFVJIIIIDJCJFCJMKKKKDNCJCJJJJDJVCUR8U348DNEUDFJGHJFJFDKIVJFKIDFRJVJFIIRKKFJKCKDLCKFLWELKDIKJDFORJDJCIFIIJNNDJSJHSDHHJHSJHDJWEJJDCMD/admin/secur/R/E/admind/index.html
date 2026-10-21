@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel OWNER — Waevo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+:root{
+  --accent:#00e5ff;--accent2:#bd00ff;--danger:#ff2d6b;--success:#22e08a;--warning:#ffb347;
+  --text:#f1f5f9;--muted:#8b95a8;--faint:#59606f;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+}
+*{box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 12% -10%,rgba(255,179,71,0.08),transparent 60%),
+    radial-gradient(1000px 700px at 88% 110%,rgba(189,0,255,0.10),transparent 60%),
+    linear-gradient(-45deg,#05050a,#0a0a12,#1a0f14,#060b16);
+  background-size:100% 100%,100% 100%,400% 400%;
+  animation:bgShift 22s ease infinite;
+  letter-spacing:0.1px;overflow-x:hidden;min-height:100vh;
+}
+@keyframes bgShift{0%{background-position:0% 0%,100% 100%,0% 50%}50%{background-position:0% 0%,100% 100%,100% 50%}100%{background-position:0% 0%,100% 100%,0% 50%}}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.10);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,179,71,0.45)}
+
+.screen-state{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999;background:rgba(2,2,6,0.97);font-size:16px;color:var(--muted);padding:24px;text-align:center}
+.screen-state i{font-size:48px;color:var(--warning)}
+.screen-state h2{margin:0;color:var(--text);font-size:22px;font-weight:900}
+
+#panel{display:flex;flex-direction:column;min-height:100vh}
+
+/* ─── Header ─── */
+.header{
+  padding:14px 24px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,0,0,0.45);position:sticky;top:0;z-index:10;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:10px}
+.title i{color:var(--warning);filter:drop-shadow(0 0 6px rgba(255,179,71,0.5))}
+.role-badge{
+  font-size:10.5px;padding:3px 10px;border-radius:10px;font-weight:700;
+  background:rgba(255,179,71,0.15);color:var(--warning);
+  border:1px solid rgba(255,179,71,0.3);
+}
+.actions{display:flex;align-items:center;gap:14px}
+.logged-info{font-size:11.5px;color:var(--faint)}
+.logged-info b{color:var(--warning)}
+.btn-exit{
+  padding:9px 18px;border-radius:11px;background:rgba(255,45,107,0.1);
+  border:1px solid rgba(255,45,107,0.3);color:var(--danger);
+  font-weight:700;cursor:pointer;font-family:inherit;font-size:12px;transition:0.2s;
+}
+.btn-exit:hover{background:rgba(255,45,107,0.22);transform:translateY(-1px)}
+
+/* ─── Stats ─── */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  padding:16px 24px;border-bottom:1px solid var(--border);
+}
+.stat{
+  background:rgba(255,179,71,0.04);border:1px solid rgba(255,179,71,0.15);
+  border-radius:12px;padding:14px;text-align:center;transition:0.2s;
+}
+.stat:hover{border-color:rgba(255,179,71,0.35);background:rgba(255,179,71,0.08)}
+.stat-num{font-size:24px;font-weight:900;color:var(--warning)}
+.stat-label{font-size:10.5px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:4px}
+
+/* ─── Extra bar (exclusivo OWNER) ─── */
+.extra-bar{
+  padding:12px 24px;background:rgba(255,179,71,0.05);
+  border-bottom:1px solid rgba(255,179,71,0.18);
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+}
+.extra-bar input{
+  flex:1;min-width:220px;padding:9px 14px;background:rgba(0,0,0,0.45);
+  border:1px solid var(--border);border-radius:8px;color:white;
+  font-family:inherit;font-size:12.5px;transition:0.2s;
+}
+.extra-bar input:focus{border-color:rgba(255,179,71,0.6);box-shadow:0 0 0 3px rgba(255,179,71,0.1)}
+.extra-bar button{
+  padding:9px 16px;border-radius:8px;background:rgba(255,179,71,0.15);
+  border:1px solid rgba(255,179,71,0.35);color:var(--warning);
+  font-weight:700;cursor:pointer;font-family:inherit;font-size:12px;transition:0.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.extra-bar button:hover{background:rgba(255,179,71,0.3);transform:translateY(-1px)}
+.extra-bar button.danger{background:rgba(255,45,107,0.12);border-color:rgba(255,45,107,0.3);color:var(--danger)}
+.extra-bar button.danger:hover{background:rgba(255,45,107,0.22)}
+
+/* ─── Tabs ─── */
+.tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.25)}
+.tab-btn{
+  padding:12px 18px;border:none;background:transparent;color:var(--muted);
+  font-weight:600;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;
+  transition:0.2s;font-family:inherit;display:flex;align-items:center;gap:8px;
+}
+.tab-btn.active{color:var(--warning);border-bottom-color:var(--warning)}
+.tab-btn:hover{color:var(--text)}
+
+/* ─── Body ─── */
+.body{flex:1;padding:20px 24px;overflow-y:auto}
+.section-title{
+  font-size:12px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin:20px 0 12px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-title:first-child{margin-top:0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);animation:pulseDot 2s infinite}
+.dot.off{background:var(--danger);box-shadow:none;animation:none}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ─── User card ─── */
+.user-card{
+  display:grid;grid-template-columns:220px 1fr auto;gap:16px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:14px;padding:14px;margin-bottom:12px;align-items:center;transition:0.2s;
+}
+.user-card:hover{border-color:rgba(255,179,71,0.25);background:rgba(255,179,71,0.03)}
+.preview{
+  width:220px;height:124px;background:#000;border-radius:10px;
+  overflow:hidden;position:relative;border:1px solid var(--border);
+}
+.preview iframe{
+  position:absolute;top:0;left:0;border:none;
+  transform:scale(0.25);transform-origin:0 0;
+  width:880px;height:496px;pointer-events:none;
+}
+.live-label{
+  position:absolute;bottom:4px;right:6px;font-size:9px;
+  background:rgba(0,0,0,0.75);padding:2px 6px;border-radius:5px;
+  color:var(--success);z-index:2;font-weight:700;
+}
+.offline-label{
+  position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;color:var(--faint);font-size:10px;
+}
+.info{min-width:0}
+.name{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.name .crown{color:var(--warning);font-size:11px}
+.uid{font-size:10.5px;color:var(--faint);font-family:ui-monospace,monospace;word-break:break-all;margin-bottom:6px}
+.activity{font-size:11px;color:var(--muted);line-height:1.5}
+.activity code{background:rgba(0,229,255,0.1);color:var(--accent);padding:1px 5px;border-radius:4px;font-size:10.5px}
+.btn-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:340px}
+.action-btn{
+  padding:7px 12px;border-radius:9px;border:1px solid;
+  font-size:11.5px;font-weight:700;cursor:pointer;transition:0.2s;
+  font-family:inherit;background:transparent;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.action-btn.primary{background:rgba(0,229,255,0.1);border-color:rgba(0,229,255,0.3);color:var(--accent)}
+.action-btn.primary:hover{background:rgba(0,229,255,0.22);transform:translateY(-1px)}
+.action-btn.danger{background:rgba(255,45,107,0.1);border-color:rgba(255,45,107,0.3);color:var(--danger)}
+.action-btn.danger:hover{background:rgba(255,45,107,0.22);transform:translateY(-1px)}
+.action-btn.warning{background:rgba(255,179,71,0.1);border-color:rgba(255,179,71,0.3);color:var(--warning)}
+.action-btn.warning:hover{background:rgba(255,179,71,0.22);transform:translateY(-1px)}
+.action-btn.success{background:rgba(34,224,138,0.1);border-color:rgba(34,224,138,0.3);color:var(--success)}
+.action-btn.success:hover{background:rgba(34,224,138,0.22);transform:translateY(-1px)}
+
+/* ─── Audit log ─── */
+.audit-log{
+  background:rgba(255,255,255,0.02);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;margin-bottom:8px;font-size:12px;
+}
+.audit-header{display:flex;justify-content:space-between;margin-bottom:6px;color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.audit-action{font-weight:700;color:var(--warning);margin-bottom:4px}
+.audit-meta{font-family:ui-monospace,monospace;font-size:10.5px;color:var(--muted);word-break:break-all}
+.audit-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:700;margin-left:6px}
+.audit-badge.marc{background:rgba(0,229,255,0.15);color:var(--accent)}
+.audit-badge.alex{background:rgba(255,179,71,0.15);color:var(--warning)}
+
+/* ─── Modales ─── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(2,2,6,0.85);backdrop-filter:blur(14px);
+  z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.active{display:flex;animation:fadeIn 0.2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:linear-gradient(160deg,rgba(22,22,32,0.99),rgba(12,12,18,0.99));
+  border:1px solid var(--border2);border-radius:22px;padding:26px;
+  max-width:600px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,0.75);
+  max-height:80vh;overflow-y:auto;animation:slideUp 0.25s cubic-bezier(0.2,0.9,0.25,1);
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{
+  width:100%;padding:11px;border-radius:11px;background:rgba(255,255,255,0.07);
+  border:none;color:var(--text);font-weight:700;cursor:pointer;margin-top:14px;
+  font-family:inherit;font-size:13px;transition:0.2s;
+}
+.modal-close:hover{background:rgba(255,255,255,0.13)}
+
+/* ─── Live viewer ─── */
+.live-modal{max-width:92vw;width:1200px;height:82vh;padding:18px;display:flex;flex-direction:column}
+.live-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.live-title{font-weight:700;color:var(--warning);font-size:13px;display:flex;align-items:center;gap:8px}
+.live-actions{display:flex;gap:8px}
+.live-actions button{
+  padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.07);
+  border:1px solid var(--border);color:var(--text);cursor:pointer;
+  font-family:inherit;font-size:11.5px;font-weight:700;transition:0.2s;
+}
+.live-actions button:hover{background:rgba(255,255,255,0.15)}
+.live-actions button.on{background:rgba(34,224,138,0.15);border-color:rgba(34,224,138,0.35);color:var(--success)}
+#live-iframe{width:100%;flex:1;border:none;background:#000;border-radius:8px}
+
+/* ─── Input dentro de modal ─── */
+.modal-input{
+  width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:11px;color:white;
+  font-size:13.5px;font-family:inherit;transition:0.2s;margin-bottom:10px;
+}
+.modal-input:focus{border-color:rgba(255,179,71,0.55);box-shadow:0 0 0 3px rgba(255,179,71,0.1)}
+.modal-row{display:flex;gap:8px;margin-top:10px}
+.modal-btn{
+  flex:1;padding:12px;border-radius:11px;border:none;font-weight:700;
+  cursor:pointer;font-family:inherit;font-size:13px;transition:0.2s;
+}
+.modal-btn.confirm{background:linear-gradient(135deg,#c47a1a,var(--warning));color:#1a0f00}
+.modal-btn.confirm:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,179,71,0.4)}
+.modal-btn.cancel{background:rgba(255,255,255,0.07);color:var(--text)}
+.modal-btn.cancel:hover{background:rgba(255,255,255,0.13)}
+
+/* ─── Responsive ─── */
+@media (max-width:768px){
+  .user-card{grid-template-columns:1fr}
+  .preview{width:100%;height:160px}
+  .preview iframe{transform:scale(0.32);width:900px;height:500px}
+  .btn-actions{justify-content:flex-start;max-width:none}
+  .stats{grid-template-columns:1fr}
+  .extra-bar{flex-direction:column;align-items:stretch}
+  .extra-bar input{width:100%}
+  .extra-bar button{width:100%;justify-content:center}
+  .header{padding:12px 16px;flex-wrap:wrap;gap:10px}
+  .body{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ ESTADOS DE PANTALLA ═══════════════ -->
+<div id="loading" class="screen-state">
+  <i class="fas fa-spinner fa-spin"></i>
+  <p>Verificando acceso de OWNER...</p>
+</div>
+
+<div id="denied" class="screen-state" style="display:none">
+  <i class="fas fa-shield-halved" style="color:var(--danger)"></i>
+  <h2>Acceso denegado</h2>
+  <p>No tienes permisos de OWNER. Redirigiendo...</p>
+</div>
+
+<!-- ═══════════════ PANEL PRINCIPAL ═══════════════ -->
+<div id="panel" style="display:none">
+
+  <header class="header">
+    <div class="title">
+      <i class="fas fa-crown"></i>
+      Panel OWNER
+      <span class="role-badge">Alex</span>
+    </div>
+    <div class="actions">
+      <span class="logged-info">Sesión: <b>Alex</b></span>
+      <button class="btn-exit" onclick="exitSession()">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="stat-connected">0</div><div class="stat-label">Conectados</div></div>
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total usuarios</div></div>
+    <div class="stat"><div class="stat-num" id="stat-actions">0</div><div class="stat-label">Acciones registradas</div></div>
+  </div>
+
+  <!-- Extra bar (exclusivo OWNER) -->
+  <div class="extra-bar">
+    <input type="text" id="redirect-all-url" placeholder="URL para redirigir a TODOS los usuarios...">
+    <button onclick="redirectAll()"><i class="fas fa-people-arrows"></i> Redirigir a todos</button>
+    <button onclick="scheduleRedirect()"><i class="fas fa-clock"></i> Redirigir en 30s</button>
+    <button onclick="exportLogs()"><i class="fas fa-file-export"></i> Exportar logs</button>
+    <button class="danger" onclick="globalBanner()"><i class="fas fa-bullhorn"></i> Banner global</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="users" onclick="switchTab('users')">
+      <i class="fas fa-users"></i> Usuarios
+    </button>
+    <button class="tab-btn" data-tab="audit" onclick="switchTab('audit')">
+      <i class="fas fa-clipboard-list"></i> Auditoría
+    </button>
+  </div>
+
+  <!-- Body dinámico -->
+  <div class="body" id="body"></div>
+</div>
+
+<!-- ═══════════════ MODAL GENÉRICO ═══════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div id="modal-content"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<!-- ═══════════════ LIVE VIEWER ═══════════════ -->
+<div class="modal-overlay" id="live-viewer">
+  <div class="modal-box live-modal">
+    <div class="live-header">
+      <div class="live-title" id="live-title"><i class="fas fa-eye"></i> Pantalla en vivo</div>
+      <div class="live-actions">
+        <button id="live-pause-btn" onclick="toggleLivePause()"><i class="fas fa-pause"></i> Pausar</button>
+        <button onclick="document.getElementById('live-viewer').classList.remove('active'); stopLiveViewer();">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+      </div>
+    </div>
+    <iframe id="live-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+</div>
+
+<!-- ═══════════════ UV (paths absolutos) ═══════════════ -->
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<script src="/uv/uv.handler.js"></script>
+
+<!-- ═══════════════ LÓGICA PRINCIPAL ═══════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getDatabase, ref, onValue, set, remove, update, get, push
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+/* ─── Firebase ─── */
+const firebaseConfig = {
+  apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
+  authDomain: "kahoot-8529e.firebaseapp.com",
+  databaseURL: "https://kahoot-8529e-default-rtdb.firebaseio.com",
+  projectId: "kahoot-8529e",
+  storageBucket: "kahoot-8529e.firebasestorage.app",
+  messagingSenderId: "313414356056",
+  appId: "1:313414356056:web:4aab4587f7df9393008e2d",
+  measurementId: "G-8T4CPC1BQ3"
+};
+
+const db = getDatabase(initializeApp(firebaseConfig));
+
+/* ─── Constantes de sesión ─── */
+const SESSION_KEY = 'waevo_admin_session';
+const REQUIRED_ROLE = 'OWNER';
+const REQUIRED_USER = 'Alex';
+const ACTOR = 'Alex';
+
+/* ─── Estado ─── */
+let users = [];
+let activity = [];
+let currentTab = 'users';
+const unsubs = [];
+let refreshTimer = null;
+let liveViewerInterval = null;
+let liveViewerUserId = null;
+let liveViewerPaused = false;
+
+/* ─── Check de sesión ─── */
+function checkSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    return s && s.role === REQUIRED_ROLE && s.user === REQUIRED_USER;
+  } catch (e) { return false; }
+}
+
+/* ─── Encode URL con UV ─── */
+function getFrameUrl(url) {
+  if (!url || /^(about|blob|data|javascript):/i.test(url)) return url;
+  try {
+    if (typeof self !== 'undefined' && self.__uv$config && typeof self.__uv$config.encodeUrl === 'function') {
+      let p = self.__uv$config.prefix;
+      if (!p.startsWith('/')) p = '/' + p;
+      if (!p.endsWith('/')) p = p + '/';
+      return p + self.__uv$config.encodeUrl(url);
+    }
+  } catch (e) {}
+  return url;
+}
+
+/* ─── Logger inmutable ─── */
+function logAction(action, target, metadata) {
+  push(ref(db, 'activity_logs'), {
+    timestamp: Date.now(),
+    actor: ACTOR,
+    action,
+    target_user: target || null,
+    metadata: metadata || null
+  }).catch(err => console.warn('logAction error:', err));
+}
+
+/* ─── Util ─── */
+function isOnline(u) { return u.lastSeen && (Date.now() - u.lastSeen < 15000); }
+function safeId(id) { return String(id).replace(/[^a-zA-Z0-9]/g, '_'); }
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LISTENERS
+   ══════════════════════════════════════════════════════════════════════ */
+function init() {
+  // Usuarios
+  unsubs.push(onValue(ref(db, 'alexbrowser_users'), snap => {
+    const data = snap.val() || {};
+    users = Object.entries(data).map(([id, v]) => ({ id, ...v }));
+    if (currentTab === 'users') renderUsers();
+    updateStats();
+  }));
+
+  // Log de actividades
+  unsubs.push(onValue(ref(db, 'activity_logs'), snap => {
+    const data = snap.val() || {};
+    activity = Object.entries(data)
+      .map(([id, v]) => ({ id, ...v }))
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+      .slice(0, 500);
+    if (currentTab === 'audit') renderAudit();
+    updateStats();
+  }));
+
+  // Refresco de previews cada 800ms
+  refreshTimer = setInterval(refreshPreviews, 800);
+}
+
+function updateStats() {
+  document.getElementById('stat-connected').textContent = users.filter(isOnline).length;
+  document.getElementById('stat-total').textContent = users.length;
+  document.getElementById('stat-actions').textContent = activity.length;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RENDER USUARIOS
+   ══════════════════════════════════════════════════════════════════════ */
+function renderUsers() {
+  const connected = users.filter(isOnline);
+  const disconnected = users.filter(u => !isOnline(u));
+  const body = document.getElementById('body');
+
+  let html = '';
+
+  // Sección CONECTADOS (arriba)
+  html += `<div class="section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
+  html += connected.length
+    ? connected.map(u => renderUserCard(u, true)).join('')
+    : `<div style="text-align:center;color:var(--muted);padding:20px;">Nadie conectado ahora mismo.</div>`;
+
+  // Sección DESCONECTADOS (abajo)
+  if (disconnected.length) {
+    html += `<div class="section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;
+    html += disconnected.slice(0, 80).map(u => renderUserCard(u, false)).join('');
+    if (disconnected.length > 80) {
+      html += `<div style="text-align:center;color:var(--faint);padding:12px;font-size:11.5px;">Mostrando 80 de ${disconnected.length} usuarios desconectados.</div>`;
+    }
+  }
+
+  body.innerHTML = html;
+
+  // Cargar iframes de conectados
+  connected.forEach(loadUserIframe);
+}
+
+function renderUserCard(u, online) {
+  const sid = safeId(u.id);
+  const lastSeen = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString() : '—';
+  const url = (u.currentUrl || 'about:start').slice(0, 60);
+  const safe = String(u.id).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+  const ownerExtras = `
+    <button class="action-btn warning" onclick="redirectUser('${safe}')"><i class="fas fa-external-link-alt"></i> Redirigir</button>
+    <button class="action-btn danger" onclick="banUser('${safe}')"><i class="fas fa-ban"></i> Banear</button>
+    <button class="action-btn primary" onclick="impersonate('${safe}')"><i class="fas fa-user-secret"></i> Impersonar</button>
+  `;
+
+  return `<div class="user-card" data-uid="${escapeHtml(u.id)}">
+    <div class="preview" id="preview-${sid}">
+      ${online ? '' : '<div class="offline-label">Desconectado</div>'}
+      <div class="live-label">${online ? '🔴 LIVE' : 'OFFLINE'}</div>
+    </div>
+    <div class="info">
+      <div class="name">
+        <i class="fas fa-user crown"></i> ${escapeHtml(u.id.slice(0, 18))}…
+      </div>
+      <div class="uid">${escapeHtml(u.id)}</div>
+      <div class="activity">Últ. vez: ${lastSeen}<br>URL: <code>${escapeHtml(url)}</code></div>
+    </div>
+    <div class="btn-actions">
+      <button class="action-btn primary" onclick="viewScreen('${safe}')"><i class="fas fa-eye"></i> Pantalla</button>
+      <button class="action-btn warning" onclick="sendAnnouncement('${safe}')"><i class="fas fa-bullhorn"></i> Anuncio</button>
+      <button class="action-btn success" onclick="viewHistory('${safe}')"><i class="fas fa-history"></i> Historial</button>
+      ${online ? `<button class="action-btn danger" onclick="blockUser('${safe}')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
+      ${online ? `<button class="action-btn success" onclick="unblockUser('${safe}')"><i class="fas fa-unlock"></i> Desbloquear</button>` : ''}
+      ${ownerExtras}
+    </div>
+  </div>`;
+}
+
+function loadUserIframe(u) {
+  const cont = document.getElementById(`preview-${safeId(u.id)}`);
+  if (!cont) return;
+  const cur = u.currentUrl || 'about:start';
+  if (cur === 'about:start') return;
+  const framed = getFrameUrl(cur);
+  let f = cont.querySelector('iframe');
+  if (f) {
+    if (f.dataset.url !== framed) { f.src = framed; f.dataset.url = framed; }
+  } else {
+    f = document.createElement('iframe');
+    f.src = framed;
+    f.dataset.url = framed;
+    f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+    cont.insertBefore(f, cont.firstChild);
+  }
+}
+
+function refreshPreviews() {
+  users.filter(isOnline).forEach(u => {
+    const card = document.querySelector(`[data-uid="${u.id}"] .activity`);
+    if (card) {
+      const t = u.lastSeen ? new Date(u.lastSeen).toLocaleTimeString() : '—';
+      const url = (u.currentUrl || 'about:start').slice(0, 60);
+      card.innerHTML = `Últ. vez: ${t}<br>URL: <code>${escapeHtml(url)}</code>`;
+    }
+    loadUserIframe(u);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RENDER AUDITORÍA
+   ══════════════════════════════════════════════════════════════════════ */
+function renderAudit() {
+  const body = document.getElementById('body');
+  if (!activity.length) {
+    body.innerHTML = `<div style="text-align:center;color:var(--muted);padding:40px;">
+      <i class="fas fa-clipboard-list" style="font-size:40px;display:block;margin-bottom:12px;opacity:0.4;"></i>
+      Sin actividades registradas.
+    </div>`;
+    return;
+  }
+
+  body.innerHTML =
+    `<div class="section-title">
+      <i class="fas fa-clipboard-list"></i>
+      Registro de Actividades (${activity.length}) — Solo lectura, no se puede borrar
+    </div>` +
+    activity.map(a => {
+      const badge = a.actor === 'Alex' ? 'alex' : 'marc';
+      return `<div class="audit-log">
+        <div class="audit-header">
+          <span>${new Date(a.timestamp).toLocaleString()}</span>
+          <span class="audit-badge ${badge}">${escapeHtml(a.actor || '?')}</span>
+        </div>
+        <div class="audit-action">${escapeHtml(a.action || '—')}</div>
+        ${a.target_user ? `<div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Target: <code style="color:var(--accent);">${escapeHtml(a.target_user)}</code></div>` : ''}
+        ${a.metadata ? `<div class="audit-meta">${escapeHtml(JSON.stringify(a.metadata))}</div>` : ''}
+      </div>`;
+    }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABS
+   ══════════════════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  if (tab === 'users') renderUsers();
+  else renderAudit();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ACCIONES BÁSICAS
+   ══════════════════════════════════════════════════════════════════════ */
+function viewScreen(userId) {
+  const u = users.find(x => x.id === userId);
+  if (!u) return;
+  liveViewerUserId = userId;
+  liveViewerPaused = false;
+  document.getElementById('live-pause-btn').classList.remove('on');
+  document.getElementById('live-pause-btn').innerHTML = '<i class="fas fa-pause"></i> Pausar';
+  document.getElementById('live-title').innerHTML =
+    `<i class="fas fa-eye"></i> Pantalla de ${escapeHtml(userId)}`;
+  const iframe = document.getElementById('live-iframe');
+  iframe.src = getFrameUrl(u.currentUrl || 'about:start');
+  document.getElementById('live-viewer').classList.add('active');
+
+  // Actualizar cada 800ms la URL del iframe
+  if (liveViewerInterval) clearInterval(liveViewerInterval);
+  liveViewerInterval = setInterval(async () => {
+    if (liveViewerPaused) return;
+    const snap = await get(ref(db, `alexbrowser_users/${liveViewerUserId}`));
+    if (!snap.exists()) return;
+    const data = snap.val();
+    const newUrl = data.currentUrl || 'about:start';
+    const framed = getFrameUrl(newUrl);
+    if (iframe.src !== framed) iframe.src = framed;
+  }, 800);
+
+  logAction('VER_PANTALLA', userId, { url: u.currentUrl });
+}
+
+function stopLiveViewer() {
+  if (liveViewerInterval) { clearInterval(liveViewerInterval); liveViewerInterval = null; }
+  document.getElementById('live-iframe').src = 'about:blank';
+  liveViewerUserId = null;
+}
+
+function toggleLivePause() {
+  liveViewerPaused = !liveViewerPaused;
+  const btn = document.getElementById('live-pause-btn');
+  if (liveViewerPaused) {
+    btn.classList.add('on');
+    btn.innerHTML = '<i class="fas fa-play"></i> Reanudar';
+  } else {
+    btn.classList.remove('on');
+    btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+  }
+}
+
+async function viewHistory(userId) {
+  const snap = await get(ref(db, `user_navigation_logs/${userId}`));
+  const data = snap.val() || {};
+  const entries = Object.values(data)
+    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+    .slice(0, 100);
+
+  const u = users.find(x => x.id === userId);
+
+  let html = `<div style="font-size:16px;font-weight:800;margin-bottom:14px;color:var(--warning);">
+    <i class="fas fa-history"></i> Historial de ${escapeHtml(userId)}
+  </div>`;
+  html += `<div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+    <strong>Joined:</strong> ${u && u.joined ? new Date(u.joined).toLocaleString() : '—'}<br>
+    <strong>Últ. conexión:</strong> ${u && u.lastSeen ? new Date(u.lastSeen).toLocaleString() : '—'}<br>
+    <strong>URL actual:</strong> ${escapeHtml(u && u.currentUrl ? u.currentUrl : '—')}
+  </div>`;
+
+  if (!entries.length) {
+    html += '<div style="color:var(--muted);text-align:center;padding:20px;">Sin navegaciones registradas.</div>';
+  } else {
+    html += entries.map(e => `<div style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11.5px;">
+      <div style="color:var(--accent);font-weight:700;margin-bottom:2px;">${escapeHtml(e.title || '(sin título)')}</div>
+      <div style="color:var(--faint);font-family:ui-monospace,monospace;word-break:break-all;font-size:10.5px;">${escapeHtml(e.url)}</div>
+      <div style="color:var(--faint);font-size:10px;margin-top:2px;">${new Date(e.timestamp).toLocaleString()}</div>
+    </div>`).join('');
+  }
+
+  showModal(html);
+  logAction('VER_HISTORIAL', userId, null);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ACCIONES DE COMANDO (block / unblock / announcement)
+   ══════════════════════════════════════════════════════════════════════ */
+function blockUser(userId) {
+  const reason = prompt('Motivo del bloqueo (opcional):') || 'Bloqueado por un administrador';
+  push(ref(db, `user_commands/${userId}`), {
+    type: 'block', reason, at: Date.now(), processed: false
+  }).then(() => {
+    logAction('BLOQUEAR_PANTALLA', userId, { reason });
+    showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🔒</div>
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Pantalla bloqueada</div>`);
+  }).catch(e => alert('Error: ' + e.message));
+}
+
+function unblockUser(userId) {
+  push(ref(db, `user_commands/${userId}`), {
+    type: 'unblock', at: Date.now(), processed: false
+  }).then(() => {
+    logAction('DESBLOQUEAR_PANTALLA', userId, null);
+    showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🔓</div>
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Pantalla desbloqueada</div>`);
+  }).catch(e => alert('Error: ' + e.message));
+}
+
+function sendAnnouncement(userId) {
+  const title = prompt('Título del anuncio:');
+  if (!title) return;
+  const content = prompt('Contenido del anuncio:');
+  if (!content) return;
+  push(ref(db, `user_commands/${userId}`), {
+    type: 'announcement', title, content, at: Date.now(), processed: false
+  }).then(() => {
+    logAction('ENVIAR_ANUNCIO', userId, { title });
+    showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">📢</div>
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Anuncio enviado</div>`);
+  }).catch(e => alert('Error: ' + e.message));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ACCIONES EXCLUSIVAS OWNER
+   ══════════════════════════════════════════════════════════════════════ */
+function redirectUser(userId) {
+  const url = prompt(`URL a la que redirigir a ${userId}:`);
+  if (!url) return;
+  push(ref(db, `user_commands/${userId}`), {
+    type: 'redirect', url, at: Date.now(), processed: false
+  }).then(() => {
+    logAction('REDIRIGIR_USUARIO', userId, { url });
+    showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">↗️</div>
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Usuario redirigido</div>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all;">${escapeHtml(url)}</div>`);
+  }).catch(e => alert('Error: ' + e.message));
+}
+
+function redirectAll() {
+  const input = document.getElementById('redirect-all-url');
+  const url = input.value.trim();
+  if (!url) { alert('Introduce una URL primero'); return; }
+  if (!confirm(`¿Redirigir a TODOS los ${users.length} usuarios a "${url}"?`)) return;
+
+  let count = 0;
+  users.forEach(u => {
+    push(ref(db, `user_commands/${u.id}`), {
+      type: 'redirect', url, at: Date.now(), processed: false
+    }).then(() => count++).catch(() => {});
+  });
+  logAction('REDIRIGIR_TODOS', '*', { url, count: users.length });
+  showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">🚀</div>
+    <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Redirigiendo a ${users.length} usuarios</div>
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all;">${escapeHtml(url)}</div>`);
+  input.value = '';
+}
+
+function scheduleRedirect() {
+  const input = document.getElementById('redirect-all-url');
+  const url = input.value.trim();
+  if (!url) { alert('Introduce una URL primero'); return; }
+  if (!confirm(`¿Programar redirección de TODOS los usuarios a "${url}" en 30 segundos?`)) return;
+
+  logAction('PROGRAMAR_REDIRECCION', '*', { url, delay: 30000 });
+  showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">⏰</div>
+    <div style="text-align:center;font-weight:700;font-size:15px;color:var(--warning);">Redirección programada en 30s</div>`);
+
+  setTimeout(() => {
+    users.forEach(u => {
+      push(ref(db, `user_commands/${u.id}`), {
+        type: 'redirect', url, at: Date.now(), processed: false
+      }).catch(() => {});
+    });
+    logAction('REDIRECCION_PROGRAMADA_EJECUTADA', '*', { url });
+  }, 30000);
+  input.value = '';
+}
+
+function banUser(userId) {
+  const reason = prompt('Motivo del ban (opcional):') || 'Baneado por el owner';
+  if (reason === null) return;
+  const hours = parseInt(prompt('Duración del ban en horas (ej: 24):', '24'));
+  if (!hours || hours <= 0) return;
+  if (!confirm(`¿Banear a ${userId} durante ${hours}h?`)) return;
+
+  set(ref(db, `bans/${userId}`), {
+    expiresAt: Date.now() + hours * 3600000,
+    bannedBy: 'Alex',
+    alias: reason
+  }).then(() => {
+    logAction('BANEAR_USUARIO', userId, { hours, reason });
+    showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">⛔</div>
+      <div style="text-align:center;font-weight:700;font-size:15px;color:var(--danger);">Usuario baneado</div>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;">${hours}h — ${escapeHtml(reason)}</div>`);
+  }).catch(e => alert('Error: ' + e.message));
+}
+
+async function impersonate(userId) {
+  if (!confirm(`¿Impersonar a ${userId}? Se cerrará tu sesión de OWNER y entrarás como ese usuario.`)) return;
+
+  // Guardar el ID original por si se quiere volver
+  const currentId = localStorage.getItem('waevo_impersonator_id');
+  if (!currentId) {
+    // No sabemos el ID original desde aquí, solo el rol; confiamos en que el SW del device lo tenga
+    const deviceId = await getCurrentDeviceId();
+    if (deviceId) localStorage.setItem('waevo_impersonator_id', deviceId);
+  }
+
+  // Sobrescribir el deviceId en IndexedDB
+  try {
+    const dbOpen = indexedDB.open('AlexBrowserDB', 1);
+    dbOpen.onupgradeneeded = e => e.target.result.createObjectStore('meta');
+    dbOpen.onsuccess = e => {
+      const idb = e.target.result;
+      const tx = idb.transaction('meta', 'readwrite');
+      tx.objectStore('meta').put(userId, 'deviceId');
+      tx.oncomplete = () => {
+        logAction('IMPERSONAR', userId, null);
+        sessionStorage.removeItem(SESSION_KEY);
+        window.location.href = '/';
+      };
+    };
+  } catch (e) {
+    alert('Error al impersonar: ' + e.message);
+  }
+}
+
+function getCurrentDeviceId() {
+  return new Promise(resolve => {
+    try {
+      const r = indexedDB.open('AlexBrowserDB', 1);
+      r.onsuccess = e => {
+        const idb = e.target.result;
+        const tx = idb.transaction('meta', 'readonly');
+        const req = tx.objectStore('meta').get('deviceId');
+        req.onsuccess = ev => resolve(ev.target.result || null);
+        req.onerror = () => resolve(null);
+      };
+      r.onerror = () => resolve(null);
+    } catch (e) { resolve(null); }
+  });
+}
+
+function globalBanner() {
+  const text = prompt('Texto del banner global (aparecerá 6s en TODOS los usuarios):');
+  if (!text) return;
+  if (!confirm(`¿Enviar banner a TODOS los ${users.length} usuarios?`)) return;
+
+  users.forEach(u => {
+    push(ref(db, `user_commands/${u.id}`), {
+      type: 'banner', text, at: Date.now(), processed: false
+    }).catch(() => {});
+  });
+  logAction('BANNER_GLOBAL', '*', { text, count: users.length });
+  showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">📣</div>
+    <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">Banner enviado a ${users.length} usuarios</div>`);
+}
+
+async function exportLogs() {
+  const snap = await get(ref(db, 'activity_logs'));
+  const data = snap.val() || {};
+  const entries = Object.values(data)
+    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `waevo_owner_logs_${Date.now()}.json`;
+  a.click();
+  logAction('EXPORTAR_LOGS', null, { count: entries.length });
+  showSimpleModal(`<div style="text-align:center;font-size:44px;margin-bottom:10px;">📥</div>
+    <div style="text-align:center;font-weight:700;font-size:15px;color:var(--success);">${entries.length} logs exportados</div>`);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MODALES
+   ══════════════════════════════════════════════════════════════════════ */
+function showModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal').classList.add('active');
+}
+
+function showSimpleModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SALIR
+   ══════════════════════════════════════════════════════════════════════ */
+function exitSession() {
+  // Limpiar listeners
+  unsubs.forEach(u => { try { u(); } catch (e) {} });
+  if (refreshTimer) clearInterval(refreshTimer);
+  if (liveViewerInterval) clearInterval(liveViewerInterval);
+
+  // Log de cierre
+  logAction('CERRAR_SESION_OWNER', null, null);
+
+  // Borrar sesión
+  sessionStorage.removeItem(SESSION_KEY);
+
+  // Volver a home
+  window.location.href = '/';
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EXPONER AL WINDOW (para onclick del HTML)
+   ══════════════════════════════════════════════════════════════════════ */
+Object.assign(window, {
+  exitSession,
+  switchTab,
+  viewScreen,
+  viewHistory,
+  blockUser,
+  unblockUser,
+  sendAnnouncement,
+  redirectUser,
+  redirectAll,
+  scheduleRedirect,
+  banUser,
+  impersonate,
+  globalBanner,
+  exportLogs,
+  closeModal,
+  toggleLivePause,
+  stopLiveViewer
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ARRANQUE
+   ══════════════════════════════════════════════════════════════════════ */
+if (!checkSession()) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('denied').style.display = 'flex';
+  setTimeout(() => window.location.replace('/'), 1500);
+} else {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('panel').style.display = 'flex';
+  // Log de acceso al panel
+  logAction('ACCEDER_PANEL_OWNER', null, { path: location.pathname });
+  init();
+}
+</script>
+
+</body>
+</html>
