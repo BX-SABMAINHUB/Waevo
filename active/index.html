@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Waevo OS</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<!-- X-Frame-Bypass: Sistema de respaldo para X-Frame-Options -->
+<script src="https://cdn.jsdelivr.net/npm/@jwriter20/x-frame-bypass@1.0.0/index.js" type="module"></script>
 <style>
 :root{--bg-app:#06060a;--bg-panel:rgba(18,18,26,0.78);--bg-panel-solid:rgba(14,14,20,0.97);--bg-input:rgba(28,28,38,0.55);--accent:#00e5ff;--accent-glow:rgba(0,229,255,0.4);--accent-secondary:#bd00ff;--text-main:#f1f5f9;--text-muted:#8b95a8;--text-faint:#59606f;--border:rgba(255,255,255,0.07);--border-strong:rgba(255,255,255,0.13);--danger:#ff2d6b;--success:#22e08a;--warning:#ffb347;--anim-speed:0.25s;--radius-lg:22px;--radius-md:14px;--radius-sm:10px;--shadow-soft:0 10px 40px rgba(0,0,0,0.55);--shadow-deep:0 24px 70px rgba(0,0,0,0.75)}
 *{box-sizing:border-box;user-select:none;outline:none;-webkit-tap-highlight-color:transparent}
@@ -264,7 +266,6 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 @keyframes dotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.55}}
 @keyframes rotateIn{from{transform:rotate(-10deg);opacity:0}to{transform:rotate(0);opacity:1}}
 
-/* Transiciones suaves a todos los elementos interactivos */
 .drawer-btn, .icon-btn, .action-btn, .tab, .search-tool, .q-link,
 .shop-pack, .stat-card, .history-item, .admin-tab, .auth-btn,
 .modal-btn, .lz-btn, .new-tab-btn, .tab-close, .mic-chip, .btn-test-mic {
@@ -357,7 +358,6 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
 
 ::selection { background: rgba(0,229,255,0.3); color: white; }
 
-/* Suavizado del fadeIn global en modales/overlays */
 .overlay-panel.open { animation: slideInRightAnim 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 </style>
 <script src="./uv/uv.bundle.js" charset="UTF-8"></script>
@@ -407,7 +407,6 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
     <div class="calc-loading-dots"><span></span><span></span><span></span></div>
 </div>
 
-<!-- 🔐 LOGIN: SOLO GOOGLE -->
 <div class="auth-overlay" id="auth-main-overlay">
     <div class="auth-box">
         <h3>Waevo OS</h3>
@@ -632,15 +631,130 @@ const LAZARUS_PATTERNS = [
     'lazarusfilter','.lazarus.','/lazarus/','lazarus.app'
 ];
 
+/* ═══════════════════════════════════════════════════════════════════
+   🔥 PROXY SYSTEM v3.0 — UV + X-Frame-Bypass + Proxy CORS Público
+   ═══════════════════════════════════════════════════════════════════ */
 const proxySystem = {
     _enabled:true,_ready:false,_prefix:null,
-    init(){const s=localStorage.getItem('waevo_proxy_enabled');if(s!==null)this._enabled=s==='1';this._waitForUV(0)},
-    _waitForUV(a){if(a>120){console.warn('[UV] No cargó tras 60s');return}try{if(typeof Ultraviolet!=='undefined'&&self.__uv$config&&typeof self.__uv$config.encodeUrl==='function'){this._ready=true;this._prefix=self.__uv$config.prefix;if(!this._prefix.startsWith('/'))this._prefix='/'+this._prefix;if(!this._prefix.endsWith('/'))this._prefix+='/';console.log('[UV] ✅ Listo. Prefix:',this._prefix);return}}catch(e){}setTimeout(()=>this._waitForUV(a+1),500)},
-    isLocal(url){if(!url)return true;if(url==='about:start'||url==='about:blank')return true;if(url.startsWith('about:')||url.startsWith('blob:')||url.startsWith('data:')||url.startsWith('javascript:'))return true;try{const u=new URL(url,location.href);if(u.hostname===location.hostname)return true;if(this._prefix&&u.pathname.startsWith(this._prefix))return true}catch(e){}return false},
+    _engine:'uv', // 'uv' | 'xframebypass' | 'corsproxy'
+    _fallbackTimeout:null,
+
+    init(){
+        const s=localStorage.getItem('waevo_proxy_enabled');
+        if(s!==null)this._enabled=s==='1';
+        this._waitForUV(0);
+    },
+
+    _waitForUV(a){
+        if(a>120){console.warn('[UV] No cargó tras 60s. Activando fallback.');this._engine='corsproxy';return}
+        try{
+            if(typeof Ultraviolet!=='undefined'&&self.__uv$config&&typeof self.__uv$config.encodeUrl==='function'){
+                this._ready=true;
+                this._prefix=self.__uv$config.prefix;
+                if(!this._prefix.startsWith('/'))this._prefix='/'+this._prefix;
+                if(!this._prefix.endsWith('/'))this._prefix+='/';
+                console.log('[UV] ✅ Listo. Prefix:',this._prefix);
+                this._engine='uv';
+                return;
+            }
+        }catch(e){}
+        setTimeout(()=>this._waitForUV(a+1),500);
+    },
+
+    isLocal(url){
+        if(!url)return true;
+        if(url==='about:start'||url==='about:blank')return true;
+        if(url.startsWith('about:')||url.startsWith('blob:')||url.startsWith('data:')||url.startsWith('javascript:'))return true;
+        try{
+            const u=new URL(url,location.href);
+            if(u.hostname===location.hostname)return true;
+            if(this._prefix&&u.pathname.startsWith(this._prefix))return true;
+        }catch(e){}
+        return false;
+    },
+
     needsProxy(url){return this._enabled&&!this.isLocal(url)},
-    wrap(url){if(!this._ready)return url;try{return this._prefix+self.__uv$config.encodeUrl(url)}catch(e){return url}},
-    getFrameUrl(url){return this.needsProxy(url)?this.wrap(url):url}
+
+    wrap(url){
+        if(!this._ready)return url;
+        try{return this._prefix+self.__uv$config.encodeUrl(url)}catch(e){return url}
+    },
+
+    /**
+     * Devuelve la URL final para el iframe aplicando el motor de proxy seleccionado.
+     * - UV: usa el service worker local.
+     * - X-Frame-Bypass: devuelve la URL original (el Web Component se encarga de reescribirla).
+     * - CORS Proxy: usa un proxy público que elimina X-Frame-Options.
+     */
+    getFrameUrl(url){
+        if(!this.needsProxy(url))return url;
+
+        // Motor 1: UV (preferido)
+        if(this._engine==='uv'&&this._ready){
+            return this.wrap(url);
+        }
+
+        // Motor 2: X-Frame-Bypass (se maneja a nivel de atributo en el iframe, aquí devolvemos la URL original)
+        if(this._engine==='xframebypass'){
+            return url; // El iframe tendrá is="x-frame-bypass"
+        }
+
+        // Motor 3: Proxy CORS público (allorigins) — último recurso
+        if(this._engine==='corsproxy'){
+            return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        }
+
+        // Si nada está listo, devolvemos la URL original
+        return url;
+    },
+
+    /**
+     * Fuerza un motor concreto (útil para pruebas manuales o fallback).
+     */
+    setEngine(engine){
+        if(['uv','xframebypass','corsproxy'].includes(engine)){
+            this._engine=engine;
+            console.log('[Proxy] Motor cambiado a:',engine);
+            ui.showToast(`🔧 Motor de proxy: ${engine.toUpperCase()}`);
+        }
+    },
+
+    /**
+     * Intenta cargar una URL usando el mejor motor disponible.
+     * Si UV falla, prueba con X-Frame-Bypass, luego con CORS Proxy.
+     */
+    async loadWithFallback(url, iframeElement){
+        // 1) Intentar UV
+        if(this._engine==='uv'&&this._ready){
+            iframeElement.src=this.wrap(url);
+            return;
+        }
+
+        // 2) Intentar X-Frame-Bypass (si el navegador soporta Custom Elements)
+        if(window.customElements){
+            try{
+                iframeElement.setAttribute('is','x-frame-bypass');
+                iframeElement.src=url;
+                // Si tras 5s el iframe no ha cargado nada, probamos CORS proxy
+                this._fallbackTimeout=setTimeout(()=>{
+                    console.warn('[Proxy] X-Frame-Bypass parece no funcionar. Probando CORS Proxy...');
+                    this.setEngine('corsproxy');
+                    iframeElement.removeAttribute('is');
+                    iframeElement.src=this.getFrameUrl(url);
+                },5000);
+                return;
+            }catch(e){
+                console.warn('[Proxy] X-Frame-Bypass no disponible:',e);
+            }
+        }
+
+        // 3) CORS Proxy
+        this.setEngine('corsproxy');
+        iframeElement.src=this.getFrameUrl(url);
+    }
 };
+
+/* ─── Fin ProxySystem ─── */
 
 const shopSystem = {open(){document.getElementById('shop-overlay').classList.add('active')},close(){document.getElementById('shop-overlay').classList.remove('active')},buy(p){const pk={ab_pack_3:3,ab_pack_8:8,ab_pack_20:20};const ab=pk[p]||0;if(ab>0)ui.showToast(`✅ Compra simulada: +${ab} AB`)}};
 
@@ -670,7 +784,6 @@ const dataManager = {
     saveHistory:(url,title)=>{
         if(!url||url==='about:start')return;
         let h=JSON.parse(localStorage.getItem('ab_history')||'[]');
-        // Bug fix: evitar duplicar la misma URL consecutiva
         if(h.length && h[0].url===url) return;
         h.unshift({url,title,time:new Date().toLocaleTimeString()});
         if(h.length>100)h.pop();
@@ -778,7 +891,10 @@ class BrowserEngine {
         document.getElementById('start-page').classList.remove('active');
         const frame=document.getElementById(`view-${this.activeTabId}`);if(!frame)return;
         frame.classList.add('active');
-        frame.src=proxySystem.getFrameUrl(url);
+
+        // 🔥 NUEVO: usar el sistema de fallback para cargar la URL
+        proxySystem.loadWithFallback(url, frame);
+
         document.getElementById('url-input').value=raw||title;
         this.renderTabs();this.updateNavButtons();
         dataManager.saveHistory(url,title);
@@ -797,7 +913,7 @@ class BrowserEngine {
         t.history.push(ddgUrl);t.historyIndex++;
         t.url=ddgUrl;t.title='DuckDuckGo: '+(q||'');
         const frame=document.getElementById(`view-${this.activeTabId}`);
-        if(frame)frame.src=proxySystem.getFrameUrl(ddgUrl);
+        if(frame)proxySystem.loadWithFallback(ddgUrl, frame);
         document.getElementById('url-input').value=ddgUrl;
         this.renderTabs();
         document.getElementById('search-fallback-bar').classList.remove('show');
@@ -807,9 +923,9 @@ class BrowserEngine {
         const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
         try{window.open(t.url,'_blank')}catch(e){ui.showToast('❌ Bloqueado por el navegador')}
     }
-    goBack(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex>0){t.historyIndex--;const p=t.history[t.historyIndex];if(p==='about:start'){t.url='about:start';this.switchTab(t.id)}else{document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(p);t.url=p;this.switchTab(t.id)}}}
-    goForward(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex<t.history.length-1){t.historyIndex++;const n=t.history[t.historyIndex];document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(n);t.url=n;this.switchTab(t.id)}}
-    reload(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(t.url);ui.showToast("Recargando...")}
+    goBack(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex>0){t.historyIndex--;const p=t.history[t.historyIndex];if(p==='about:start'){t.url='about:start';this.switchTab(t.id)}else{const f=document.getElementById(`view-${this.activeTabId}`);if(f)proxySystem.loadWithFallback(p,f);t.url=p;this.switchTab(t.id)}}}
+    goForward(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex<t.history.length-1){t.historyIndex++;const n=t.history[t.historyIndex];const f=document.getElementById(`view-${this.activeTabId}`);if(f)proxySystem.loadWithFallback(n,f);t.url=n;this.switchTab(t.id)}}
+    reload(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;const f=document.getElementById(`view-${this.activeTabId}`);if(f)proxySystem.loadWithFallback(t.url,f);ui.showToast("Recargando...")}
     goHome(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;t.history=t.history.slice(0,t.historyIndex+1);t.history.push('about:start');t.historyIndex++;t.url='about:start';t.title='Inicio';const f=document.getElementById(`view-${this.activeTabId}`);if(f)f.src='about:blank';this.switchTab(t.id);document.getElementById('search-fallback-bar').classList.remove('show')}
     updateNavButtons(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;document.getElementById('btn-back').classList.toggle('disabled',t.historyIndex<=0);document.getElementById('btn-forward').classList.toggle('disabled',t.historyIndex>=t.history.length-1)}
     renderTabs(){
@@ -856,7 +972,7 @@ const ui = {
         viewport.style.position='fixed';viewport.style.top='0';viewport.style.left='0';viewport.style.width='100vw';viewport.style.height='100vh';viewport.style.zIndex='9999';
         viewport.innerHTML='';
         const iframe=document.createElement('iframe');
-        iframe.src=proxySystem.getFrameUrl('https://www.google.com/webhp?igu=1');
+        proxySystem.loadWithFallback('https://www.google.com/webhp?igu=1', iframe);
         iframe.style.cssText='width:100%;height:100%;border:none';
         viewport.appendChild(iframe);
         const exit=document.createElement('div');exit.innerHTML='✕';
@@ -890,7 +1006,6 @@ const friendsSystem = {
     close(){}
 };
 
-/* 🔐 AUTHSYSTEM — SOLO GOOGLE */
 const authSystem = {
     _tempBenjiKey:'',
     async check(){
@@ -916,12 +1031,10 @@ const authSystem = {
     async _processLoginCheck(userId){
         const snap=await window._fbGet(window._fbRef(window._fbDB,`passwords/${userId}`));
         if(snap.exists()){
-            // Cuenta ya existe: Google es suficiente para entrar
             localStorage.setItem(`auth_${userId}`,'ok');
             document.querySelectorAll('.auth-overlay').forEach(el=>el.classList.remove('active'));
             this._proceedToBrowser();
         } else {
-            // Cuenta nueva: crear contraseña para Benji Key
             document.getElementById('auth-create-password-overlay').classList.add('active');
         }
     },
@@ -1186,7 +1299,6 @@ const adminPages = {
     },
     _log(action,target,metadata){if(!window._fbReady)return;const session=sessionGuard.get();const actor=session?session.user:'desconocido';window._fbPush(window._fbRef(window._fbDB,'activity_logs'),{timestamp:Date.now(),actor,action,target_user:target||null,metadata:metadata||null}).catch(()=>{})},
 
-    /* ── ACCIONES ── */
     blockUser(userId){
         ui.showModal('🔒','Bloquear pantalla',`¿Bloquear la pantalla de ${userId.slice(0,14)}…?`,'Sí, bloquear','',()=>{
             const reason=prompt('Motivo del bloqueo (opcional):')||'Bloqueado por un administrador';
@@ -1495,7 +1607,6 @@ floatingPanel.init();
 lzPanel.init();
 authSystem.check();
 
-/* Expose globals for inline onclick handlers */
 window.browser=browser;
 window.ui=ui;
 window.floatingPanel=floatingPanel;
