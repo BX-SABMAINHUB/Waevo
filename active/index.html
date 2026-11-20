@@ -102,7 +102,6 @@ body{margin:0;padding:0;background:radial-gradient(1200px 800px at 12% -10%,rgba
 #mic-recording-banner button:hover{transform:scale(1.05);background:#ffe5ec}
 #mic-recording-banner button.mic-cancel{background:rgba(255,255,255,0.2);color:white}
 #mic-recording-banner button.mic-cancel:hover{background:rgba(255,255,255,0.35)}
-/* 🔥 BARRA DE FALLBACK BÚSQUEDA */
 #search-fallback-bar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:300;background:rgba(20,20,30,0.97);border:1px solid rgba(255,45,107,0.4);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:8px;box-shadow:0 10px 40px rgba(0,0,0,0.7);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:12px;max-width:90vw;flex-wrap:wrap;justify-content:center}
 #search-fallback-bar.show{display:flex;animation:fadeIn 0.3s}
 #search-fallback-bar span{color:var(--text-muted);font-weight:600;margin-right:4px}
@@ -115,7 +114,6 @@ body{margin:0;padding:0;background:radial-gradient(1200px 800px at 12% -10%,rgba
 #search-fallback-bar button.external:hover{background:rgba(255,255,255,0.15)}
 #search-fallback-bar button.close-btn{background:transparent;border-color:rgba(255,255,255,0.1);color:var(--text-faint);width:26px;height:26px;padding:0;display:flex;align-items:center;justify-content:center}
 #search-fallback-bar button.close-btn:hover{color:var(--danger);border-color:rgba(255,45,107,0.4)}
-/* 🔥 PANEL LAZARUS */
 #lz-tab{position:fixed;top:50%;right:0;transform:translateY(-50%);width:26px;height:68px;background:linear-gradient(135deg,#ff2d6b,#bd00ff);border:1px solid rgba(255,255,255,0.25);border-right:none;border-radius:8px 0 0 8px;z-index:100001;cursor:pointer;transition:width 0.25s ease,box-shadow 0.25s ease;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;user-select:none;box-shadow:-4px 0 20px rgba(255,45,107,0.5);font-family:'Inter','Segoe UI',system-ui,sans-serif;opacity:0.6}
 #lz-tab:hover,#lz-tab.open{opacity:1;width:30px;box-shadow:-6px 0 30px rgba(255,45,107,0.85)}
 #lz-tab i{pointer-events:none}
@@ -234,7 +232,6 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .auth-box h3{margin:0 0 12px 0;font-size:22px;font-weight:900;background:linear-gradient(110deg,#00e5ff,#bd00ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .auth-box p{color:var(--text-muted);font-size:12.5px;margin-bottom:26px;line-height:1.55}
 .auth-btn{width:100%;padding:14px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--accent-secondary),var(--accent));border:none;color:white;font-weight:700;font-size:14.5px;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:9px;font-family:inherit}
-.auth-forgot{font-size:11.5px;color:var(--text-muted);margin-top:20px;cursor:pointer;text-decoration:underline}
 .admin-cancel{width:100%;padding:12px;border-radius:13px;background:transparent;border:1px solid rgba(255,255,255,0.09);color:var(--text-muted);font-size:12.5px;cursor:pointer;margin-top:8px;font-family:inherit;font-weight:600}
 .benji-key-display{background:rgba(0,0,0,0.55);border:1px solid rgba(0,229,255,0.45);color:var(--accent);padding:16px;border-radius:var(--radius-md);font-family:ui-monospace,monospace;font-size:12.5px;word-break:break-all;margin:16px 0;user-select:all;text-align:left}
 #ctrl-announce-overlay{position:fixed;inset:0;background:rgba(2,2,6,0.93);backdrop-filter:blur(22px);z-index:8000;display:none;align-items:center;justify-content:center}
@@ -248,6 +245,120 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .ban-icon{font-size:62px;color:var(--danger);margin-bottom:22px}
 .ban-text{font-size:19px;font-weight:800;margin-bottom:12px}
 .ban-timer{font-size:15px;color:var(--text-muted);font-family:ui-monospace,monospace}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✨ ANIMACIONES EXTRA v2.0
+   ═══════════════════════════════════════════════════════════════════ */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRightAnim{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(0,229,255,0.3),0 8px 26px rgba(0,229,255,0.35)}50%{box-shadow:0 0 40px rgba(0,229,255,0.55),0 8px 26px rgba(0,229,255,0.5)}}
+@keyframes floatSoft{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes tabPop{0%{transform:scale(0.92)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(15px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(0.95)}100%{transform:scale(1);opacity:1}}
+@keyframes glowPulseSoft{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}
+@keyframes slideDownAnim{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUpAnim{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.55}}
+@keyframes rotateIn{from{transform:rotate(-10deg);opacity:0}to{transform:rotate(0);opacity:1}}
+
+/* Transiciones suaves a todos los elementos interactivos */
+.drawer-btn, .icon-btn, .action-btn, .tab, .search-tool, .q-link,
+.shop-pack, .stat-card, .history-item, .admin-tab, .auth-btn,
+.modal-btn, .lz-btn, .new-tab-btn, .tab-close, .mic-chip, .btn-test-mic {
+    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-btn:hover { transform: translateY(-1px) scale(1.06); }
+.icon-btn:active { transform: translateY(0) scale(0.96); }
+
+.tab.active { animation: tabPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.tab-close:hover { transform: rotate(90deg) scale(1.15); }
+
+.action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.action-btn:active { transform: translateY(0) scale(0.97); }
+
+.drawer-btn:hover { transform: translateX(-4px) scale(1.01); }
+
+.q-link:hover { transform: translateY(-5px) scale(1.08); box-shadow: 0 12px 30px rgba(0,229,255,0.2); }
+.q-link:active { transform: translateY(-2px) scale(1.02); }
+
+.history-item { animation: fadeInUp 0.3s ease; }
+.history-item:hover { transform: translateX(-3px); }
+
+.user-card { animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.user-card:hover { border-color: rgba(0,229,255,0.25); box-shadow: 0 4px 20px rgba(0,229,255,0.06); }
+
+.admin-section-title { animation: slideInLeft 0.35s ease; }
+
+.stat-card:hover { transform: translateY(-3px); border-color: rgba(0,229,255,0.35); }
+.stat-num { animation: fadeInScale 0.5s ease; }
+
+.auth-box { animation: bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.modal-box { animation: fadeInScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+.start-logo { animation: floatSoft 3.5s ease-in-out infinite; }
+.calc-loading-logo { animation: glowPulseSoft 1.5s ease-in-out infinite; }
+
+.shop-pack:hover { transform: translateY(-3px); border-color: rgba(0,229,255,0.3); }
+.shop-pack-btn:hover { transform: translateY(-1px) scale(1.03); }
+
+.admin-page.active { animation: fadeIn 0.4s ease; }
+
+.admin-tab { position: relative; }
+.admin-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+    animation: slideInRightAnim 0.3s ease;
+}
+
+.search-tool:hover { transform: translateY(-1px); }
+.new-tab-btn:hover { transform: rotate(90deg) scale(1.1); }
+
+.auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,229,255,0.35); }
+.auth-btn:active { transform: translateY(0) scale(0.98); }
+
+.modal-btn.confirm:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+.modal-btn.cancel:hover { transform: translateY(-1px); }
+
+.lz-btn:hover { transform: translateX(4px) scale(1.01); }
+#lz-tab { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+#lz-tab:hover { transform: translateY(-50%) scale(1.1); }
+
+#waevo-fab { animation: pulseGlow 3s ease-in-out infinite; }
+
+.admin-section-title .dot:not(.off) { animation: dotPulse 2s ease-in-out infinite; }
+.ctrl-announce-box { animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+.mic-chip:hover { transform: translateY(-2px) scale(1.03); }
+
+.drawer-overlay { transition: opacity 0.3s ease; }
+.overlay-panel { transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.drawer { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+iframe.browser-view.active { animation: fadeIn 0.35s ease; }
+
+#search-fallback-bar.show { animation: slideUpAnim 0.3s ease; }
+
+#live-view-overlay.active { animation: fadeIn 0.35s ease; }
+.live-view-container { animation: fadeInScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+#ban-screen.active { animation: fadeIn 0.4s ease; }
+.ban-icon { animation: glowPulseSoft 1.5s ease-in-out infinite; }
+
+#mic-recording-banner.show { animation: slideDownAnim 0.35s ease; }
+
+.benji-key-display { animation: fadeInUp 0.5s ease 0.3s both; }
+
+::selection { background: rgba(0,229,255,0.3); color: white; }
+
+/* Suavizado del fadeIn global en modales/overlays */
+.overlay-panel.open { animation: slideInRightAnim 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
 </style>
 <script src="./uv/uv.bundle.js" charset="UTF-8"></script>
 <script src="./uv/uv.config.js" charset="UTF-8"></script>
@@ -296,22 +407,24 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
     <div class="calc-loading-dots"><span></span><span></span><span></span></div>
 </div>
 
+<!-- 🔐 LOGIN: SOLO GOOGLE -->
 <div class="auth-overlay" id="auth-main-overlay">
     <div class="auth-box">
         <h3>Waevo OS</h3>
-        <p>Inicia sesión o crea una cuenta para continuar.</p>
-        <button class="auth-btn" onclick="authSystem.showManualLogin()"><i class="fas fa-user"></i> Inicio de sesión manual</button>
-        <button class="auth-btn" style="background:white;color:#333;margin-top:12px" onclick="authSystem.loginWithGoogle()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px"> Continuar con Google</button>
+        <p>Inicia sesión con tu cuenta de Google para continuar.</p>
+        <button class="auth-btn" style="background:white;color:#333" onclick="authSystem.loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px">
+            Continuar con Google
+        </button>
     </div>
 </div>
 <div class="auth-overlay" id="auth-create-password-overlay">
     <div class="auth-box">
-        <h3>Crear contraseña</h3>
-        <p>Protege tu cuenta con una contraseña segura.</p>
+        <h3>Protege tu cuenta</h3>
+        <p>Crea una contraseña para tu <strong>Benji Key</strong> de recuperación (no necesaria para volver a entrar).</p>
         <input type="password" class="auth-input" id="auth-new-password" placeholder="Contraseña">
         <input type="password" class="auth-input" id="auth-confirm-password" placeholder="Confirmar contraseña">
         <button class="auth-btn" onclick="authSystem.createPassword()">Continuar</button>
-        <button class="admin-cancel" onclick="authSystem.backToMain()" style="margin-top:12px">Atrás</button>
     </div>
 </div>
 <div class="auth-overlay" id="auth-benji-key-overlay">
@@ -320,25 +433,6 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
         <p style="color:white;font-size:13.5px">Aquí tienes tu <strong>Benji Key</strong>. Guárdala en un lugar seguro.</p>
         <div class="benji-key-display" id="benji-key-container"></div>
         <button class="auth-btn" onclick="authSystem.finishBenjiKeyStep()">Ya la he guardado</button>
-    </div>
-</div>
-<div class="auth-overlay" id="auth-login-overlay">
-    <div class="auth-box">
-        <h3>Iniciar sesión</h3>
-        <p>Introduce tu contraseña o Benji Key.</p>
-        <input type="text" class="auth-input" id="auth-login-id" placeholder="ID de tu cuenta" readonly>
-        <input type="password" class="auth-input" id="auth-login-password" placeholder="Contraseña o Benji Key">
-        <button class="auth-btn" onclick="authSystem.login()">Entrar</button>
-        <div class="auth-forgot" onclick="authSystem.showForgotPanel()">Me he olvidado de la contraseña</div>
-        <button class="admin-cancel" onclick="authSystem.backToMain()" style="margin-top:12px">Volver al menú</button>
-    </div>
-</div>
-<div class="auth-overlay" id="auth-forgot-overlay">
-    <div class="auth-box" style="text-align:center">
-        <h3>¿Olvidaste tu contraseña?</h3>
-        <p>Inicia sesión pegando tu <strong>Benji Key</strong> en el campo de contraseña.</p>
-        <button class="auth-btn" onclick="window.open('https://waevo-articles.vercel.app/','_blank')">Soporte</button>
-        <button class="admin-cancel" onclick="authSystem.closeForgot()" style="margin-top:12px">Volver</button>
     </div>
 </div>
 
@@ -423,7 +517,7 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
         <div class="modal-icon" id="modal-icon">⚡</div>
         <div class="modal-title" id="modal-title">¿Estás seguro?</div>
         <div class="modal-desc" id="modal-desc">Esta acción no se puede deshacer.</div>
-        <div class="modal-btns"><button class="modal-btn cancel" onclick="ui.closeModal()">Cancelar</button><button class="modal-btn confirm" id="modal-confirm-btn">Confirmar</button></div>
+        <div class="modal-btns" id="modal-btns"><button class="modal-btn cancel" onclick="ui.closeModal()">Cancelar</button><button class="modal-btn confirm" id="modal-confirm-btn">Confirmar</button></div>
     </div>
 </div>
 
@@ -527,10 +621,11 @@ const ADMIN_PATH='/admin/yes/yes/yes/conform/reports/admin/redesports/waevodech'
 const OWNER_PATH='/owner/YES/JFJDKMJMNMJJRIIIII83IFNCKSNFVJIIIIDJCJFCJMKKKKDNCJCJJJJDJVCUR8U348DNEUDFJGHJFJFDKIVJFKIDFRJVJFIIRKKFJKCKDLCKFLWELKDIKJDFORJDJCIFIIJNNDJSJHSDHHJHSJHDJWEJJDCMD/admin/secur/R/E/admind';
 const PASSWORDS={AN:'mya',OWNER:'Alex27Junio'};
 const SESSION_KEY='waevo_admin_session';
-let micActiveUserId=null,micStream=null,mediaRecorder=null,micChunks=[],micTimerInterval=null,micSecondsElapsed=0,micCancelled=false;
 const MIC_MAX_SECONDS=30;
 
-/* ─── 🔥 LISTA NEGRA LAZARUS ─── */
+/* estado global mic */
+let micActiveUserId=null,micStream=null,mediaRecorder=null,micChunks=[],micTimerInterval=null,micSecondsElapsed=0,micCancelled=false;
+
 const LAZARUS_PATTERNS = [
     'imtlazarus','imt-go','imtgo','jamf-school','jamfpro','jamfcloud',
     'filtering.lazarus','proxy.lazarus','lazarus-school','lazarus-education',
@@ -572,28 +667,47 @@ const liveViewer = {
 };
 
 const dataManager = {
-    saveHistory:(url,title)=>{if(!url||url==='about:start')return;let h=JSON.parse(localStorage.getItem('ab_history')||'[]');h.unshift({url,title,time:new Date().toLocaleTimeString()});if(h.length>100)h.pop();localStorage.setItem('ab_history',JSON.stringify(h));ui.renderHistory();if(window._fbReady&&deviceStore._id){window._fbPush(window._fbRef(window._fbDB,`user_navigation_logs/${deviceStore._id}`),{url,title,timestamp:Date.now()}).catch(()=>{})}},
+    saveHistory:(url,title)=>{
+        if(!url||url==='about:start')return;
+        let h=JSON.parse(localStorage.getItem('ab_history')||'[]');
+        // Bug fix: evitar duplicar la misma URL consecutiva
+        if(h.length && h[0].url===url) return;
+        h.unshift({url,title,time:new Date().toLocaleTimeString()});
+        if(h.length>100)h.pop();
+        localStorage.setItem('ab_history',JSON.stringify(h));
+        try{ui.renderHistory()}catch(e){}
+        if(window._fbReady&&deviceStore._id){window._fbPush(window._fbRef(window._fbDB,`user_navigation_logs/${deviceStore._id}`),{url,title,timestamp:Date.now()}).catch(()=>{})}
+    },
     getHistory:()=>JSON.parse(localStorage.getItem('ab_history')||'[]'),
     clearAll:()=>{localStorage.removeItem('ab_history');ui.showToast("Historial eliminado ✅");ui.renderHistory()}
 };
 
 /* ═══════════════════════════════════════════════════════════════════
-   🔥 BROWSER ENGINE CON FIX GOOGLE + FALLBACK DUCKDUCKGO
+   BROWSER ENGINE
    ═══════════════════════════════════════════════════════════════════ */
 class BrowserEngine {
-    constructor(){this.tabs=[];this.activeTabId=null;this.idCounter=0;this.homeUrl='about:start';this.lastSearchQuery=""}
-    init(){this.newTab();document.getElementById('url-input').addEventListener('keypress',e=>{if(e.key==='Enter')this.navigate()});ui.renderHistory()}
-    _isUrl(i){if(!i)return false;const t=i.trim();if(!t)return false;if(!t.includes(' ')&&/^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/.*)?$/i.test(t))return true;if(t.startsWith('http://')||t.startsWith('https://'))return true;if(t.startsWith('about:'))return true;return false}
+    constructor(){this.tabs=[];this.activeTabId=null;this.idCounter=0;this.homeUrl='about:start';this.lastSearchQuery="";this._initialized=false}
+    init(){
+        if(this._initialized) return;
+        this._initialized=true;
+        this.newTab();
+        document.getElementById('url-input').addEventListener('keypress',e=>{if(e.key==='Enter')this.navigate()});
+        try{ui.renderHistory()}catch(e){}
+    }
+    _isUrl(i){
+        if(!i)return false;
+        const t=i.trim();
+        if(!t)return false;
+        if(t.startsWith('http://')||t.startsWith('https://')||t.startsWith('about:')||t.startsWith('data:')||t.startsWith('blob:'))return true;
+        if(!t.includes(' ') && /^[a-z0-9-]+(\.[a-z0-9-]+)+([\/?#].*)?$/i.test(t)) return true;
+        return false;
+    }
     _normalizeUrl(i){let u=i.trim();if(!u)return null;if(u.startsWith('http://')||u.startsWith('https://')||u.startsWith('about:'))return u;return 'https://'+u}
-    /* 🔥 FIX GOOGLE: siempre igu=1 si UV falla, URL real si UV va */
     _buildSearchUrl(q,mode='web'){
         const e=encodeURIComponent(q);
         const m={web:'',images:'&tbm=isch',videos:'&tbm=vid',news:'&tbm=nws',shopping:'&tbm=shop'};
         const x=m[mode]||'';
-        if(proxySystem._enabled&&proxySystem._ready){
-            return `https://www.google.com/search?q=${e}${x}`;
-        }
-        // Fallback: igu=1 permite iframe
+        if(proxySystem._enabled&&proxySystem._ready){return `https://www.google.com/search?q=${e}${x}`}
         return `https://www.google.com/search?igu=1&q=${e}${x}`;
     }
     _optimizeUrl(url){
@@ -657,10 +771,7 @@ class BrowserEngine {
         t.history.push(url);t.historyIndex++;
         this.loadUrlIntoFrame(url,q,q);
     }
-    /* 🔥 FIX: barra de fallback para Google */
-    _isSearchUrl(url){
-        return url && (url.includes('google.com/search') || url.includes('google.com/webhp'));
-    }
+    _isSearchUrl(url){return url && (url.includes('google.com/search') || url.includes('google.com/webhp'))}
     loadUrlIntoFrame(url,title,raw){
         const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
         t.url=url;t.title=title;
@@ -672,14 +783,12 @@ class BrowserEngine {
         this.renderTabs();this.updateNavButtons();
         dataManager.saveHistory(url,title);
         if(window._fbReady&&deviceStore._id){window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:url,lastSeen:Date.now()}).catch(()=>{})}
-        // 🔥 FIX: mostrar barra de fallback si es búsqueda de Google
         const fbBar=document.getElementById('search-fallback-bar');
         if(fbBar){
             if(this._isSearchUrl(url)){fbBar.classList.add('show')}
             else{fbBar.classList.remove('show')}
         }
     }
-    /* 🔥 NUEVO: fallback a DuckDuckGo cuando Google falla */
     tryDuckDuckGo(){
         const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
         const q=this.lastSearchQuery||'';
@@ -696,10 +805,9 @@ class BrowserEngine {
     }
     openCurrentExternal(){
         const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
-        const urlToOpen=proxySystem._prefix?t.url: t.url;
-        try{window.open(urlToOpen,'_blank')}catch(e){ui.showToast('❌ Bloqueado por el navegador')}
+        try{window.open(t.url,'_blank')}catch(e){ui.showToast('❌ Bloqueado por el navegador')}
     }
-    goBack(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex>0){t.historyIndex--;const p=t.history[t.historyIndex];if(p==='about:start')this.switchTab(t.id);else{document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(p);t.url=p;this.switchTab(t.id)}}}
+    goBack(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex>0){t.historyIndex--;const p=t.history[t.historyIndex];if(p==='about:start'){t.url='about:start';this.switchTab(t.id)}else{document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(p);t.url=p;this.switchTab(t.id)}}}
     goForward(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex<t.history.length-1){t.historyIndex++;const n=t.history[t.historyIndex];document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(n);t.url=n;this.switchTab(t.id)}}
     reload(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(t.url);ui.showToast("Recargando...")}
     goHome(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;t.history=t.history.slice(0,t.historyIndex+1);t.history.push('about:start');t.historyIndex++;t.url='about:start';t.title='Inicio';const f=document.getElementById(`view-${this.activeTabId}`);if(f)f.src='about:blank';this.switchTab(t.id);document.getElementById('search-fallback-bar').classList.remove('show')}
@@ -723,6 +831,8 @@ class BrowserEngine {
     }
 }
 
+const browser = new BrowserEngine();
+
 const ui = {
     _toastTimer:null,
     togglePanel:(id)=>{const p=document.getElementById(`panel-${id}`);if(!p)return;const o=p.classList.contains('open');ui.closePanels();if(!o){p.classList.add('open');if(id==='history')ui.renderHistory()}},
@@ -731,9 +841,9 @@ const ui = {
         const list=dataManager.getHistory();
         const c=document.getElementById('history-list');if(!c)return;
         if(!list.length){c.innerHTML='<div style="text-align:center;color:var(--text-faint);margin-top:50px">No hay historial</div>';return}
-        c.innerHTML=list.map(item=>{
+        c.innerHTML=list.map((item,idx)=>{
             const safe=item.url.replace(/'/g,"\\'").replace(/"/g,"&quot;");
-            return `<div class="history-item" onclick="document.getElementById('url-input').value='${safe}';browser.navigate();ui.closePanels()"><i class="fas fa-link" style="color:var(--accent)"></i><div style="flex:1;overflow:hidden"><div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div><div style="font-size:10.5px;opacity:0.55">${item.url.slice(0,50)}</div></div><span class="h-time">${item.time}</span></div>`;
+            return `<div class="history-item" style="animation-delay:${Math.min(idx*0.04,0.4)}s" onclick="document.getElementById('url-input').value='${safe}';browser.navigate();ui.closePanels()"><i class="fas fa-link" style="color:var(--accent)"></i><div style="flex:1;overflow:hidden"><div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div><div style="font-size:10.5px;opacity:0.55">${item.url.slice(0,50)}</div></div><span class="h-time">${item.time}</span></div>`;
         }).join('');
     },
     showToast:(msg)=>{const t=document.getElementById('toast');t.innerText=msg;t.classList.add('show');clearTimeout(ui._toastTimer);ui._toastTimer=setTimeout(()=>t.classList.remove('show'),3000)},
@@ -766,7 +876,7 @@ const updatesManager = {
             if(!data){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding-top:40px"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);display:block;margin-bottom:15px"></i>Todo actualizado</div>';return}
             const ups=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
             ups.forEach(u=>this._cache[u.id]=u);
-            c.innerHTML=ups.map(u=>`<div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:17px;margin-bottom:13px"><div style="font-size:10px;background:rgba(0,229,255,0.12);color:var(--accent);padding:3px 9px;border-radius:20px;font-weight:700;display:inline-block;margin-bottom:8px">${u.version||'Update'}</div><div style="font-size:13.5px;font-weight:700;margin-bottom:7px">${u.title||'Sin título'}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.55">${u.desc||''}</div></div>`).join('');
+            c.innerHTML=ups.map((u,idx)=>`<div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:17px;margin-bottom:13px;animation:fadeInUp 0.35s ease ${Math.min(idx*0.05,0.4)}s both"><div style="font-size:10px;background:rgba(0,229,255,0.12);color:var(--accent);padding:3px 9px;border-radius:20px;font-weight:700;display:inline-block;margin-bottom:8px">${u.version||'Update'}</div><div style="font-size:13.5px;font-weight:700;margin-bottom:7px">${u.title||'Sin título'}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.55">${u.desc||''}</div></div>`).join('');
         });
     }
 };
@@ -780,20 +890,68 @@ const friendsSystem = {
     close(){}
 };
 
+/* 🔐 AUTHSYSTEM — SOLO GOOGLE */
 const authSystem = {
     _tempBenjiKey:'',
-    async check(){if(!window._fbReady){window.addEventListener('firebaseReady',()=>this.check(),{once:true});return}const userId=await deviceStore.getOrCreateId();const saved=localStorage.getItem(`auth_${userId}`);if(saved==='ok'){this._proceedToBrowser();return}document.getElementById('auth-main-overlay').classList.add('active')},
-    showManualLogin(){document.getElementById('auth-main-overlay').classList.remove('active');this._processLoginCheck(deviceStore._id)},
-    async loginWithGoogle(){try{const r=await window._fbSignInWithPopup(window._fbAuth,window._fbProvider);const uid='usr_g_'+r.user.uid.slice(0,16);await deviceStore.set('deviceId',uid);deviceStore._id=uid;document.getElementById('auth-main-overlay').classList.remove('active');this._processLoginCheck(uid)}catch(e){ui.showToast('Error al iniciar sesión con Google.')}},
-    async _processLoginCheck(userId){const snap=await window._fbGet(window._fbRef(window._fbDB,`passwords/${userId}`));if(snap.exists()){document.getElementById('auth-login-id').value=userId;document.getElementById('auth-login-overlay').classList.add('active')}else{document.getElementById('auth-create-password-overlay').classList.add('active')}},
+    async check(){
+        if(!window._fbReady){window.addEventListener('firebaseReady',()=>this.check(),{once:true});return}
+        const userId=await deviceStore.getOrCreateId();
+        const saved=localStorage.getItem(`auth_${userId}`);
+        if(saved==='ok'){this._proceedToBrowser();return}
+        document.getElementById('auth-main-overlay').classList.add('active');
+    },
+    async loginWithGoogle(){
+        try{
+            const r=await window._fbSignInWithPopup(window._fbAuth,window._fbProvider);
+            const uid='usr_g_'+r.user.uid.slice(0,16);
+            await deviceStore.set('deviceId',uid);
+            deviceStore._id=uid;
+            document.getElementById('auth-main-overlay').classList.remove('active');
+            this._processLoginCheck(uid);
+        }catch(e){
+            console.error('[Google Auth]',e);
+            ui.showToast('Error al iniciar sesión con Google.');
+        }
+    },
+    async _processLoginCheck(userId){
+        const snap=await window._fbGet(window._fbRef(window._fbDB,`passwords/${userId}`));
+        if(snap.exists()){
+            // Cuenta ya existe: Google es suficiente para entrar
+            localStorage.setItem(`auth_${userId}`,'ok');
+            document.querySelectorAll('.auth-overlay').forEach(el=>el.classList.remove('active'));
+            this._proceedToBrowser();
+        } else {
+            // Cuenta nueva: crear contraseña para Benji Key
+            document.getElementById('auth-create-password-overlay').classList.add('active');
+        }
+    },
     generateBenjiKey(){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';let k='';for(let i=0;i<64;i++)k+=c.charAt(Math.floor(Math.random()*c.length));return k},
-    async createPassword(){const pw=document.getElementById('auth-new-password').value;const cf=document.getElementById('auth-confirm-password').value;if(!pw||pw.length<4){ui.showToast('Mínimo 4 caracteres');return}if(pw!==cf){ui.showToast('Las contraseñas no coinciden');return}const userId=deviceStore._id;this._tempBenjiKey=this.generateBenjiKey();await window._fbSet(window._fbRef(window._fbDB,`passwords/${userId}`),{password:pw,benjiKey:this._tempBenjiKey});localStorage.setItem(`auth_${userId}`,'ok');document.getElementById('auth-create-password-overlay').classList.remove('active');document.getElementById('benji-key-container').textContent=this._tempBenjiKey;document.getElementById('auth-benji-key-overlay').classList.add('active')},
-    finishBenjiKeyStep(){document.getElementById('auth-benji-key-overlay').classList.remove('active');this._proceedToBrowser()},
-    async login(){const userId=document.getElementById('auth-login-id').value.trim();const input=document.getElementById('auth-login-password').value;const snap=await window._fbGet(window._fbRef(window._fbDB,`passwords/${userId}`));if(!snap.exists()){ui.showToast('Cuenta no existe');return}const d=snap.val();if(d.password!==input&&d.benjiKey!==input){ui.showToast('Contraseña incorrecta');return}localStorage.setItem(`auth_${userId}`,'ok');document.getElementById('auth-login-overlay').classList.remove('active');this._proceedToBrowser()},
-    backToMain(){document.querySelectorAll('.auth-overlay').forEach(el=>el.classList.remove('active'));document.getElementById('auth-main-overlay').classList.add('active')},
-    showForgotPanel(){document.getElementById('auth-login-overlay').classList.remove('active');document.getElementById('auth-forgot-overlay').classList.add('active')},
-    closeForgot(){document.getElementById('auth-forgot-overlay').classList.remove('active');document.getElementById('auth-login-overlay').classList.add('active')},
-    _proceedToBrowser(){const userId=deviceStore._id;abManager.init(userId);friendsSystem.init(userId);browser.init();updatesManager.load();activityTracker.start(userId);commandSystem.start(userId)}
+    async createPassword(){
+        const pw=document.getElementById('auth-new-password').value;
+        const cf=document.getElementById('auth-confirm-password').value;
+        if(!pw||pw.length<4){ui.showToast('Mínimo 4 caracteres');return}
+        if(pw!==cf){ui.showToast('Las contraseñas no coinciden');return}
+        const userId=deviceStore._id;
+        this._tempBenjiKey=this.generateBenjiKey();
+        await window._fbSet(window._fbRef(window._fbDB,`passwords/${userId}`),{password:pw,benjiKey:this._tempBenjiKey});
+        localStorage.setItem(`auth_${userId}`,'ok');
+        document.getElementById('auth-create-password-overlay').classList.remove('active');
+        document.getElementById('benji-key-container').textContent=this._tempBenjiKey;
+        document.getElementById('auth-benji-key-overlay').classList.add('active');
+    },
+    finishBenjiKeyStep(){
+        document.getElementById('auth-benji-key-overlay').classList.remove('active');
+        this._proceedToBrowser();
+    },
+    _proceedToBrowser(){
+        const userId=deviceStore._id;
+        abManager.init(userId);
+        friendsSystem.init(userId);
+        browser.init();
+        updatesManager.load();
+        activityTracker.start(userId);
+        commandSystem.start(userId);
+    }
 };
 
 const floatingPanel = {
@@ -836,9 +994,14 @@ const passwordModal = {
         const target=this._target;const user=target==='AN'?'Marc':'Alex';
         sessionGuard.set(target,user);this.close();
         const route=target==='AN'?ADMIN_PATH:OWNER_PATH;const fullPath=withBase(route);
-        ui.showModal('⏳','Redirigiendo...',`Redirigiendo a ${fullPath}`,'OK','green',()=>{});
+        ui.showModal('⏳','Redirigiendo...',`Accediendo a ${target==='AN'?'Panel AN':'Panel OWNER'}`,'OK','green',()=>{});
         document.getElementById('modal-btns').style.display='none';
-        setTimeout(()=>{document.getElementById('modal-overlay').classList.remove('active');document.getElementById('modal-btns').style.display='';try{history.pushState({role:target,user},'',fullPath)}catch(e){}if(target==='AN')adminPages.showAN();else adminPages.showOwner()},1500);
+        setTimeout(()=>{
+            document.getElementById('modal-overlay').classList.remove('active');
+            document.getElementById('modal-btns').style.display='';
+            try{history.pushState({role:target,user},'',fullPath)}catch(e){}
+            if(target==='AN')adminPages.showAN();else adminPages.showOwner();
+        },1200);
     }
 };
 
@@ -872,10 +1035,21 @@ const commandSystem = {
     _execute(cmd){
         if(!cmd||!cmd.type)return;
         switch(cmd.type){
-            case 'block':document.getElementById('client-block-reason').textContent=cmd.reason||'Un administrador ha bloqueado tu pantalla.';document.getElementById('client-block-overlay').style.display='flex';document.querySelectorAll('audio').forEach(a=>{try{a.pause()}catch(e){}});break;
-            case 'unblock':document.getElementById('client-block-overlay').style.display='none';break;
+            case 'block':
+                document.getElementById('client-block-reason').textContent=cmd.reason||'Un administrador ha bloqueado tu pantalla.';
+                document.getElementById('client-block-overlay').style.display='flex';
+                document.querySelectorAll('audio').forEach(a=>{try{a.pause()}catch(e){}});
+                break;
+            case 'unblock':
+                document.getElementById('client-block-overlay').style.display='none';
+                break;
             case 'announcement':this._showAnnouncement(cmd.title,cmd.content);break;
-            case 'redirect':if(cmd.url){if(browser&&browser.navigate){document.getElementById('url-input').value=cmd.url;browser.navigate()}else{window.location.href=cmd.url}}break;
+            case 'redirect':
+                if(cmd.url){
+                    if(browser&&browser.navigate){document.getElementById('url-input').value=cmd.url;browser.navigate()}
+                    else{window.location.href=cmd.url}
+                }
+                break;
             case 'banner':this._showBanner(cmd.text);break;
             case 'voice':this._playVoice(cmd.audio,cmd.duration);break;
         }
@@ -900,16 +1074,16 @@ const commandSystem = {
             const blob=new Blob([u8arr],{type:mime});const url=URL.createObjectURL(blob);
             const banner=document.createElement('div');
             banner.id='voice-incoming-banner';
-            banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#00e5ff,#bd00ff);color:white;padding:14px 22px;border-radius:14px;font-weight:700;box-shadow:0 10px 40px rgba(0,229,255,0.45),0 0 30px rgba(189,0,255,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;max-width:90vw';
+            banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#00e5ff,#bd00ff);color:white;padding:14px 22px;border-radius:14px;font-weight:700;box-shadow:0 10px 40px rgba(0,229,255,0.45),0 0 30px rgba(189,0,255,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;max-width:90vw;animation:slideDownAnim 0.35s ease';
             banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Mensaje de voz del administrador</span><span style="font-size:10.5px;opacity:0.85">('+(duration||'?')+'s)</span>';
             document.body.appendChild(banner);
             const audio=new Audio(url);audio.volume=1;
             audio.onended=()=>{URL.revokeObjectURL(url);if(banner.parentNode)banner.remove()};
             audio.onerror=()=>{banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">Error al reproducir</span>';setTimeout(()=>{if(banner.parentNode)banner.remove()},3000)};
-            audio.play().catch(err=>{
+            audio.play().catch(()=>{
                 banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🔊 Click para escuchar el mensaje</span>';
                 banner.style.cursor='pointer';
-                banner.onclick=()=>{audio.play().then(()=>{banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Reproduciendo...</span>';banner.style.cursor='default';banner.onclick=null}).catch(e=>{banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">No se pudo reproducir</span>';setTimeout(()=>{if(banner.parentNode)banner.remove()},3000)})};
+                banner.onclick=()=>{audio.play().then(()=>{banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Reproduciendo...</span>';banner.style.cursor='default';banner.onclick=null}).catch(()=>{banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">No se pudo reproducir</span>';setTimeout(()=>{if(banner.parentNode)banner.remove()},3000)})};
             });
         }catch(err){console.error('[Voice] Error:',err)}
     }
@@ -941,24 +1115,33 @@ const adminPages = {
         const activeTab=body.parentElement.querySelector('.admin-tab.active');
         if(activeTab&&activeTab.dataset.tab==='audit')return;
         let html='';
-        if(connected.length){html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;html+=connected.map(u=>this._renderUserCard(u,true)).join('')}
-        else{html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (0)</div>`;html+=`<div style="text-align:center;color:var(--text-muted);padding:20px">Nadie conectado ahora mismo.</div>`}
-        if(disconnected.length){html+=`<div class="admin-section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;html+=disconnected.slice(0,50).map(u=>this._renderUserCard(u,false)).join('')}
+        if(connected.length){
+            html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
+            html+=connected.map((u,i)=>this._renderUserCard(u,true,i)).join('');
+        } else {
+            html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (0)</div>`;
+            html+=`<div style="text-align:center;color:var(--text-muted);padding:20px">Nadie conectado ahora mismo.</div>`;
+        }
+        if(disconnected.length){
+            html+=`<div class="admin-section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;
+            html+=disconnected.slice(0,50).map((u,i)=>this._renderUserCard(u,false,i)).join('');
+        }
         body.innerHTML=html;
         connected.forEach(u=>this._loadUserIframe(u));
     },
-    _renderUserCard(u,online){
+    _renderUserCard(u,online,idx=0){
         const role=this._currentRole;
         const act=u.id===(deviceStore._id||'')?' (Tú)':'';
         const actInfo=`Últ. vez: ${u.lastSeen?new Date(u.lastSeen).toLocaleTimeString():'—'}`;
         const currentUrl=(u.currentUrl||'about:start').slice(0,60);
         const userIdSafe=u.id.replace(/'/g,"\\'");
         const sid=u.id.replace(/[^a-zA-Z0-9]/g,'_');
+        const delay=Math.min(idx*0.04,0.4);
         const commonBtns=`<button class="action-btn primary" onclick="adminPages.viewScreen('${userIdSafe}')"><i class="fas fa-eye"></i> Ver pantalla</button><button class="action-btn warning" onclick="adminPages.sendAnnouncement('${userIdSafe}')"><i class="fas fa-bullhorn"></i> Anuncio</button><button class="action-btn success" onclick="adminPages.viewHistory('${userIdSafe}')"><i class="fas fa-history"></i> Historial</button>`;
         const blockBtns=online?`<button class="action-btn danger" onclick="adminPages.blockUser('${userIdSafe}')"><i class="fas fa-lock"></i> Bloquear</button><button class="action-btn success" onclick="adminPages.unblockUser('${userIdSafe}')"><i class="fas fa-unlock"></i> Desbloquear</button>`:'';
         const micBtn=role==='OWNER'?(()=>{const isActive=micActiveUserId===u.id;const cls=isActive?'action-btn mic on':'action-btn mic';const icon=isActive?'fa-stop':'fa-microphone';const label=isActive?'Parar':'Mic';return `<button class="${cls}" id="mic-btn-${sid}" onclick="toggleMic('${userIdSafe}')" title="Hablar directamente a este usuario"><i class="fas ${icon}"></i> ${label}</button>`})():'';
         const ownerBtns=role==='OWNER'?`<button class="action-btn warning" onclick="adminPages.redirectUser('${userIdSafe}')"><i class="fas fa-external-link-alt"></i> Redirigir</button><button class="action-btn danger" onclick="adminPages.banUser('${userIdSafe}')"><i class="fas fa-ban"></i> Banear</button><button class="action-btn primary" onclick="adminPages.impersonate('${userIdSafe}')"><i class="fas fa-user-secret"></i> Impersonar</button>`:'';
-        return `<div class="user-card" id="user-card-${sid}" data-uid="${u.id}">
+        return `<div class="user-card" id="user-card-${sid}" data-uid="${u.id}" style="animation-delay:${delay}s">
             <div class="user-card-preview" id="preview-${sid}">${online?'':'<div style="color:var(--text-faint);font-size:10px;display:flex;align-items:center;justify-content:center;height:100%">Desconectado</div>'}<div class="preview-label">${online?'🔴 LIVE':'OFFLINE'}</div></div>
             <div class="user-card-info"><div class="user-card-name">👤 ${u.id.slice(0,18)}…${act}</div><div class="user-card-id">${u.id}</div><div class="user-card-activity">${actInfo}<br>URL: <code>${currentUrl}</code></div></div>
             <div class="user-card-actions">${commonBtns}${micBtn}${blockBtns}${ownerBtns}</div>
@@ -983,7 +1166,10 @@ const adminPages = {
         const activeTab=body.parentElement.querySelector('.admin-tab.active');
         if(!activeTab||activeTab.dataset.tab!=='audit')return;
         if(!this._activity.length){body.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px">Sin actividades registradas.</div>';return}
-        body.innerHTML=`<div class="admin-section-title"><i class="fas fa-clipboard-list"></i> Registro de Actividades (${this._activity.length}) — solo lectura</div>`+this._activity.map(log=>{const badgeCls=log.actor==='Alex'?'alex':'marc';return `<div class="audit-log"><div class="audit-log-header"><span>${new Date(log.timestamp).toLocaleString()}</span><span class="audit-badge ${badgeCls}">${log.actor}</span></div><div class="audit-log-action">${log.action}</div>${log.target_user?`<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Target: <code style="color:var(--accent)">${log.target_user}</code></div>`:''}${log.metadata?`<div class="audit-log-meta">${JSON.stringify(log.metadata)}</div>`:''}</div>`}).join('');
+        body.innerHTML=`<div class="admin-section-title"><i class="fas fa-clipboard-list"></i> Registro de Actividades (${this._activity.length}) — solo lectura</div>`+this._activity.map((log,i)=>{
+            const badgeCls=log.actor==='Alex'?'alex':'marc';
+            return `<div class="audit-log" style="animation:fadeInUp 0.3s ease ${Math.min(i*0.03,0.4)}s both"><div class="audit-log-header"><span>${new Date(log.timestamp).toLocaleString()}</span><span class="audit-badge ${badgeCls}">${log.actor}</span></div><div class="audit-log-action">${log.action}</div>${log.target_user?`<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Target: <code style="color:var(--accent)">${log.target_user}</code></div>`:''}${log.metadata?`<div class="audit-log-meta">${JSON.stringify(log.metadata)}</div>`:''}</div>`;
+        }).join('');
     },
     switchTab(role,tab){const body=document.getElementById(role==='AN'?'an-body':'owner-body');if(!body)return;const parent=body.parentElement;parent.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));if(tab==='users')this._renderUsers();else this._renderAudit()},
     exit(){
@@ -999,501 +1185,338 @@ const adminPages = {
         ui.showToast('Sesión de administrador cerrada');
     },
     _log(action,target,metadata){if(!window._fbReady)return;const session=sessionGuard.get();const actor=session?session.user:'desconocido';window._fbPush(window._fbRef(window._fbDB,'activity_logs'),{timestamp:Date.now(),actor,action,target_user:target||null,metadata:metadata||null}).catch(()=>{})},
-    blockUser(userId){ui.showModal('🔒','Bloquear pantalla',`¿Bloquear la pantalla de ${userId}?`,'Sí, bloquear','',()=>{const reason=prompt('Motivo del bloqueo (opcional):')||'Bloqueado por un administrador';window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'block',reason,at:Date.now(),processed:false}).then(()=>{this._log('BLOQUEAR_PANTALLA',userId,{reason});ui.showToast('🔒 Pantalla bloqueada')}).catch(e=>ui.showToast('Error: '+e.message))})},
-    unblockUser(userId){window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'unblock',at:Date.now(),processed:false}).then(()=>{this._log('DESBLOQUEAR_PANTALLA',userId,null);ui.showToast('🔓 Pantalla desbloqueada')})},
-    sendAnnouncement(userId){const title=prompt('Título del anuncio:');if(!title)return;const content=prompt('Contenido del anuncio:');if(!content)return;window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'announcement',title,content,at:Date.now(),processed:false}).then(()=>{this._log('ENVIAR_ANUNCIO',userId,{title});ui.showToast('📢 Anuncio enviado')})},
-    viewScreen(userId){const u=this._users.find(x=>x.id===userId);if(!u)return;liveViewer.open(userId,u.currentUrl||'about:start');this._log('VER_PANTALLA',userId,{url:u.currentUrl})},
-    async viewHistory(userId){
-        const snap=await window._fbGet(window._fbRef(window._fbDB,`user_navigation_logs/${userId}`));
-        const data=snap.val()||{};const entries=Object.values(data).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,50);
-        const u=this._users.find(x=>x.id===userId);
-        let html=`<div style="font-size:16px;font-weight:800;margin-bottom:14px">Historial de ${userId}</div>`;
-        html+=`<div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Joined: ${u&&u.joined?new Date(u.joined).toLocaleString():'—'} | Última conexión: ${u&&u.lastSeen?new Date(u.lastSeen).toLocaleString():'—'}</div>`;
-        if(!entries.length)html+='<div style="color:var(--text-muted)">Sin navegaciones registradas.</div>';
-        else html+=entries.map(e=>`<div style="padding:8px;border-bottom:1px solid var(--border);font-size:11.5px"><div style="color:var(--accent);font-weight:700">${e.title||'(sin título)'}</div><div style="color:var(--text-faint);font-family:monospace;word-break:break-all">${e.url}</div><div style="color:var(--text-faint);font-size:10px;margin-top:2px">${new Date(e.timestamp).toLocaleString()}</div></div>`).join('');
-        let modal=document.getElementById('history-modal-admin');
-        if(!modal){modal=document.createElement('div');modal.id='history-modal-admin';modal.className='modal-overlay';modal.innerHTML=`<div class="modal-box" style="max-width:600px;max-height:80vh;overflow-y:auto"><div id="history-modal-content"></div><button class="modal-btn cancel" style="width:100%;margin-top:14px" onclick="document.getElementById('history-modal-admin').classList.remove('active')">Cerrar</button></div>`;document.body.appendChild(modal);modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('active')})}
-        document.getElementById('history-modal-content').innerHTML=html;
-        modal.classList.add('active');
-        this._log('VER_HISTORIAL',userId,null);
-    },
-    redirectUser(userId){const url=prompt('URL a la que redirigir al usuario:');if(!url)return;window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'redirect',url,at:Date.now(),processed:false}).then(()=>{this._log('REDIRIGIR_USUARIO',userId,{url});ui.showToast('↗️ Usuario redirigido')})},
-    redirectAll(){const url=document.getElementById('ow-redirect-all-url').value.trim();if(!url){ui.showToast('Introduce una URL');return}ui.showModal('⚠️','Redirigir a TODOS',`¿Redirigir a TODOS los usuarios a "${url}"?`,'Sí, redirigir','',()=>{this._users.forEach(u=>{window._fbPush(window._fbRef(window._fbDB,`user_commands/${u.id}`),{type:'redirect',url,at:Date.now(),processed:false}).catch(()=>{})});this._log('REDIRIGIR_TODOS','*',{url});ui.showToast(`↗️ Redirigiendo a ${this._users.length} usuarios`)})},
-    scheduleRedirect(){const url=document.getElementById('ow-redirect-all-url').value.trim();if(!url){ui.showToast('Introduce una URL primero');return}this._log('PROGRAMAR_REDIRECCION','*',{url,delay:30000});ui.showToast('⏰ Redirección programada en 30s');setTimeout(()=>{this._users.forEach(u=>{window._fbPush(window._fbRef(window._fbDB,`user_commands/${u.id}`),{type:'redirect',url,at:Date.now(),processed:false}).catch(()=>{})});ui.showToast('↗️ Redirección ejecutada')},30000)},
-    banUser(userId){const reason=prompt('Motivo del ban (opcional):')||'Baneado por el owner';const hours=parseInt(prompt('Duración del ban en horas (ej: 24):','24'))||24;ui.showModal('⛔','Banear usuario',`Banear a ${userId} durante ${hours}h?`,'Sí, banear','',()=>{window._fbSet(window._fbRef(window._fbDB,`bans/${userId}`),{expiresAt:Date.now()+hours*3600000,bannedBy:'Alex',alias:reason}).then(()=>{this._log('BANEAR_USUARIO',userId,{hours,reason});ui.showToast('⛔ Usuario baneado')})})},
-    impersonate(userId){ui.showModal('🎭','Impersonar usuario',`¿Ver la sesión como ${userId}? Se recargará el navegador con su ID.`,'Sí, impersonar','',async()=>{await deviceStore.set('originalDeviceId',deviceStore._id);deviceStore._id=userId;await deviceStore.set('deviceId',userId);this._log('IMPERSONAR',userId,null);sessionGuard.clear();window.location.href=getBasePath()})},
-    async exportLogs(){const snap=await window._fbGet(window._fbRef(window._fbDB,'activity_logs'));const data=snap.val()||{};const entries=Object.values(data).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));const blob=new Blob([JSON.stringify(entries,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`waevo_activity_logs_${Date.now()}.json`;a.click();this._log('EXPORTAR_LOGS',null,{count:entries.length})}
-};
 
-const router = {
-    check(){
-        const fullPath=window.location.pathname;const base=getBasePath();let route=fullPath;
-        if(base!=='/'&&base!==''){const bnt=base.replace(/\/$/,'');if(route.startsWith(bnt))route=route.slice(bnt.length);if(!route)route='/';if(!route.startsWith('/'))route='/'+route}
-        if(route.length>1&&route.endsWith('/'))route=route.slice(0,-1);
-        const role=sessionGuard.get();
-        const adminFull=withBase(ADMIN_PATH);const ownerFull=withBase(OWNER_PATH);
-        if(route===ADMIN_PATH){if(role&&role.role==='AN'){adminPages.showAN();return true}try{history.replaceState({},'',base)}catch(e){}ui.showToast('Acceso no autorizado');return false}
-        if(route===OWNER_PATH){if(role&&role.role==='OWNER'){adminPages.showOwner();return true}try{history.replaceState({},'',base)}catch(e){}ui.showToast('Acceso no autorizado');return false}
-        if(role&&role.role==='AN'){try{history.replaceState({},'',adminFull)}catch(e){}adminPages.showAN();return true}
-        if(role&&role.role==='OWNER'){try{history.replaceState({},'',ownerFull)}catch(e){}adminPages.showOwner();return true}
-        return false;
+    /* ── ACCIONES ── */
+    blockUser(userId){
+        ui.showModal('🔒','Bloquear pantalla',`¿Bloquear la pantalla de ${userId.slice(0,14)}…?`,'Sí, bloquear','',()=>{
+            const reason=prompt('Motivo del bloqueo (opcional):')||'Bloqueado por un administrador';
+            window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'block',reason,at:Date.now(),processed:false})
+                .then(()=>{this._log('BLOQUEAR_PANTALLA',userId,{reason});ui.showToast('🔒 Pantalla bloqueada')})
+                .catch(()=>ui.showToast('Error al bloquear'));
+        });
+    },
+    unblockUser(userId){
+        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'unblock',at:Date.now(),processed:false})
+            .then(()=>{this._log('DESBLOQUEAR',userId,{});ui.showToast('🔓 Usuario desbloqueado')})
+            .catch(()=>ui.showToast('Error al desbloquear'));
+    },
+    async viewScreen(userId){
+        try{
+            const snap=await window._fbGet(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`));
+            const d=snap.exists()?snap.val():{};
+            liveViewer.open(userId,d.currentUrl||'about:start');
+            this._log('VER_PANTALLA',userId,{});
+        }catch(e){ui.showToast('Error al ver pantalla')}
+    },
+    sendAnnouncement(userId){
+        const title=prompt('Título del anuncio:')||'Anuncio';
+        const content=prompt('Contenido del anuncio:')||'';
+        if(!content){ui.showToast('Anuncio cancelado');return}
+        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'announcement',title,content,at:Date.now(),processed:false})
+            .then(()=>{this._log('ENVIAR_ANUNCIO',userId,{title});ui.showToast('📢 Anuncio enviado')})
+            .catch(()=>ui.showToast('Error al enviar anuncio'));
+    },
+    async viewHistory(userId){
+        try{
+            const snap=await window._fbGet(window._fbRef(window._fbDB,`user_navigation_logs/${userId}`));
+            const data=snap.exists()?snap.val():{};
+            const logs=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,50);
+            if(!logs.length){ui.showToast('Sin historial para '+userId.slice(0,12));return}
+            const html=logs.map(l=>`<div style="padding:8px;border-bottom:1px solid var(--border)"><div style="color:var(--accent);font-weight:600;font-size:11.5px">${(l.title||'Sin título').slice(0,60)}</div><div style="color:var(--text-muted);font-size:10px;word-break:break-all">${l.url}</div><div style="color:var(--text-faint);font-size:9.5px;margin-top:2px">${new Date(l.timestamp).toLocaleString()}</div></div>`).join('');
+            document.getElementById('modal-icon').textContent='📜';
+            document.getElementById('modal-title').textContent='Historial — '+userId.slice(0,14);
+            document.getElementById('modal-desc').innerHTML=`<div style="max-height:340px;overflow-y:auto;text-align:left;font-size:12px;margin-top:8px">${html}</div>`;
+            const b=document.getElementById('modal-confirm-btn');b.textContent='Cerrar';b.className='modal-btn confirm green';b.onclick=()=>ui.closeModal();
+            document.getElementById('modal-overlay').classList.add('active');
+            this._log('VER_HISTORIAL',userId,{count:logs.length});
+        }catch(e){ui.showToast('Error al cargar historial')}
+    },
+    redirectUser(userId){
+        const url=prompt('URL a la que redirigir:');
+        if(!url)return;
+        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'redirect',url,at:Date.now(),processed:false})
+            .then(()=>{this._log('REDIRIGIR',userId,{url});ui.showToast('➡️ Usuario redirigido')})
+            .catch(()=>ui.showToast('Error al redirigir'));
+    },
+    banUser(userId){
+        ui.showModal('🚫','Banear usuario',`¿Banear a ${userId.slice(0,14)}…?`,'Sí, banear','',()=>{
+            window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`),{banned:true,bannedAt:Date.now()})
+                .then(()=>{
+                    window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'block',reason:'Has sido baneado por un administrador',at:Date.now(),processed:false});
+                    this._log('BANEAR',userId,{});
+                    ui.showToast('🚫 Usuario baneado');
+                }).catch(()=>ui.showToast('Error al banear'));
+        });
+    },
+    impersonate(userId){
+        ui.showModal('🕵️','Impersonar usuario',`Verás la pantalla de ${userId.slice(0,14)}… en modo pasivo.`,'Ver pantalla','green',()=>{
+            this.viewScreen(userId);
+            this._log('IMPERSONAR',userId,{});
+        });
+    },
+    redirectAll(){
+        const url=document.getElementById('ow-redirect-all-url').value.trim();
+        if(!url){ui.showToast('Introduce una URL');return}
+        ui.showModal('➡️','Redirigir a todos',`¿Redirigir a TODOS a ${url}?`,'Sí, redirigir','',()=>{
+            const online=this._users.filter(u=>this._isOnline(u));
+            const promises=online.map(u=>window._fbPush(window._fbRef(window._fbDB,`user_commands/${u.id}`),{type:'redirect',url,at:Date.now(),processed:false}).catch(()=>{}));
+            Promise.all(promises).then(()=>{
+                this._log('REDIRIGIR_TODOS',null,{url,count:online.length});
+                ui.showToast(`➡️ ${online.length} usuarios redirigidos`);
+            });
+        });
+    },
+    scheduleRedirect(){
+        const url=document.getElementById('ow-redirect-all-url').value.trim();
+        if(!url){ui.showToast('Introduce una URL');return}
+        ui.showToast('⏱️ Redirigiendo en 30s...');
+        this._log('PROGRAMAR_REDIRECCION',null,{url,delay:30});
+        setTimeout(()=>this.redirectAll(),30000);
+    },
+    exportLogs(){
+        const blob=new Blob([JSON.stringify(this._activity,null,2)],{type:'application/json'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;a.download=`waevo-logs-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        ui.showToast('📥 Logs exportados');
     }
 };
 
-const browser = new BrowserEngine();
-
 /* ═══════════════════════════════════════════════════════════════════
-   🎤 MICRÓFONO
+   🎤 MIC CONTROL
    ═══════════════════════════════════════════════════════════════════ */
-async function testMic(){
-    const chip=document.getElementById('mic-chip');
-    if(chip){chip.className='mic-chip off';chip.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verificando…'}
-    try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});stream.getTracks().forEach(t=>t.stop());if(chip){chip.className='mic-chip ready';chip.innerHTML='<i class="fas fa-microphone"></i> Mic listo'}ui.showToast('✅ Micrófono verificado')}
-    catch(err){if(chip){chip.className='mic-chip off';chip.innerHTML='<i class="fas fa-microphone-slash"></i> Mic denegado'}let msg='Error al acceder';if(err.name==='NotAllowedError')msg='Permiso DENEGADO. Permite el micrófono en el candado de la URL.';else if(err.name==='NotFoundError')msg='No se encontró micrófono.';else if(err.name==='NotReadableError')msg='Micrófono ocupado por otra app.';ui.showToast('❌ '+msg)}
-}
 async function toggleMic(userId){
-    if(micActiveUserId===userId&&mediaRecorder&&mediaRecorder.state==='recording'){stopMicAndSend();return}
-    if(micActiveUserId&&mediaRecorder&&mediaRecorder.state==='recording'){stopMicAndSend();setTimeout(()=>startMicFor(userId),300);return}
-    startMicFor(userId);
-}
-async function startMicFor(userId){
-    const user=adminPages._users.find(u=>u.id===userId);
-    if(!user){ui.showToast('Usuario no encontrado');return}
+    if(micActiveUserId===userId){cancelMic();return}
+    if(micActiveUserId){ui.showToast('Ya hay una grabación activa');return}
     try{
-        micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-        let mimeType='audio/webm;codecs=opus';
-        if(!MediaRecorder.isTypeSupported(mimeType)){mimeType='audio/webm';if(!MediaRecorder.isTypeSupported(mimeType))mimeType=''}
-        const options=mimeType?{mimeType,audioBitsPerSecond:24000}:{};
-        mediaRecorder=new MediaRecorder(micStream,options);
-        micChunks=[];micActiveUserId=userId;micCancelled=false;micSecondsElapsed=0;
-        mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)micChunks.push(e.data)};
-        mediaRecorder.onstop=async()=>{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+        micStream=stream;micActiveUserId=userId;micChunks=[];micSecondsElapsed=0;micCancelled=false;
+        mediaRecorder=new MediaRecorder(stream);
+        mediaRecorder.ondataavailable=(e)=>{if(e.data.size>0)micChunks.push(e.data)};
+        mediaRecorder.onstop=()=>{
             if(micCancelled){cleanupMic();return}
-            if(!micChunks.length){ui.showToast('No se grabó audio');cleanupMic();return}
-            try{
-                const blob=new Blob(micChunks,{type:micChunks[0].type||'audio/webm'});
-                const base64=await blobToBase64(blob);
-                if(base64.length>8*1024*1024){ui.showToast('Grabación demasiado larga');cleanupMic();return}
-                await window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'voice',audio:base64,duration:micSecondsElapsed,at:Date.now(),processed:false});
-                adminPages._log('MENSAJE_VOZ',userId,{duration:micSecondsElapsed,size:base64.length});
-                ui.showToast(`🎤 Voz enviada (${micSecondsElapsed}s)`);
-            }catch(err){ui.showToast('Error al enviar: '+err.message)}finally{cleanupMic()}
+            const blob=new Blob(micChunks,{type:'audio/webm'});
+            const reader=new FileReader();
+            reader.onloadend=()=>{
+                const base64=reader.result;
+                window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'voice',audio:base64,duration:micSecondsElapsed,at:Date.now(),processed:false})
+                    .then(()=>{adminPages._log('VOZ',userId,{duration:micSecondsElapsed});ui.showToast(`🎤 Voz enviada (${micSecondsElapsed}s)`)})
+                    .catch(()=>ui.showToast('Error al enviar voz'));
+                cleanupMic();
+            };
+            reader.readAsDataURL(blob);
         };
-        mediaRecorder.onerror=e=>{ui.showToast('Error al grabar');cleanupMic()};
-        mediaRecorder.start();updateMicUI(true,user.id,user);
-        micTimerInterval=setInterval(()=>{micSecondsElapsed++;const t=document.getElementById('mic-timer');if(t)t.textContent=micSecondsElapsed+'s';if(micSecondsElapsed>=MIC_MAX_SECONDS)stopMicAndSend()},1000);
-    }catch(err){if(err.name==='NotAllowedError')ui.showToast('Permite el micrófono');else if(err.name==='NotFoundError')ui.showToast('No hay micrófono');else ui.showToast('Error: '+err.message);cleanupMic()}
+        mediaRecorder.start();
+        document.getElementById('mic-recording-banner').classList.add('show');
+        document.getElementById('mic-target-name').textContent=userId.slice(0,12);
+        document.getElementById('mic-timer').textContent='0s';
+        micTimerInterval=setInterval(()=>{
+            micSecondsElapsed++;
+            document.getElementById('mic-timer').textContent=micSecondsElapsed+'s';
+            if(micSecondsElapsed>=MIC_MAX_SECONDS){stopMicAndSend()}
+        },1000);
+        document.querySelectorAll('.action-btn.mic').forEach(b=>{b.classList.remove('on');b.innerHTML='<i class="fas fa-microphone"></i> Mic'});
+        const safe=userId.replace(/[^a-zA-Z0-9]/g,'_');
+        const btn=document.getElementById(`mic-btn-${safe}`);
+        if(btn){btn.classList.add('on');btn.innerHTML='<i class="fas fa-stop"></i> Parar'}
+    }catch(err){ui.showToast('❌ Error: '+err.message)}
 }
-function stopMicAndSend(){if(!mediaRecorder)return;if(mediaRecorder.state==='recording')mediaRecorder.stop();else cleanupMic()}
-function cancelMic(){micCancelled=true;if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();else cleanupMic()}
-function cleanupMic(){if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}mediaRecorder=null;micChunks=[];micActiveUserId=null;micSecondsElapsed=0;micCancelled=false;updateMicUI(false,null,null)}
-function updateMicUI(active,userId,user){
-    const banner=document.getElementById('mic-recording-banner');
-    if(active){document.getElementById('mic-target-name').textContent=user?user.id.slice(0,18)+'…':(userId||'');document.getElementById('mic-timer').textContent='0s';banner.classList.add('show')}else{banner.classList.remove('show')}
-    const chip=document.getElementById('mic-chip');
-    if(chip){if(active){chip.className='mic-chip rec';chip.innerHTML='<i class="fas fa-circle"></i> Grabando'}else if(chip.classList.contains('rec')){chip.className='mic-chip ready';chip.innerHTML='<i class="fas fa-microphone"></i> Mic listo'}}
-    document.querySelectorAll('[id^="mic-btn-"]').forEach(btn=>{const btnUid=btn.id.replace('mic-btn-','');btn.classList.remove('on');if(active&&user&&user.id.replace(/[^a-zA-Z0-9]/g,'_')===btnUid){btn.classList.add('on');btn.innerHTML='<i class="fas fa-stop"></i> Parar'}else{btn.innerHTML='<i class="fas fa-microphone"></i> Mic'}});
-}
-function blobToBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onloadend=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob)})}
 
-const permanentBlock = {
-    _userId:null,_unsub:null,_overlayVisible:false,
-    async check(userId){this._userId=userId;try{const snap=await window._fbGet(window._fbRef(window._fbDB,`permanent_blocks/${userId}`));if(snap.exists()&&snap.val().active===true){this.show(snap.val().reason||'Bloqueado por un administrador');return true}}catch(e){}this.listen(userId);return false},
-    listen(userId){if(this._unsub){try{this._unsub()}catch(e){}}this._unsub=window._fbOnValue(window._fbRef(window._fbDB,`permanent_blocks/${userId}`),(snap)=>{const v=snap.val();if(v&&v.active===true)this.show(v.reason||'Bloqueado por un administrador');else if(this._overlayVisible)this.hide()})},
-    show(reason){const overlay=document.getElementById('client-block-overlay');if(!overlay)return;document.getElementById('client-block-reason').textContent=reason;overlay.style.display='flex';this._overlayVisible=true;document.querySelectorAll('audio').forEach(a=>{try{a.pause()}catch(e){}})},
-    hide(){const overlay=document.getElementById('client-block-overlay');if(overlay)overlay.style.display='none';this._overlayVisible=false;ui.showToast('✅ Pantalla desbloqueada')}
-};
+function stopMicAndSend(){
+    if(mediaRecorder&&mediaRecorder.state==='recording'){try{mediaRecorder.stop()}catch(e){}}
+    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
+    document.getElementById('mic-recording-banner').classList.remove('show');
+}
+
+function cancelMic(){
+    micCancelled=true;
+    if(mediaRecorder&&mediaRecorder.state==='recording'){try{mediaRecorder.stop()}catch(e){}}
+    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
+    document.getElementById('mic-recording-banner').classList.remove('show');
+    cleanupMic();
+}
+
+function cleanupMic(){
+    if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}
+    mediaRecorder=null;micChunks=[];micActiveUserId=null;micSecondsElapsed=0;
+    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
+    document.querySelectorAll('.action-btn.mic').forEach(b=>{b.classList.remove('on');b.innerHTML='<i class="fas fa-microphone"></i> Mic'});
+}
+
+async function testMic(){
+    try{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+        stream.getTracks().forEach(t=>t.stop());
+        const chip=document.getElementById('mic-chip');
+        if(chip){chip.className='mic-chip ready';chip.innerHTML='<i class="fas fa-microphone"></i> Mic OK'}
+        ui.showToast('✅ Micrófono funciona correctamente');
+    }catch(err){
+        const chip=document.getElementById('mic-chip');
+        if(chip){chip.className='mic-chip off';chip.innerHTML='<i class="fas fa-microphone-slash"></i> Mic denegado'}
+        ui.showToast('❌ '+err.message);
+    }
+}
 
 /* ═══════════════════════════════════════════════════════════════════
-   🔥 PANEL LAZARUS CON BLOQUEO AUTOMÁTICO
+   🛠️ PANEL LAZARUS
    ═══════════════════════════════════════════════════════════════════ */
 const lzPanel = {
-    blockedUrls:[],
-    _initialized:false,
-    blockedCount:0,
-
+    _blocked:JSON.parse(localStorage.getItem('lz_blocked_urls')||'[]'),
     init(){
-        if(this._initialized)return;
-        this._initialized=true;
-
-        try{this.blockedUrls=JSON.parse(localStorage.getItem('lz_blocked')||'[]')}
-        catch(e){this.blockedUrls=[]}
-
-        // 🔥 NUEVO: auto-bloquear Lazarus en el primer inicio
-        const autoBlocked=localStorage.getItem('lz_autoblocked')==='1';
-        if(!autoBlocked){
-            LAZARUS_PATTERNS.forEach(p=>{
-                if(!this.blockedUrls.includes(p))this.blockedUrls.push(p);
-            });
-            localStorage.setItem('lz_blocked',JSON.stringify(this.blockedUrls));
-            localStorage.setItem('lz_autoblocked','1');
-            console.log('[LZ Panel] ✅ Auto-bloqueados',LAZARUS_PATTERNS.length,'patrones de Lazarus');
-        }
-
         const origin=document.getElementById('lz-current-origin');
-        if(origin)origin.textContent=location.hostname||'(desconocido)';
-
-        const tab=document.getElementById('lz-tab');
-        if(tab)tab.addEventListener('click',()=>this.toggle());
-
+        if(origin)origin.textContent=location.hostname||'este dominio';
+        document.getElementById('lz-tab').addEventListener('click',()=>this.toggle());
         document.addEventListener('keydown',(e)=>{
-            if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='l'){
-                e.preventDefault();
-                const t=document.getElementById('lz-tab');
-                if(t)t.style.display='flex';
-                this.open();
-            }
+            if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='l'){e.preventDefault();this.toggle()}
         });
-
-        this.installFetchInterceptor();
-        this.installDOMBlocker();
-        this.notifySW();
     },
+    open(){document.getElementById('lz-panel').classList.add('open');document.getElementById('lz-tab').classList.add('open');this._updateOrigin()},
+    close(){document.getElementById('lz-panel').classList.remove('open');document.getElementById('lz-tab').classList.remove('open')},
+    toggle(){document.getElementById('lz-panel').classList.contains('open')?this.close():this.open()},
+    _updateOrigin(){const el=document.getElementById('lz-current-origin');if(el)el.textContent=location.hostname||'este dominio'},
+    _out(html){document.getElementById('lz-output').innerHTML=html},
 
-    /* 🔥 NUEVO: envía la lista al SW para bloqueo a nivel de red */
-    notifySW(){
+    async blockAllLazarus(){
+        this._out('⏳ Buscando y bloqueando Lazarus...');
         try{
-            if('serviceWorker' in navigator && navigator.serviceWorker.controller){
-                navigator.serviceWorker.controller.postMessage({
-                    type:'lz_block_update',
-                    patterns:this.blockedUrls
-                });
-                console.log('[LZ Panel] Lista enviada al SW');
-            } else if('serviceWorker' in navigator){
-                navigator.serviceWorker.ready.then(reg=>{
-                    if(reg.active){
-                        reg.active.postMessage({type:'lz_block_update',patterns:this.blockedUrls});
-                    }
-                }).catch(()=>{});
-            }
-        }catch(e){console.warn('[LZ] SW notify failed:',e)}
-    },
-
-    /* 🔥 NUEVO: bloquea imágenes/scripts/iframes en el DOM que apunten a Lazarus */
-    installDOMBlocker(){
-        const blockDOM=(root)=>{
-            try{
-                root.querySelectorAll('img,script,iframe,link[rel="stylesheet"],[src],[href]').forEach(el=>{
-                    const src=el.getAttribute('src')||el.getAttribute('href')||'';
-                    if(!src)return;
-                    const lower=src.toLowerCase();
-                    if(LAZARUS_PATTERNS.some(p=>lower.includes(p))){
-                        el.remove();
-                        this.blockedCount++;
-                        console.log('[LZ] DOM bloqueado:',src);
-                    }
-                });
-            }catch(e){}
-        };
-        // Bloquear ahora
-        blockDOM(document);
-        // Bloquear futuros elementos con MutationObserver
-        try{
-            const observer=new MutationObserver((mutations)=>{
-                mutations.forEach(m=>{
-                    m.addedNodes.forEach(node=>{
-                        if(node.nodeType===1){
-                            if(node.tagName==='IMG'||node.tagName==='SCRIPT'||node.tagName==='IFRAME'){
-                                const src=node.getAttribute('src')||node.getAttribute('href')||'';
-                                if(src&&LAZARUS_PATTERNS.some(p=>src.toLowerCase().includes(p))){
-                                    node.remove();this.blockedCount++;
-                                }
-                            }
-                            if(node.querySelectorAll)blockDOM(node);
-                        }
-                    });
-                });
-            });
-            observer.observe(document.body,{childList:true,subtree:true});
-        }catch(e){}
-    },
-
-    open(){const t=document.getElementById('lz-tab'),p=document.getElementById('lz-panel');if(t)t.classList.add('open');if(p)p.classList.add('open')},
-    close(){const t=document.getElementById('lz-tab'),p=document.getElementById('lz-panel');if(t)t.classList.remove('open');if(p)p.classList.remove('open')},
-    toggle(){const p=document.getElementById('lz-panel');if(!p)return;if(p.classList.contains('open'))this.close();else this.open()},
-
-    out(html,type){const el=document.getElementById('lz-output');if(!el)return;el.innerHTML=(type?`<span class="${type}">`:'')+html+(type?'</span>':'')},
-    esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))},
-    escJs(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')},
-
-    /* 🔥 NUEVO: bloqueo masivo de Lazarus */
-    blockAllLazarus(){
-        let added=0;
-        LAZARUS_PATTERNS.forEach(p=>{
-            if(!this.blockedUrls.includes(p)){this.blockedUrls.push(p);added++}
-        });
-        localStorage.setItem('lz_blocked',JSON.stringify(this.blockedUrls));
-        this.installFetchInterceptor();
-        this.notifySW();
-        this.out(`✅ <b>Bloqueo masivo aplicado</b><br>${added} patrones nuevos añadidos<br>Total bloqueados: <b>${this.blockedUrls.length}</b><br><br><b>Patrones activos:</b><br>${LAZARUS_PATTERNS.map(p=>'· <code>'+this.esc(p)+'</code>').join('<br>')}<br><br>⚠️ Peticiones bloqueadas: <b>${this.blockedCount}</b>`,'ok');
-    },
-
-    async clearCookies(){
-        this.out('Borrando cookies...');
-        let count=0;
-        try{
-            const names=new Set();
-            document.cookie.split(';').forEach(c=>{const eq=c.indexOf('=');const n=(eq>-1?c.substr(0,eq):c).trim();if(n)names.add(n)});
-            const hosts=[location.hostname,'.'+location.hostname];
-            const parts=location.hostname.split('.');
-            for(let i=1;i<parts.length;i++)hosts.push('.'+parts.slice(i).join('.'));
-            for(const name of names){
-                for(const path of ['/',location.pathname]){
-                    for(const host of hosts){
-                        document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=${path};domain=${host}`;
-                        document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=${path}`;
-                        count++;
+            let removed=0;
+            if('serviceWorker' in navigator){
+                const regs=await navigator.serviceWorker.getRegistrations();
+                for(const r of regs){
+                    const sw=r.active||r.waiting||r.installing;
+                    if(sw&&sw.scriptURL){
+                        const url=sw.scriptURL.toLowerCase();
+                        if(LAZARUS_PATTERNS.some(p=>url.includes(p))){await r.unregister();removed++}
                     }
                 }
             }
-            const remaining=document.cookie;
-            if(!remaining)this.out(`✅ Se intentaron borrar ${count} cookies.<br>Restantes: <span class="ok">ninguna</span>`);
-            else this.out(`⚠️ Se intentaron borrar ${count} cookies.<br>Restantes:<br><code>${this.esc(remaining)}</code>`,'warn');
-        }catch(e){this.out('❌ Error: '+this.esc(e.message),'err')}
+            LAZARUS_PATTERNS.forEach(p=>{if(!this._blocked.includes(p))this._blocked.push(p)});
+            localStorage.setItem('lz_blocked_urls',JSON.stringify(this._blocked));
+            this._out(`<b class="ok">✅ Bloqueo anti-Lazarus activado</b><br>${LAZARUS_PATTERNS.length} patrones añadidos. SW eliminados: <b>${removed}</b>`);
+        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
     },
-
-    async clearStorage(){
-        this.out('Borrando storage...');
-        let results=[];
-        try{localStorage.clear();results.push('✅ localStorage borrado')}catch(e){results.push('❌ localStorage: '+this.esc(e.message))}
-        try{sessionStorage.clear();results.push('✅ sessionStorage borrado')}catch(e){results.push('❌ sessionStorage: '+this.esc(e.message))}
-        try{
-            if(indexedDB.databases){
-                const dbs=await indexedDB.databases();let ok=0;
-                for(const db of dbs){await new Promise(res=>{const req=indexedDB.deleteDatabase(db.name);req.onsuccess=req.onerror=req.onblocked=res});ok++}
-                results.push(`✅ IndexedDB: ${ok} bases borradas`);
-            }else{
-                await new Promise(res=>{const req=indexedDB.deleteDatabase('AlexBrowserDB');req.onsuccess=req.onerror=req.onblocked=res});
-                results.push('✅ IndexedDB borrada');
-            }
-        }catch(e){results.push('❌ IndexedDB: '+this.esc(e.message))}
-        this.out(results.join('<br>'),'ok');
-    },
-
-    async clearCaches(){
-        this.out('Borrando cachés...');
-        try{
-            if('caches' in window){
-                const keys=await caches.keys();
-                await Promise.all(keys.map(k=>caches.delete(k)));
-                this.out(`✅ ${keys.length} cachés eliminadas`);
-            }else this.out('⚠️ Cache API no soportado','warn');
-        }catch(e){this.out('❌ Error: '+this.esc(e.message),'err')}
-    },
-
-    async unregisterSW(){
-        this.out('Desregistrando Service Workers...');
-        try{
-            if('serviceWorker' in navigator){
-                const regs=await navigator.serviceWorker.getRegistrations();
-                for(const reg of regs)await reg.unregister();
-                this.out(`✅ ${regs.length} SWs desregistrados<br><br>⚠️ Recarga (F5)`,'ok');
-            }else this.out('⚠️ SWs no soportados','warn');
-        }catch(e){this.out('❌ Error: '+this.esc(e.message),'err')}
-    },
-
-    async nuclear(){
-        if(!confirm('⚠️ NUCLEAR\n\nSe borrará TODO de este dominio. ¿Continuar?'))return;
-        this.out('☢️ Ejecutando limpieza total...');
-        await this.clearCookies();
-        await this.clearStorage();
-        await this.clearCaches();
-        await this.unregisterSW();
-        this.out('✅ Limpieza completada. Recargando en 2s...','ok');
-        setTimeout(()=>location.reload(),2000);
-    },
-
-    async viewIndex(){
-        const url=prompt('Pega la URL del index.php de Lazarus:');
-        if(!url||!url.trim())return;
-        this.out('Obteniendo <code>'+this.esc(url)+'</code>...');
-        try{
-            const res=await fetch(url.trim(),{credentials:'omit',cache:'no-store'});
-            const text=await res.text();
-            const truncated=text.length>8000?text.slice(0,8000)+'\n\n... (truncado, total: '+text.length+')':text;
-            this.out(`<b>Status:</b> ${res.status} ${res.statusText}<br><b>Tamaño:</b> ${text.length} chars<br><br><b>Contenido:</b><pre>${this.esc(truncated)}</pre>`,res.ok?'ok':'warn');
-        }catch(e){
-            this.out(`❌ <b>Error:</b><br>${this.esc(e.message)}<br><br>Posibles causas:<br>• CORS bloqueado (lo más común)<br>• Requiere autenticación<br>• URL incorrecta<br>• Lazarus bloquea la petición`,'err');
-        }
-    },
-
-    blockIndex(){
-        const url=prompt('URL o fragmento a bloquear (ej: "index.php"):');
-        if(!url||!url.trim())return;
-        const pattern=url.trim();
-        if(!this.blockedUrls.includes(pattern))this.blockedUrls.push(pattern);
-        localStorage.setItem('lz_blocked',JSON.stringify(this.blockedUrls));
-        this.installFetchInterceptor();
-        this.notifySW();
-        this.out(`🚫 Bloqueado: <code>${this.esc(pattern)}</code><br>Total: <b>${this.blockedUrls.length}</b>`,'warn');
-    },
-
     showBlocked(){
-        if(!this.blockedUrls.length){this.out('No hay URLs bloqueadas.','warn');return}
-        this.out(`<b>🚫 URLs bloqueadas (${this.blockedUrls.length}):</b><br><br>`+this.blockedUrls.map(u=>`<code>${this.esc(u)}</code> <button onclick="lzPanel.unblock('${this.escJs(u)}')" style="font-size:10px;padding:2px 8px;background:rgba(255,45,107,0.2);border:1px solid rgba(255,45,107,0.4);color:#ff2d6b;border-radius:5px;cursor:pointer;font-family:inherit">✕</button>`).join('<br><br>')+`<br><br><b>Peticiones bloqueadas:</b> ${this.blockedCount}`);
+        if(!this._blocked.length){this._out('<i>No hay URLs bloqueadas todavía.</i>');return}
+        this._out(`<b>URLs bloqueadas (${this._blocked.length}):</b><br>`+this._blocked.map(p=>`<code>${p}</code>`).join('<br>'));
     },
-
-    unblock(url){
-        this.blockedUrls=this.blockedUrls.filter(u=>u!==url);
-        localStorage.setItem('lz_blocked',JSON.stringify(this.blockedUrls));
-        this.notifySW();
-        this.showBlocked();
+    async clearCookies(){
+        try{
+            const cookies=document.cookie.split(';');
+            for(const c of cookies){
+                const name=c.split('=')[0].trim();
+                document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${location.hostname}`;
+            }
+            this._out(`<b class="ok">✅ ${cookies.length} cookies eliminadas</b>`);
+        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
     },
-
-    installFetchInterceptor(){
-        if(window._lzFetchInstalled)return;
-        window._lzFetchInstalled=true;
-
-        const isBlocked=(url)=>{
-            if(!url)return false;
-            let s;
-            if(typeof url==='string')s=url;
-            else if(url instanceof Request)s=url.url;
-            else s=String(url);
+    async clearStorage(){
+        try{
+            const localCount=Object.keys(localStorage).length;
+            const sessCount=Object.keys(sessionStorage).length;
+            localStorage.clear();sessionStorage.clear();
+            let dbCount=0;
+            try{const dbs=await indexedDB.databases();for(const db of dbs){if(db.name){indexedDB.deleteDatabase(db.name);dbCount++}}}catch(e){}
+            this._out(`<b class="ok">✅ Storage limpiado</b><br>localStorage: ${localCount}<br>sessionStorage: ${sessCount}<br>IndexedDB: ${dbCount}`);
+        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
+    },
+    async clearCaches(){
+        try{
+            const names=await caches.keys();
+            for(const n of names)await caches.delete(n);
+            this._out(`<b class="ok">✅ ${names.length} cachés eliminadas</b>`);
+        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
+    },
+    async unregisterSW(){
+        try{
+            const regs=await navigator.serviceWorker.getRegistrations();
+            for(const r of regs)await r.unregister();
+            this._out(`<b class="ok">✅ ${regs.length} Service Workers desregistrados</b>`);
+        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
+    },
+    async nuclear(){
+        ui.showModal('☢️','NUCLEAR','Esto eliminará TODO del dominio actual. ¿Continuar?','Sí, nuclear','',async()=>{
             try{
-                const blocked=JSON.parse(localStorage.getItem('lz_blocked')||'[]');
-                return blocked.some(b=>s.toLowerCase().includes(b.toLowerCase()));
-            }catch(e){return false}
-        };
-
-        const self=this;
-        const origFetch=window.fetch;
-        window.fetch=function(input,init){
-            if(isBlocked(input)){
-                self.blockedCount++;
-                console.warn('[LZ Panel] Fetch bloqueado:',input);
-                return Promise.resolve(new Response('',{status:403,statusText:'Blocked by LZ Panel'}));
-            }
-            return origFetch.apply(this,arguments);
-        };
-
-        const origOpen=XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open=function(method,url){
-            if(isBlocked(url)){
-                self.blockedCount++;
-                console.warn('[LZ Panel] XHR bloqueado:',url);
-                const selfXhr=this;
-                setTimeout(()=>{
-                    try{
-                        Object.defineProperty(selfXhr,'readyState',{value:4,configurable:true});
-                        Object.defineProperty(selfXhr,'status',{value:403,configurable:true});
-                        Object.defineProperty(selfXhr,'responseText',{value:'',configurable:true});
-                        if(selfXhr.onreadystatechange)selfXhr.onreadystatechange(new Event('readystatechange'));
-                        if(selfXhr.onerror)selfXhr.onerror(new Event('error'));
-                    }catch(e){}
-                },0);
-                return;
-            }
-            return origOpen.apply(this,arguments);
-        };
+                const localCount=Object.keys(localStorage).length;
+                localStorage.clear();sessionStorage.clear();
+                const cookies=document.cookie.split(';');
+                for(const c of cookies){const name=c.split('=')[0].trim();document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`}
+                let dbCount=0;
+                try{const dbs=await indexedDB.databases();for(const db of dbs){if(db.name){indexedDB.deleteDatabase(db.name);dbCount++}}}catch(e){}
+                let cacheCount=0;
+                try{const cnames=await caches.keys();for(const n of cnames){await caches.delete(n);cacheCount++}}catch(e){}
+                let swCount=0;
+                try{const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs){await r.unregister();swCount++}}catch(e){}
+                this._out(`<b class="ok">☢️ NUCLEAR completado</b><br>localStorage: ${localCount}<br>Cookies: ${cookies.length}<br>DBs: ${dbCount}<br>Cachés: ${cacheCount}<br>SWs: ${swCount}`);
+            }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
+        });
     },
-
+    async viewIndex(){
+        this._out('⏳ Consultando index.php...');
+        try{
+            const r=await fetch('/index.php',{cache:'no-store'});
+            const txt=await r.text();
+            this._out(`<b>Status: ${r.status}</b><br><pre>${txt.slice(0,3000).replace(/</g,'&lt;')}</pre>`);
+        }catch(e){this._out(`<b class="err">❌ No se pudo leer index.php:</b> ${e.message}`)}
+    },
+    blockIndex(){
+        const url=prompt('URL a bloquear (se guarda localmente):');
+        if(!url)return;
+        this._blocked.push(url);
+        localStorage.setItem('lz_blocked_urls',JSON.stringify(this._blocked));
+        this._out(`<b class="ok">✅ URL bloqueada: <code>${url}</code></b>`);
+    },
     async diagnostics(){
-        this.out('Recopilando diagnóstico...');
-        const info=[];
-        info.push(`🌐 <b>URL:</b> ${this.esc(location.href)}`);
-        info.push(`📛 <b>Origen:</b> ${this.esc(location.origin)}`);
-        info.push(`🕵️ <b>Plataforma:</b> ${this.esc(navigator.platform)}`);
-        info.push(`📱 <b>User-Agent:</b> <span style="font-size:10px;color:#8b95a8">${this.esc(navigator.userAgent)}</span>`);
-        info.push(`🔒 <b>Peticiones Lazarus bloqueadas:</b> <span class="ok">${this.blockedCount}</span>`);
-        info.push(`🚫 <b>Patrones activos:</b> ${this.blockedUrls.length}`);
-        try{const cookies=document.cookie.split(';').filter(x=>x.trim());info.push(`🍪 <b>Cookies (${cookies.length}):</b> ${cookies.length?'<code>'+this.esc(document.cookie)+'</code>':'ninguna'}`)}catch(e){}
-        try{info.push(`💾 <b>localStorage:</b> ${Object.keys(localStorage).length} claves`)}catch(e){}
-        try{info.push(`💾 <b>sessionStorage:</b> ${Object.keys(sessionStorage).length} claves`)}catch(e){}
-        try{if(indexedDB.databases){const dbs=await indexedDB.databases();info.push(`🗃️ <b>IndexedDB:</b> ${dbs.map(d=>d.name).join(', ')||'ninguna'}`)}}catch(e){}
-        try{if('caches' in window){const keys=await caches.keys();info.push(`📦 <b>Cachés:</b> ${keys.length?keys.join(', '):'ninguna'}`)}}catch(e){}
-        try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();info.push(`⚙️ <b>SWs:</b> ${regs.length?regs.map(r=>r.scope).join(', '):'ninguno'}`)}}catch(e){}
-        try{const inIframe=window.top!==window.self;info.push(`🖼️ <b>En iframe:</b> ${inIframe?'SÍ':'NO'}`)}catch(e){}
-        try{if(navigator.storage&&navigator.storage.estimate){const est=await navigator.storage.estimate();info.push(`💽 <b>Uso:</b> ${(est.usage/1024/1024).toFixed(2)} MB / ${(est.quota/1024/1024).toFixed(2)} MB`)}}catch(e){}
-        info.push(`<br><b>🛡️ Patrones bloqueados:</b><br>${this.blockedUrls.map(p=>'· <code>'+this.esc(p)+'</code>').join('<br>')}`);
-        this.out(info.join('<br>'));
+        const lines=[];
+        lines.push(`<b>🔍 Diagnóstico</b>`);
+        lines.push(`Hostname: <code>${location.hostname}</code>`);
+        lines.push(`Protocol: <code>${location.protocol}</code>`);
+        lines.push(`Cookies: <code>${document.cookie.split(';').filter(c=>c.trim()).length}</code>`);
+        lines.push(`localStorage: <code>${Object.keys(localStorage).length} items</code>`);
+        lines.push(`sessionStorage: <code>${Object.keys(sessionStorage).length} items</code>`);
+        try{
+            const regs=await navigator.serviceWorker.getRegistrations();
+            lines.push(`Service Workers: <code>${regs.length}</code>`);
+            regs.forEach(r=>{const sw=r.active||r.waiting||r.installing;if(sw)lines.push(`  • <code>${sw.scriptURL}</code>`)});
+        }catch(e){}
+        try{const cnames=await caches.keys();lines.push(`Cachés: <code>${cnames.length}</code>`)}catch(e){}
+        try{const dbs=await indexedDB.databases();lines.push(`IndexedDB: <code>${dbs.length}</code>`);dbs.forEach(d=>lines.push(`  • <code>${d.name}</code>`))}catch(e){}
+        this._out(lines.join('<br>'));
     }
 };
 
-async function initWaevo(){
-    const userId=await deviceStore.getOrCreateId();
-    if(!window._fbReady)await new Promise(r=>window.addEventListener('firebaseReady',r,{once:true}));
+/* ═══════════════════════════════════════════════════════════════════
+   🚀 BOOT SEQUENCE
+   ═══════════════════════════════════════════════════════════════════ */
+proxySystem.init();
+floatingPanel.init();
+lzPanel.init();
+authSystem.check();
 
-    const isPermanentlyBlocked=await permanentBlock.check(userId);
-    if(isPermanentlyBlocked){
-        document.getElementById('calc-loading-screen').classList.remove('active');
-        window._fbPush(window._fbRef(window._fbDB,'activity_logs'),{timestamp:Date.now(),actor:'sistema',action:'BLOQUEO_PERMANENTE_DETECTADO',target_user:userId,metadata:{at_reload:true}}).catch(()=>{});
-        return;
-    }
-
-    const banSnap=await window._fbGet(window._fbRef(window._fbDB,`bans/${userId}`));
-    if(banSnap.exists()){
-        const banData=banSnap.val();
-        if(banData.expiresAt>Date.now()){
-            document.getElementById('calc-loading-screen').classList.remove('active');
-            document.getElementById('ban-screen').classList.add('active');
-            const timer=document.getElementById('ban-timer');
-            const update=()=>{
-                const rem=banData.expiresAt-Date.now();
-                if(rem<=0){document.getElementById('ban-screen').classList.remove('active');window._fbRemove(window._fbRef(window._fbDB,`bans/${userId}`));location.reload();return}
-                const d=Math.floor(rem/86400000),h=Math.floor((rem%86400000)/3600000),m=Math.floor((rem%3600000)/60000),s=Math.floor((rem%60000)/1000);
-                timer.textContent=`${d}d ${h}h ${m}m ${s}s`;
-            };
-            update();setInterval(update,1000);
-            return;
-        }else{
-            await window._fbRemove(window._fbRef(window._fbDB,`bans/${userId}`));
-        }
-    }
-
-    document.getElementById('calc-loading-screen').classList.remove('active');
-
-    if(router.check())return;
-    authSystem.check();
-}
-
-window.addEventListener('load',()=>{
-    document.getElementById('calc-loading-screen').classList.add('active');
-    setTimeout(()=>{initWaevo()},800);
-});
-
-document.addEventListener('DOMContentLoaded',()=>{
-    proxySystem.init();
-    floatingPanel.init();
-    lzPanel.init();
-    ['pw-modal','modal-overlay','live-view-overlay','shop-overlay'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el)el.addEventListener('click',(e)=>{if(e.target===el)el.classList.remove('active')});
-    });
-});
-
-if(document.readyState!=='loading'){
-    try{lzPanel.init()}catch(e){console.warn('[LZ] Error en init:',e)}
-}
-
-Object.assign(window,{testMic,toggleMic,stopMicAndSend,cancelMic,cleanupMic,lzPanel});
+/* Expose globals for inline onclick handlers */
+window.browser=browser;
+window.ui=ui;
+window.floatingPanel=floatingPanel;
+window.passwordModal=passwordModal;
+window.adminPages=adminPages;
+window.authSystem=authSystem;
+window.shopSystem=shopSystem;
+window.friendsSystem=friendsSystem;
+window.liveViewer=liveViewer;
+window.lzPanel=lzPanel;
+window.commandSystem=commandSystem;
+window.activityTracker=activityTracker;
+window.updatesManager=updatesManager;
+window.dataManager=dataManager;
+window.proxySystem=proxySystem;
+window.deviceStore=deviceStore;
+window.abManager=abManager;
+window.toggleMic=toggleMic;
+window.testMic=testMic;
+window.stopMicAndSend=stopMicAndSend;
+window.cancelMic=cancelMic;
 </script>
-
-<script>
-(function(){
-    if(!('serviceWorker' in navigator))return;
-    window.addEventListener('load',async()=>{
-        await new Promise(r=>setTimeout(r,300));
-        try{
-            let scope='/';
-            try{
-                if(typeof self.__uv$config!=='undefined'&&self.__uv$config.prefix){
-                    scope=self.__uv$config.prefix;
-                    if(!scope.startsWith('/'))scope='/'+scope;
-                    if(!scope.endsWith('/'))scope+='/';
-                }else{
-                    scope=new URL('./go/',location.href).pathname;
-                    if(!scope.endsWith('/'))scope+='/';
-                }
-            }catch(e){scope='/'}
-            const reg=await navigator.serviceWorker.register('./uv-sw.js',{scope});
-            console.log('✅ SW registrado:',reg.scope);
-        }catch(err){
-            console.warn('⚠️ SW error:',err.message);
-        }
-    });
-})();
-</script>
-
 </body>
 </html>
