@@ -7,3 +7,19 @@
 # Netlify deploy; the bare server is hosted separately (see active/uv/uv.config.js).
 [build]
   publish = "."
+
+# The app lives in /active/, so there is no index.html at the repository root.
+# Send visitors of the bare domain to the app. A redirect (not a rewrite) is
+# required: active/index.html loads ./uv/... with relative paths and its service
+# worker scope is /active/go/, so the page must really be served from /active/.
+[[redirects]]
+  from = "/"
+  to = "/active/"
+  status = 302
+
+# The admin and owner pages load Ultraviolet from /uv/..., but the files live in
+# /active/uv/. Serve them from there.
+[[redirects]]
+  from = "/uv/*"
+  to = "/active/uv/:splat"
+  status = 200
