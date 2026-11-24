@@ -866,7 +866,7 @@ const authSystem = {
             this._processLoginCheck(uid);
         }catch(e){
             console.error('[Google Auth]',e);
-            ui.showToast('Error al iniciar sesión con Google.');
+            const c=e&&e.code;ui.showToast(c==='auth/unauthorized-domain'?'Dominio no autorizado en Firebase: añade '+location.hostname+' en Authentication > Settings > Authorized domains.':c==='auth/popup-blocked'?'El navegador bloqueó la ventana de Google. Permite las ventanas emergentes e inténtalo de nuevo.':(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')?'Se cerró la ventana de Google antes de terminar.':'Error al iniciar sesión con Google'+(c?' ('+c+')':'')+'.');
         }
     },
     async _processLoginCheck(userId){
