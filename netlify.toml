@@ -1,0 +1,9 @@
+# Waevo is a static site (plain HTML/CSS/JS, no framework or bundler), so there
+# is no build step: Netlify publishes the repository root as-is. The root must be
+# the publish directory because the Ultraviolet config and service worker use
+# absolute paths under /active/ (e.g. /active/uv/uv.bundle.js).
+#
+# The Node servers in this repo (bare-server.js, index.js) are not part of the
+# Netlify deploy; the bare server is hosted separately (see active/uv/uv.config.js).
+[build]
+  publish = "."
