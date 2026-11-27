@@ -1041,17 +1041,29 @@ class BrowserEngine {
             }catch(e){}
         },1000);
     }
-    _isGoogleUrl(url){
+    _isGoogleSearchRequest(url){
         try{
-            const host=new URL(url).hostname.toLowerCase();
-            return /(^|\.)google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(host)
+            const u=new URL(url);
+            const host=u.hostname.toLowerCase();
+            const googleHost=/(^|\.)google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(host);
+            return googleHost&&(u.pathname==='/'||u.pathname==='/search'||u.pathname.startsWith('/maps/search/'))
         }catch(e){return false}
     }
-    _navigateGoogleSameTab(url){
-        try{window.location.assign(url)}catch(e){ui.showToast("No se pudo abrir Google")}
+    _googleSearchRoute(url){
+        let query='',mode='web';
+        try{
+            const u=new URL(url);
+            query=u.searchParams.get('q')||'';
+            if(u.searchParams.get('tbm')==='isch')mode='images';
+            if(u.pathname.startsWith('/maps/search/')){
+                const path=u.pathname.slice('/maps/search/'.length).split('/')[0];
+                if(path)query=decodeURIComponent(path)
+            }
+        }catch(e){}
+        return 'waevobrowser://google-search?q='+encodeURIComponent(query)+'&mode='+mode
     }
     openGoogleFullscreen(){
-        this._navigateGoogleSameTab("https://www.google.com");
+        this.navigate('waevobrowser://google-search');
     }
     _isUrl(i){
         if(!i)return false;
@@ -1152,8 +1164,8 @@ class BrowserEngine {
             url=this._buildSearchUrl(q,'web');
             title=q;
         }
-        if(this._isGoogleUrl(url)){
-            this._navigateGoogleSameTab(url);
+        if(this._isGoogleSearchRequest(url)){
+            this.navigate(this._googleSearchRoute(url));
             return
         }
         t.history=t.history.slice(0,t.historyIndex+1);
@@ -1184,8 +1196,8 @@ class BrowserEngine {
         }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
         if(!t)return;
-        if(this._isGoogleUrl(url)){
-            this._navigateGoogleSameTab(url);
+        if(this._isGoogleSearchRequest(url)){
+            this.navigate(this._googleSearchRoute(url));
             return
         }
         t.history=t.history.slice(0,t.historyIndex+1);
@@ -1199,8 +1211,8 @@ class BrowserEngine {
         return url.includes('duckduckgo.com') || url.includes('bing.com/search') || url.includes('brave.com/search') || url.includes('google.com/search') || url.includes('yahoo.com/search') || url.includes('yandex.com/search') || url.includes('ecosia.org/search') || url.includes('qwant.com') || url.includes('startpage.com') || url.includes('searx.') || url.includes('mojeek.com/search') || url.includes('baidu.com/s') || url.includes('ask.com/web') || url.includes('aol.com/aol/search') || url.includes('lycos.com') || url.includes('swisscows.com')
     }
     loadUrlIntoFrame(url,title,raw){
-        if(this._isGoogleUrl(url)){
-            this._navigateGoogleSameTab(url);
+        if(this._isGoogleSearchRequest(url)){
+            this.navigate(this._googleSearchRoute(url));
             return
         }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
@@ -1396,21 +1408,85 @@ class BrowserEngine {
         page.id='waevo-internal-page';
         page.className='waevo-internal-page active';
         const cleanUrl=url.split('?')[0];
+        let googleQuery='',googleMode='web';
         if(cleanUrl==='waevobrowser://settings'){
             page.innerHTML=this._renderSettingsPage();
         } else if(cleanUrl==='waevobrowser://about'){
             page.innerHTML=this._renderAboutPage();
+        } else if(cleanUrl==='waevobrowser://google-search'){
+            const params=new URLSearchParams(url.split('?')[1]||'');
+            googleQuery=params.get('q')||'';
+            googleMode=params.get('mode')==='images'?'images':'web';
+            page.innerHTML=this._renderGoogleSearchPage(googleQuery,googleMode);
         } else {
             page.innerHTML=`<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fas fa-exclamation-triangle"></i></div><h1>Página no encontrada</h1><p>${escapeHtml(url)} no existe.</p></div></div>`;
         }
         viewport.appendChild(page);
+        if(cleanUrl==='waevobrowser://google-search')this._mountGoogleCse(googleQuery,googleMode);
         this._bindInternalPageEvents();
+    }
+    _renderGoogleSearchPage(query,mode){
+        const cxId=(localStorage.getItem('waevo_google_cse_id')||'').trim();
+        const queryText=query?`<p>Resultados para: <b>${escapeHtml(query)}</b></p>`:'<p>Busca en la web desde una pestana de Waevo</p>';
+        const content=cxId
+            ? `<div id="waevo-google-cse" style="background:#fff;color:#202124;border-radius:14px;padding:16px;min-height:360px"></div>`
+            : `<div class="settings-block"><h2 class="settings-block-title"><i class="fab fa-google"></i> Configura Google integrado</h2><p class="settings-block-desc">Para mostrar resultados dentro de Waevo, crea un motor de Google Programmable Search Engine y pega aqui su ID CX. La pagina normal de Google no permite incrustarse dentro de un iframe.</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><button class="settings-action-btn primary" onclick="browser.openSettings()"><i class="fas fa-sliders"></i> Abrir configuracion</button><a class="settings-action-btn" href="https://programmablesearchengine.google.com/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:none">Crear buscador Google</a></div></div>`;
+        return `<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fab fa-google"></i></div><h1>Google</h1>${queryText}</div>${content}</div>`;
+    }
+    _mountGoogleCse(query,mode){
+        const cxId=(localStorage.getItem('waevo_google_cse_id')||'').trim();
+        const container=document.getElementById('waevo-google-cse');
+        if(!cxId||!container)return;
+        const render=()=>{
+            if(!container.isConnected)return;
+            const api=window.google&&window.google.search&&window.google.search.cse&&window.google.search.cse.element;
+            if(!api)throw new Error('Google Search Element no disponible');
+            const gname='waevoCse'+Date.now()+Math.floor(Math.random()*1000);
+            const attributes={linkTarget:'_blank',webSearchResultSetSize:'large'};
+            if(mode==='images'){attributes.enableImageSearch=true;attributes.defaultToImageSearch=true}
+            api.render({div:container,tag:'search',gname,attributes});
+            const element=api.getElement(gname);
+            if(query&&element&&typeof element.execute==='function')element.execute(query);
+            this._bindGoogleResultLinks(container);
+        };
+        if(window.google&&window.google.search&&window.google.search.cse&&window.google.search.cse.element){
+            try{render()}catch(e){container.innerHTML='<p>No se pudo mostrar la busqueda de Google.</p>'}
+            return;
+        }
+        if(!window._waevoCsePromise){
+            window.__gcse=window.__gcse||{};
+            window.__gcse.parsetags='explicit';
+            window._waevoCsePromise=new Promise((resolve,reject)=>{
+                window.__gcse.initializationCallback=()=>resolve();
+                const script=document.createElement('script');
+                script.async=true;
+                script.src='https://cse.google.com/cse.js?cx='+encodeURIComponent(cxId);
+                script.onerror=()=>reject(new Error('No se pudo cargar Google Programmable Search'));
+                document.head.appendChild(script);
+            });
+        }
+        window._waevoCsePromise.then(render).catch(()=>{
+            window._waevoCsePromise=null;
+            if(container.isConnected)container.innerHTML='<p>No se pudo cargar Google. Comprueba la conexion y el ID CX.</p>';
+        });
+    }
+    _bindGoogleResultLinks(container){
+        if(container.dataset.waevoLinksBound)return;
+        container.dataset.waevoLinksBound='1';
+        container.addEventListener('click',event=>{
+            const link=event.target.closest('a.gs-title, .gs-title a');
+            if(!link||!link.href||!/^https?:/i.test(link.href))return;
+            event.preventDefault();
+            event.stopPropagation();
+            this.navigate(link.href);
+        },true);
     }
     _renderSettingsPage(){
         const engine=getSearchEngine();
         const proxyOn=proxySystem._enabled;
         const homeUrl=localStorage.getItem('waevo_home_url')||'about:start';
         const showFavicons=getShowFavicons();
+        const googleCseId=localStorage.getItem('waevo_google_cse_id')||'';
         const enginesHtml=Object.entries(searchEngines).map(([key,cfg])=>
             `<option value="${key}" ${engine===key?'selected':''}>${cfg.emoji} ${escapeHtml(cfg.name)}</option>`
         ).join('');
@@ -1446,6 +1522,18 @@ class BrowserEngine {
                 </div>
             </div>
 
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fab fa-google"></i> Google integrado</h2>
+                <p class="settings-block-desc">Configura un ID CX de Google Programmable Search Engine para mostrar resultados dentro de las pestanas Waevo.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">ID del buscador (CX)</div>
+                        <div class="settings-row-desc">Crea un buscador de web completa en Google y pega aqui su ID.</div>
+                    </div>
+                    <input class="settings-select" id="set-google-cse-id" type="text" value="${escapeHtml(googleCseId)}" placeholder="Ejemplo: 123456789012345678901:abcdefg">
+                    <button class="settings-action-btn primary" id="save-google-cse-id"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+            </div>
             <div class="settings-block">
                 <h2 class="settings-block-title"><i class="fas fa-shield-halved"></i> Privacidad y seguridad</h2>
                 <p class="settings-block-desc">Controla cómo se gestionan tus datos y tu navegación.</p>
@@ -1550,6 +1638,14 @@ class BrowserEngine {
         if(engineSel)engineSel.onchange=()=>{
             localStorage.setItem('waevo_search_engine',engineSel.value);
             ui.showToast('✅ Motor de búsqueda actualizado');
+        };
+        const cseSave=document.getElementById('save-google-cse-id');
+        if(cseSave)cseSave.onclick=()=>{
+            const input=document.getElementById('set-google-cse-id');
+            const cxId=input?input.value.trim():'';
+            if(cxId)localStorage.setItem('waevo_google_cse_id',cxId);
+            else localStorage.removeItem('waevo_google_cse_id');
+            ui.showToast(cxId?'ID de Google guardado. Recarga Waevo si ya habia una busqueda abierta.':'ID de Google eliminado.');
         };
         const homeSel=document.getElementById('set-home-url');
         if(homeSel)homeSel.onchange=()=>{
