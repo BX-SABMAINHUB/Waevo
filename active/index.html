@@ -1047,17 +1047,11 @@ class BrowserEngine {
             return /(^|\.)google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(host)
         }catch(e){return false}
     }
-    _openGoogleDirect(url){
-        let popup=null;
-        try{popup=window.open("about:blank","_blank")}catch(e){}
-        if(popup){
-            try{popup.opener=null;popup.location.replace(url);return}
-            catch(e){try{popup.close()}catch(_e){}}
-        }
+    _navigateGoogleSameTab(url){
         try{window.location.assign(url)}catch(e){ui.showToast("No se pudo abrir Google")}
     }
     openGoogleFullscreen(){
-        this._openGoogleDirect("https://www.google.com");
+        this._navigateGoogleSameTab("https://www.google.com");
     }
     _isUrl(i){
         if(!i)return false;
@@ -1159,7 +1153,7 @@ class BrowserEngine {
             title=q;
         }
         if(this._isGoogleUrl(url)){
-            this._openGoogleDirect(url);
+            this._navigateGoogleSameTab(url);
             return
         }
         t.history=t.history.slice(0,t.historyIndex+1);
@@ -1191,7 +1185,7 @@ class BrowserEngine {
         const t=this.tabs.find(t=>t.id===this.activeTabId);
         if(!t)return;
         if(this._isGoogleUrl(url)){
-            this._openGoogleDirect(url);
+            this._navigateGoogleSameTab(url);
             return
         }
         t.history=t.history.slice(0,t.historyIndex+1);
@@ -1206,7 +1200,7 @@ class BrowserEngine {
     }
     loadUrlIntoFrame(url,title,raw){
         if(this._isGoogleUrl(url)){
-            this._openGoogleDirect(url);
+            this._navigateGoogleSameTab(url);
             return
         }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
