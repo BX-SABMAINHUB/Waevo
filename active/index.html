@@ -705,6 +705,7 @@ const proxySystem = {
 };
 
 /* ═══════ SEARCH ENGINES — 16 total, Google por defecto ═══════ */
+const WAEVO_GOOGLE_CSE_ID='752995ae55f6c4fdd';
 const searchEngines = {
     google:{
         name:'Google',emoji:'🔍',
@@ -1426,7 +1427,7 @@ class BrowserEngine {
         this._bindInternalPageEvents();
     }
     _renderGoogleSearchPage(query,mode){
-        const cxId=(localStorage.getItem('waevo_google_cse_id')||'').trim();
+        const cxId=(localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID).trim();
         const queryText=query?`<p>Resultados para: <b>${escapeHtml(query)}</b></p>`:'<p>Busca en la web desde una pestana de Waevo</p>';
         const content=cxId
             ? `<div id="waevo-google-cse" style="background:#fff;color:#202124;border-radius:14px;padding:16px;min-height:360px"></div>`
@@ -1434,7 +1435,7 @@ class BrowserEngine {
         return `<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fab fa-google"></i></div><h1>Google</h1>${queryText}</div>${content}</div>`;
     }
     _mountGoogleCse(query,mode){
-        const cxId=(localStorage.getItem('waevo_google_cse_id')||'').trim();
+        const cxId=(localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID).trim();
         const container=document.getElementById('waevo-google-cse');
         if(!cxId||!container)return;
         const render=()=>{
@@ -1486,7 +1487,7 @@ class BrowserEngine {
         const proxyOn=proxySystem._enabled;
         const homeUrl=localStorage.getItem('waevo_home_url')||'about:start';
         const showFavicons=getShowFavicons();
-        const googleCseId=localStorage.getItem('waevo_google_cse_id')||'';
+        const googleCseId=localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID;
         const enginesHtml=Object.entries(searchEngines).map(([key,cfg])=>
             `<option value="${key}" ${engine===key?'selected':''}>${cfg.emoji} ${escapeHtml(cfg.name)}</option>`
         ).join('');
