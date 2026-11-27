@@ -357,6 +357,84 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
 .benji-key-display { animation: fadeInUp 0.5s ease 0.3s both; }
 ::selection { background: rgba(0,229,255,0.3); color: white; }
 .overlay-panel.open { animation: slideInRightAnim 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+/* Ajustes de dimensionado del marco del navegador */
+html,body{min-width:0;min-height:0}
+body{height:100vh;height:100dvh}
+.browser-chrome{flex:0 0 auto;width:100%;min-width:0}
+.tabs-bar{flex:0 0 44px;min-width:0}
+.nav-toolbar{flex:0 0 58px;min-width:0}
+.search-tools-bar{flex:0 0 34px;min-width:0;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+.viewport-container{flex:1 1 auto;width:100%;min-width:0;min-height:0;overflow:hidden;isolation:isolate}
+iframe.browser-view{position:absolute;inset:0;display:none;box-sizing:border-box}
+iframe.browser-view.active{display:block}
+.waevo-internal-page{box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;overscroll-behavior:contain}
+.waevo-internal-page .settings-wrap{width:100%}
+.waevo-internal-page .google-search-wrap{max-width:1280px}
+#waevo-google-cse{width:100%;min-height:min(680px,calc(100dvh - 230px));box-sizing:border-box;overflow-x:hidden}
+@media(max-width:768px){
+    .tabs-bar{height:42px;flex-basis:42px;padding:0 8px}
+    .tab{min-width:112px;max-width:180px;padding:9px 10px}
+    .nav-toolbar{height:auto;min-height:56px;flex-basis:auto;padding:8px 10px;gap:6px}
+    .nav-controls{flex:0 0 auto}
+    .omnibox{height:38px;padding-left:38px;padding-right:38px;font-size:12.5px}
+    .search-tools-bar{height:38px;flex-basis:38px;padding:0 14px;gap:18px}
+    .waevo-internal-page{padding:18px 12px}
+    .waevo-internal-page .google-search-wrap{max-width:100%}
+    #waevo-google-cse{min-height:calc(100dvh - 260px);padding:8px}
+}
+/* Presentacion limpia y adaptable de la busqueda integrada */
+.waevo-internal-page.google-page{padding:clamp(14px,2vw,28px);background:linear-gradient(180deg,#f6f8fb,#edf1f6);color:#202124}
+.waevo-internal-page.google-page .google-search-wrap{width:100%;max-width:1360px;margin:0 auto}
+.waevo-internal-page.google-page .settings-hero{margin-bottom:14px}
+.waevo-internal-page.google-page .settings-hero-icon{width:54px;height:54px;margin-bottom:10px;border-radius:16px;font-size:24px;box-shadow:0 6px 18px rgba(0,100,255,.18)}
+.waevo-internal-page.google-page .settings-hero h1{font-size:1.8rem}
+.waevo-internal-page.google-page .settings-hero p{color:#5f6368}
+.google-cse-frame{width:100%;height:calc(100dvh - 230px);min-height:340px;box-sizing:border-box;overflow:auto;background:#fff;color:#202124;border:1px solid #e2e6ec;border-radius:14px;padding:10px;box-shadow:0 8px 24px rgba(15,23,42,.10)}
+.google-cse-frame .gsc-control-cse{width:100%;box-sizing:border-box;background:transparent!important;border:0!important;padding:8px!important}
+.google-cse-frame .gsc-control-wrapper-cse{width:100%;max-width:100%}
+.google-cse-frame .gsc-results-wrapper-overlay{max-width:100%}
+@media(max-width:768px){
+    .waevo-internal-page.google-page{padding:12px 8px}
+    .waevo-internal-page.google-page .settings-hero{margin-bottom:10px}
+    .waevo-internal-page.google-page .settings-hero-icon{width:44px;height:44px;font-size:20px;margin-bottom:6px}
+    .waevo-internal-page.google-page .settings-hero h1{font-size:1.5rem}
+    .google-cse-frame{height:calc(100dvh - 220px);min-height:300px;padding:6px;border-radius:10px}
+    .google-cse-frame .gsc-control-cse{padding:4px!important}
+}
+/* Marco del navegador: tamaño estable y sin desbordes */
+.browser-chrome{flex:0 0 auto;width:100%;min-width:0}
+.nav-toolbar,.omnibox-container{min-width:0}
+.nav-controls{flex:0 0 auto}
+.viewport-container{flex:1 1 0;width:100%;min-width:0;min-height:0;overflow:hidden;isolation:isolate}
+iframe.browser-view{position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box}
+.waevo-internal-page{box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;overscroll-behavior:contain}
+/* La búsqueda integrada ocupa el espacio real del marco, no el alto total de la ventana */
+.waevo-internal-page.google-page{display:flex;flex-direction:column;overflow:hidden;padding:clamp(12px,2vw,26px);background:linear-gradient(180deg,#f6f8fb,#edf1f6);color:#202124}
+.waevo-internal-page.google-page .google-search-wrap{display:flex;flex:1 1 auto;flex-direction:column;width:100%;height:100%;min-width:0;min-height:0;max-width:1360px;margin:0 auto;overflow:hidden}
+.waevo-internal-page.google-page .settings-hero{flex:0 0 auto;margin-bottom:14px}
+.waevo-internal-page.google-page .settings-hero-icon{width:54px;height:54px;margin-bottom:10px;border-radius:16px;font-size:24px;box-shadow:0 6px 18px rgba(0,100,255,.18)}
+.waevo-internal-page.google-page .settings-hero h1{font-size:1.8rem}
+.waevo-internal-page.google-page .settings-hero p{color:#5f6368}
+.waevo-internal-page.google-page .google-cse-frame{flex:1 1 0;height:auto;min-height:0;box-sizing:border-box;overflow:auto;background:#fff;color:#202124;border:1px solid #e2e6ec;border-radius:14px;padding:10px;box-shadow:0 8px 24px rgba(15,23,42,.10)}
+.waevo-internal-page.google-page #waevo-google-cse{flex:1 1 0;width:100%;height:auto;min-height:0;box-sizing:border-box;overflow-x:hidden}
+.google-cse-frame .gsc-control-cse{width:100%;box-sizing:border-box;background:transparent!important;border:0!important;padding:8px!important}
+.google-cse-frame .gsc-control-wrapper-cse{width:100%;max-width:100%}
+.google-cse-frame .gsc-results-wrapper-overlay{max-width:100%}
+@media(max-width:768px){
+    .tabs-bar{height:42px;flex-basis:42px;padding:0 8px}
+    .tab{min-width:112px;max-width:180px;padding:9px 10px}
+    .nav-toolbar{height:auto;min-height:56px;flex-basis:auto;padding:8px 10px;gap:6px}
+    .nav-controls{gap:0}
+    .icon-btn{width:34px;height:34px}
+    .omnibox{height:38px;padding-left:38px;padding-right:38px;font-size:12.5px}
+    .search-tools-bar{height:38px;flex-basis:38px;padding:0 14px;gap:18px;overflow-x:auto}
+    .waevo-internal-page.google-page{padding:10px 8px}
+    .waevo-internal-page.google-page .settings-hero{margin-bottom:10px}
+    .waevo-internal-page.google-page .settings-hero-icon{width:44px;height:44px;font-size:20px;margin-bottom:6px}
+    .waevo-internal-page.google-page .settings-hero h1{font-size:1.5rem}
+    .waevo-internal-page.google-page .google-cse-frame{padding:6px;border-radius:10px}
+    .google-cse-frame .gsc-control-cse{padding:4px!important}
+}
 </style>
 <script src="./uv/uv.bundle.js" charset="UTF-8"></script>
 <script src="./uv/uv.config.js" charset="UTF-8"></script>
@@ -1407,7 +1485,7 @@ class BrowserEngine {
         const viewport=document.getElementById('viewport');
         const page=document.createElement('div');
         page.id='waevo-internal-page';
-        page.className='waevo-internal-page active';
+        page.className='waevo-internal-page active'+(url.split('?')[0]==='waevobrowser://google-search'?' google-page':'');
         const cleanUrl=url.split('?')[0];
         let googleQuery='',googleMode='web';
         if(cleanUrl==='waevobrowser://settings'){
@@ -1430,9 +1508,9 @@ class BrowserEngine {
         const cxId=(localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID).trim();
         const queryText=query?`<p>Resultados para: <b>${escapeHtml(query)}</b></p>`:'<p>Busca en la web desde una pestana de Waevo</p>';
         const content=cxId
-            ? `<div id="waevo-google-cse" style="background:#fff;color:#202124;border-radius:14px;padding:16px;min-height:360px"></div>`
+            ? `<div id="waevo-google-cse" class="google-cse-frame"></div>`
             : `<div class="settings-block"><h2 class="settings-block-title"><i class="fab fa-google"></i> Configura Google integrado</h2><p class="settings-block-desc">Para mostrar resultados dentro de Waevo, crea un motor de Google Programmable Search Engine y pega aqui su ID CX. La pagina normal de Google no permite incrustarse dentro de un iframe.</p><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><button class="settings-action-btn primary" onclick="browser.openSettings()"><i class="fas fa-sliders"></i> Abrir configuracion</button><a class="settings-action-btn" href="https://programmablesearchengine.google.com/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:none">Crear buscador Google</a></div></div>`;
-        return `<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fab fa-google"></i></div><h1>Google</h1>${queryText}</div>${content}</div>`;
+        return `<div class="settings-wrap google-search-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fab fa-google"></i></div><h1>Google</h1>${queryText}</div>${content}</div>`;
     }
     _mountGoogleCse(query,mode){
         const cxId=(localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID).trim();
