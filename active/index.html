@@ -524,6 +524,7 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
     <div class="drawer-header"><h3><i class="fas fa-cog"></i> Menú Waevo</h3><button class="icon-btn" onclick="floatingPanel.close()"><i class="fas fa-times"></i></button></div>
     <div class="drawer-content">
         <div class="drawer-section-title">Navegación</div>
+        <button class="drawer-btn" onclick="floatingPanel.close();browser.openGoogleFullscreen()"><i class="fab fa-google" style="color:#4285f4"></i> Google grande</button>
         <button class="drawer-btn" onclick="floatingPanel.close();browser.newTab()"><i class="fas fa-plus"></i> Nueva pestaña</button>
         <button class="drawer-btn" onclick="floatingPanel.close();ui.togglePanel('history')"><i class="fas fa-clock-rotate-left"></i> Historial</button>
         <button class="drawer-btn" onclick="floatingPanel.close();ui.togglePanel('updates')"><i class="fas fa-bolt"></i> Actualizaciones</button>
@@ -1040,6 +1041,24 @@ class BrowserEngine {
             }catch(e){}
         },1000);
     }
+    _isGoogleUrl(url){
+        try{
+            const host=new URL(url).hostname.toLowerCase();
+            return /(^|\.)google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(host)
+        }catch(e){return false}
+    }
+    _openGoogleDirect(url){
+        let popup=null;
+        try{popup=window.open("about:blank","_blank")}catch(e){}
+        if(popup){
+            try{popup.opener=null;popup.location.replace(url);return}
+            catch(e){try{popup.close()}catch(_e){}}
+        }
+        try{window.location.assign(url)}catch(e){ui.showToast("No se pudo abrir Google")}
+    }
+    openGoogleFullscreen(){
+        this._openGoogleDirect("https://www.google.com");
+    }
     _isUrl(i){
         if(!i)return false;
         const t=i.trim();
@@ -1139,6 +1158,10 @@ class BrowserEngine {
             url=this._buildSearchUrl(q,'web');
             title=q;
         }
+        if(this._isGoogleUrl(url)){
+            this._openGoogleDirect(url);
+            return
+        }
         t.history=t.history.slice(0,t.historyIndex+1);
         t.history.push(url);
         t.historyIndex++;
@@ -1167,6 +1190,10 @@ class BrowserEngine {
         }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
         if(!t)return;
+        if(this._isGoogleUrl(url)){
+            this._openGoogleDirect(url);
+            return
+        }
         t.history=t.history.slice(0,t.historyIndex+1);
         t.history.push(url);
         t.historyIndex++;
@@ -1178,6 +1205,10 @@ class BrowserEngine {
         return url.includes('duckduckgo.com') || url.includes('bing.com/search') || url.includes('brave.com/search') || url.includes('google.com/search') || url.includes('yahoo.com/search') || url.includes('yandex.com/search') || url.includes('ecosia.org/search') || url.includes('qwant.com') || url.includes('startpage.com') || url.includes('searx.') || url.includes('mojeek.com/search') || url.includes('baidu.com/s') || url.includes('ask.com/web') || url.includes('aol.com/aol/search') || url.includes('lycos.com') || url.includes('swisscows.com')
     }
     loadUrlIntoFrame(url,title,raw){
+        if(this._isGoogleUrl(url)){
+            this._openGoogleDirect(url);
+            return
+        }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
         if(!t)return;
         t.url=url;
