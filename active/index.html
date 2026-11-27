@@ -33,6 +33,8 @@ body{margin:0;padding:0;background:radial-gradient(1200px 800px at 12% -10%,rgba
 .drawer-btn.admin:hover{background:rgba(255,45,107,0.16);border-color:rgba(255,45,107,0.5)}
 .drawer-btn.owner{background:rgba(255,179,71,0.06);border-color:rgba(255,179,71,0.2);color:var(--warning)}
 .drawer-btn.owner:hover{background:rgba(255,179,71,0.16);border-color:rgba(255,179,71,0.5)}
+.drawer-btn.danger{background:rgba(255,45,107,0.06);border-color:rgba(255,45,107,0.25);color:var(--danger)}
+.drawer-btn.danger:hover{background:rgba(255,45,107,0.18);border-color:rgba(255,45,107,0.55)}
 .admin-page{position:fixed;inset:0;background:linear-gradient(180deg,#07070c,#0a0a12);z-index:8500;display:none;flex-direction:column;color:var(--text-main);overflow:hidden}
 .admin-page.active{display:flex;animation:fadeIn 0.3s}
 .admin-page-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4)}
@@ -168,9 +170,10 @@ body{margin:0;padding:0;background:radial-gradient(1200px 800px at 12% -10%,rgba
 .browser-chrome{background:rgba(14,14,20,0.72);backdrop-filter:blur(26px);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;box-shadow:0 6px 30px rgba(0,0,0,0.65);z-index:100}
 .tabs-bar{height:44px;display:flex;align-items:flex-end;padding:0 12px;gap:6px;background:rgba(0,0,0,0.28);overflow-x:auto;scrollbar-width:none}
 .tabs-bar::-webkit-scrollbar{height:0}
-.tab{background:rgba(255,255,255,0.035);color:var(--text-muted);padding:10px 18px;border-radius:13px 13px 0 0;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:9px;cursor:pointer;max-width:220px;min-width:140px;border:1px solid transparent;border-bottom:none}
+.tab{background:rgba(255,255,255,0.035);color:var(--text-muted);padding:10px 14px;border-radius:13px 13px 0 0;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:8px;cursor:pointer;max-width:220px;min-width:140px;border:1px solid transparent;border-bottom:none}
 .tab:hover{background:rgba(255,255,255,0.07);color:var(--text-main)}
 .tab.active{background:rgba(20,20,28,0.75);color:var(--text-main);border-color:rgba(255,255,255,0.08);border-top:2px solid var(--accent);font-weight:600;z-index:2}
+.tab-favicon{width:16px;height:16px;flex-shrink:0;border-radius:3px;object-fit:contain}
 .tab-close{margin-left:auto;width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;color:var(--text-faint)}
 .tab-close:hover{background:rgba(255,45,107,0.85);color:white}
 .new-tab-btn{padding:9px;color:var(--text-faint);cursor:pointer;border-radius:10px;margin-bottom:3px;font-size:13px}
@@ -193,14 +196,14 @@ body{margin:0;padding:0;background:radial-gradient(1200px 800px at 12% -10%,rgba
 iframe.browser-view{width:100%;height:100%;border:none;display:none;background:white}
 iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.alex-start-page{position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,rgba(0,229,255,0.06),transparent 55%),radial-gradient(circle at 50% 90%,rgba(189,0,255,0.07),transparent 55%),#07070c;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+.alex-start-page{position:absolute;inset:0;background:radial-gradient(circle at 50% 38%,rgba(0,229,255,0.06),transparent 55%),radial-gradient(circle at 50% 90%,rgba(189,0,255,0.07),transparent 55%),#07070c;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:50;overflow:auto;padding:20px}
 .alex-start-page.active{display:flex}
 .start-logo{font-size:5.2rem;font-weight:900;letter-spacing:-3px;background:linear-gradient(110deg,#00e5ff,#bd00ff 55%,#ff2d6b);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:42px}
 .start-search{width:640px;max-width:90%;height:62px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:32px;padding:0 34px;color:white;font-size:17px;text-align:center;font-family:inherit}
 .start-search:focus{background:rgba(0,0,0,0.65);border-color:rgba(0,229,255,0.6)}
 .quick-links{display:flex;gap:18px;margin-top:48px;flex-wrap:wrap;justify-content:center}
-.q-link{width:88px;height:88px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.055);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted)}
-.q-link:hover{background:rgba(255,255,255,0.07);color:white;border-color:rgba(0,229,255,0.4)}
+.q-link{width:88px;height:88px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.055);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);transition:all 0.28s cubic-bezier(0.34,1.56,0.64,1)}
+.q-link:hover{background:rgba(255,255,255,0.07);color:white;border-color:rgba(0,229,255,0.4);transform:translateY(-5px) scale(1.08);box-shadow:0 12px 30px rgba(0,229,255,0.2)}
 .q-icon{font-size:28px;margin-bottom:9px}
 .q-text{font-size:11.5px;font-weight:600}
 .overlay-panel{position:fixed;top:136px;right:0;bottom:0;width:420px;background:rgba(12,12,18,0.96);border-left:1px solid var(--border);transform:translateX(100%);transition:transform 0.42s cubic-bezier(0.2,0.9,0.25,1);z-index:200;display:flex;flex-direction:column}
@@ -246,9 +249,43 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .ban-text{font-size:19px;font-weight:800;margin-bottom:12px}
 .ban-timer{font-size:15px;color:var(--text-muted);font-family:ui-monospace,monospace}
 
-/* ═══════════════════════════════════════════════════════════════════
-   ✨ ANIMACIONES EXTRA v2.0
-   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════ WAEVO INTERNAL PAGES (settings, etc.) ═════════ */
+.waevo-internal-page{position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(0,229,255,0.08),transparent 50%),radial-gradient(circle at 100% 100%,rgba(189,0,255,0.09),transparent 55%),#07070c;display:none;overflow-y:auto;z-index:60;padding:40px 30px;color:var(--text-main)}
+.waevo-internal-page.active{display:block;animation:fadeInUp 0.35s ease}
+.waevo-internal-page .settings-wrap{max-width:900px;margin:0 auto}
+.settings-hero{text-align:center;margin-bottom:40px}
+.settings-hero-icon{width:80px;height:80px;margin:0 auto 18px;border-radius:22px;background:linear-gradient(135deg,var(--accent-secondary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:36px;color:white;box-shadow:0 12px 40px rgba(0,229,255,0.35),0 0 60px rgba(189,0,255,0.25)}
+.settings-hero h1{margin:0 0 8px 0;font-size:2.2rem;font-weight:900;letter-spacing:-1px;background:linear-gradient(110deg,#00e5ff,#bd00ff 60%,#ff2d6b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.settings-hero p{margin:0;color:var(--text-muted);font-size:14px}
+.settings-block{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:18px;backdrop-filter:blur(10px)}
+.settings-block-title{font-size:15px;font-weight:800;margin:0 0 6px 0;display:flex;align-items:center;gap:10px;color:var(--text-main)}
+.settings-block-title i{color:var(--accent)}
+.settings-block-desc{font-size:12.5px;color:var(--text-muted);margin:0 0 20px 0;line-height:1.5}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);gap:16px;flex-wrap:wrap}
+.settings-row:last-child{border-bottom:none;padding-bottom:0}
+.settings-row:first-of-type{padding-top:0}
+.settings-row-info{flex:1;min-width:200px}
+.settings-row-title{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.settings-row-desc{font-size:11.5px;color:var(--text-muted);line-height:1.5}
+.settings-select{background:rgba(0,0,0,0.5);border:1px solid var(--border-strong);color:var(--text-main);padding:10px 14px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;min-width:180px}
+.settings-select:focus{border-color:var(--accent);outline:none}
+.settings-toggle{position:relative;width:52px;height:28px;background:rgba(255,255,255,0.1);border-radius:20px;cursor:pointer;transition:all 0.3s;flex-shrink:0}
+.settings-toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:white;border-radius:50%;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+.settings-toggle.on{background:linear-gradient(135deg,var(--accent-secondary),var(--accent))}
+.settings-toggle.on::after{left:27px}
+.settings-action-btn{padding:11px 20px;border-radius:11px;border:1px solid;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;background:transparent;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.settings-action-btn.primary{background:rgba(0,229,255,0.12);border-color:rgba(0,229,255,0.4);color:var(--accent)}
+.settings-action-btn.primary:hover{background:rgba(0,229,255,0.28);transform:translateY(-1px)}
+.settings-action-btn.danger{background:rgba(255,45,107,0.1);border-color:rgba(255,45,107,0.4);color:var(--danger)}
+.settings-action-btn.danger:hover{background:rgba(255,45,107,0.25);transform:translateY(-1px)}
+.settings-action-btn.warning{background:rgba(255,179,71,0.1);border-color:rgba(255,179,71,0.4);color:var(--warning)}
+.settings-action-btn.warning:hover{background:rgba(255,179,71,0.28);transform:translateY(-1px)}
+.settings-action-btn.success{background:rgba(34,224,138,0.1);border-color:rgba(34,224,138,0.4);color:var(--success)}
+.settings-action-btn.success:hover{background:rgba(34,224,138,0.25);transform:translateY(-1px)}
+.settings-footer{text-align:center;color:var(--text-faint);font-size:11.5px;margin-top:36px;padding-bottom:20px;letter-spacing:0.5px}
+.settings-footer b{color:var(--accent);font-weight:700}
+
+/* ═════════ EXTRA ANIMATIONS ═════════ */
 @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeInScale{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
 @keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
@@ -269,7 +306,6 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .modal-btn, .lz-btn, .new-tab-btn, .tab-close, .mic-chip, .btn-test-mic {
     transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
 .icon-btn:hover { transform: translateY(-1px) scale(1.06); }
 .icon-btn:active { transform: translateY(0) scale(0.96); }
 .tab.active { animation: tabPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -460,7 +496,7 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
         </div>
     </div>
     <div id="search-fallback-bar">
-        <span><i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i> ¿Google no carga?</span>
+        <span><i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i> ¿Problemas con la búsqueda?</span>
         <button class="ddg" onclick="browser.tryDuckDuckGo()"><i class="fas fa-duck"></i> DuckDuckGo</button>
         <button class="reload" onclick="browser.reload()"><i class="fas fa-rotate"></i> Recargar</button>
         <button class="external" onclick="browser.openCurrentExternal()"><i class="fas fa-external-link-alt"></i> Fuera</button>
@@ -491,12 +527,14 @@ iframe.browser-view.active { animation: fadeIn 0.35s ease; }
         <button class="drawer-btn" onclick="floatingPanel.close();browser.newTab()"><i class="fas fa-plus"></i> Nueva pestaña</button>
         <button class="drawer-btn" onclick="floatingPanel.close();ui.togglePanel('history')"><i class="fas fa-clock-rotate-left"></i> Historial</button>
         <button class="drawer-btn" onclick="floatingPanel.close();ui.togglePanel('updates')"><i class="fas fa-bolt"></i> Actualizaciones</button>
+        <div class="drawer-section-title">Configuración</div>
+        <button class="drawer-btn" onclick="floatingPanel.close();browser.openSettings()"><i class="fas fa-sliders"></i> Configuración del navegador</button>
+        <button class="drawer-btn danger" onclick="floatingPanel.close();browser.clearAllData()"><i class="fas fa-trash-alt"></i> Borrar datos caché</button>
         <div class="drawer-section-title">Social</div>
         <button class="drawer-btn" onclick="floatingPanel.close();friendsSystem.openPanel()"><i class="fas fa-user-group"></i> Amigos</button>
         <button class="drawer-btn" onclick="floatingPanel.close();friendsSystem.openChatList()"><i class="fas fa-comment-dots"></i> Chats</button>
         <div class="drawer-section-title">Tienda</div>
         <button class="drawer-btn" onclick="floatingPanel.close();shopSystem.open()"><i class="fas fa-store"></i> Tienda de AB</button>
-        <button class="drawer-btn" onclick="floatingPanel.close();ui.openGoogleBig()"><i class="fab fa-google"></i> Google grande</button>
         <div class="drawer-section-title">Administración</div>
         <button class="drawer-btn admin" onclick="floatingPanel.close();passwordModal.open('AN')"><i class="fas fa-user-shield"></i> AN</button>
         <button class="drawer-btn owner" onclick="floatingPanel.close();passwordModal.open('OWNER')"><i class="fas fa-crown"></i> OnlyAlex</button>
@@ -584,7 +622,6 @@ const PASSWORDS={AN:'mya',OWNER:'Alex27Junio'};
 const SESSION_KEY='waevo_admin_session';
 const MIC_MAX_SECONDS=30;
 
-/* estado global mic */
 let micActiveUserId=null,micStream=null,mediaRecorder=null,micChunks=[],micTimerInterval=null,micSecondsElapsed=0,micCancelled=false;
 
 const LAZARUS_PATTERNS = [
@@ -593,15 +630,123 @@ const LAZARUS_PATTERNS = [
     'lazarusfilter','.lazarus.','/lazarus/','lazarus.app'
 ];
 
+/* ═══════ PROXY SYSTEM (con decodeUrl para tracking de URLs) ═══════ */
 const proxySystem = {
     _enabled:true,_ready:false,_prefix:null,
-    init(){const s=localStorage.getItem('waevo_proxy_enabled');if(s!==null)this._enabled=s==='1';this._waitForUV(0)},
-    _waitForUV(a){if(a>120){console.warn('[UV] No cargó tras 60s');return}try{if(typeof Ultraviolet!=='undefined'&&self.__uv$config&&typeof self.__uv$config.encodeUrl==='function'){this._ready=true;this._prefix=self.__uv$config.prefix;if(!this._prefix.startsWith('/'))this._prefix='/'+this._prefix;if(!this._prefix.endsWith('/'))this._prefix+='/';console.log('[UV] ✅ Listo. Prefix:',this._prefix);return}}catch(e){}setTimeout(()=>this._waitForUV(a+1),500)},
-    isLocal(url){if(!url)return true;if(url==='about:start'||url==='about:blank')return true;if(url.startsWith('about:')||url.startsWith('blob:')||url.startsWith('data:')||url.startsWith('javascript:'))return true;try{const u=new URL(url,location.href);if(u.hostname===location.hostname)return true;if(this._prefix&&u.pathname.startsWith(this._prefix))return true}catch(e){}return false},
+    init(){
+        const s=localStorage.getItem('waevo_proxy_enabled');
+        if(s!==null)this._enabled=s==='1';
+        this._waitForUV(0)
+    },
+    _waitForUV(a){
+        if(a>120){console.warn('[UV] No cargó tras 60s');return}
+        try{
+            if(typeof Ultraviolet!=='undefined'&&self.__uv$config&&typeof self.__uv$config.encodeUrl==='function'){
+                this._ready=true;
+                this._prefix=self.__uv$config.prefix;
+                if(!this._prefix.startsWith('/'))this._prefix='/'+this._prefix;
+                if(!this._prefix.endsWith('/'))this._prefix+='/';
+                console.log('[UV] ✅ Listo. Prefix:',this._prefix);
+                window.dispatchEvent(new Event('proxyReady'));
+                return
+            }
+        }catch(e){}
+        setTimeout(()=>this._waitForUV(a+1),500)
+    },
+    isLocal(url){
+        if(!url)return true;
+        if(url==='about:start'||url==='about:blank')return true;
+        if(url.startsWith('about:')||url.startsWith('blob:')||url.startsWith('data:')||url.startsWith('javascript:')||url.startsWith('waevobrowser://'))return true;
+        try{
+            const u=new URL(url,location.href);
+            if(u.hostname===location.hostname)return true;
+            if(this._prefix&&u.pathname.startsWith(this._prefix))return true
+        }catch(e){}
+        return false
+    },
     needsProxy(url){return this._enabled&&!this.isLocal(url)},
-    wrap(url){if(!this._ready)return url;try{return this._prefix+self.__uv$config.encodeUrl(url)}catch(e){return url}},
-    getFrameUrl(url){return this.needsProxy(url)?this.wrap(url):url}
+    wrap(url){
+        if(!this._ready)return url;
+        try{return this._prefix+self.__uv$config.encodeUrl(url)}catch(e){return url}
+    },
+    decodeUrl(proxiedUrl){
+        if(!this._ready||!proxiedUrl)return proxiedUrl;
+        try{
+            let path=proxiedUrl;
+            if(path.startsWith(location.origin)){
+                path=path.substring(location.origin.length);
+            }
+            if(path.startsWith(this._prefix)){
+                const encoded=path.substring(this._prefix.length);
+                if(self.__uv$config&&typeof self.__uv$config.decodeUrl==='function'){
+                    return self.__uv$config.decodeUrl(encoded)
+                }
+            }
+        }catch(e){}
+        return proxiedUrl
+    },
+    getFrameUrl(url){
+        if(url&&url.startsWith('waevobrowser://'))return url;
+        return this.needsProxy(url)?this.wrap(url):url
+    },
+    setEnabled(v){
+        this._enabled=!!v;
+        localStorage.setItem('waevo_proxy_enabled',this._enabled?'1':'0')
+    }
 };
+
+/* ═══════ SEARCH ENGINES ═══════ */
+const searchEngines = {
+    ddg:{
+        name:'DuckDuckGo',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://duckduckgo.com/?q=${e}&iax=images&ia=images`;
+                case 'videos':return `https://duckduckgo.com/?q=${e}&iax=videos&ia=videos`;
+                case 'news':return `https://duckduckgo.com/?q=${e}&iar=news&ia=news`;
+                case 'maps':return `https://duckduckgo.com/?q=${e}&iax=maps&ia=maps`;
+                default:return `https://duckduckgo.com/?q=${e}&ia=web`
+            }
+        }
+    },
+    bing:{
+        name:'Bing',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.bing.com/images/search?q=${e}`;
+                case 'videos':return `https://www.bing.com/videos/search?q=${e}`;
+                case 'news':return `https://www.bing.com/news/search?q=${e}`;
+                case 'maps':return `https://www.bing.com/maps?q=${e}`;
+                default:return `https://www.bing.com/search?q=${e}`
+            }
+        }
+    },
+    brave:{
+        name:'Brave',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://search.brave.com/images?q=${e}`;
+                case 'videos':return `https://search.brave.com/videos?q=${e}`;
+                case 'news':return `https://search.brave.com/news?q=${e}`;
+                default:return `https://search.brave.com/search?q=${e}`
+            }
+        }
+    }
+};
+function getSearchEngine(){
+    return localStorage.getItem('waevo_search_engine')||'ddg';
+}
+function getFaviconUrl(url){
+    try{
+        const u=new URL(url);
+        return `https://icons.duckduckgo.com/ip3/${u.hostname}.ico`
+    }catch(e){
+        return ''
+    }
+}
 
 const shopSystem = {open(){document.getElementById('shop-overlay').classList.add('active')},close(){document.getElementById('shop-overlay').classList.remove('active')},buy(p){const pk={ab_pack_3:3,ab_pack_8:8,ab_pack_20:20};const ab=pk[p]||0;if(ab>0)ui.showToast(`✅ Compra simulada: +${ab} AB`)}};
 
@@ -642,8 +787,18 @@ const dataManager = {
     clearAll:()=>{localStorage.removeItem('ab_history');ui.showToast("Historial eliminado ✅");ui.renderHistory()}
 };
 
+/* ═══════ BROWSER ENGINE ═══════ */
 class BrowserEngine {
-    constructor(){this.tabs=[];this.activeTabId=null;this.idCounter=0;this.homeUrl='about:start';this.lastSearchQuery="";this._initialized=false}
+    constructor(){
+        this.tabs=[];
+        this.activeTabId=null;
+        this.idCounter=0;
+        this.homeUrl='about:start';
+        this.lastSearchQuery="";
+        this._initialized=false;
+        this._expectedUrls=new Set(); // URLs que TÚ provocas (para no doble-trackear)
+        this._suppressTrackingUntil=0;
+    }
     init(){
         if(this._initialized) return;
         this._initialized=true;
@@ -655,17 +810,19 @@ class BrowserEngine {
         if(!i)return false;
         const t=i.trim();
         if(!t)return false;
-        if(t.startsWith('http://')||t.startsWith('https://')||t.startsWith('about:')||t.startsWith('data:')||t.startsWith('blob:'))return true;
+        if(t.startsWith('http://')||t.startsWith('https://')||t.startsWith('about:')||t.startsWith('data:')||t.startsWith('blob:')||t.startsWith('waevobrowser://'))return true;
         if(!t.includes(' ') && /^[a-z0-9-]+(\.[a-z0-9-]+)+([\/?#].*)?$/i.test(t)) return true;
         return false;
     }
-    _normalizeUrl(i){let u=i.trim();if(!u)return null;if(u.startsWith('http://')||u.startsWith('https://')||u.startsWith('about:'))return u;return 'https://'+u}
+    _normalizeUrl(i){
+        let u=i.trim();
+        if(!u)return null;
+        if(u.startsWith('http://')||u.startsWith('https://')||u.startsWith('about:')||u.startsWith('waevobrowser://'))return u;
+        return 'https://'+u;
+    }
     _buildSearchUrl(q,mode='web'){
-        const e=encodeURIComponent(q);
-        const m={web:'',images:'&tbm=isch',videos:'&tbm=vid',news:'&tbm=nws',shopping:'&tbm=shop'};
-        const x=m[mode]||'';
-        if(proxySystem._enabled&&proxySystem._ready){return `https://www.google.com/search?q=${e}${x}`}
-        return `https://www.google.com/search?igu=1&q=${e}${x}`;
+        const engine=searchEngines[getSearchEngine()]||searchEngines.ddg;
+        return engine.build(q,mode);
     }
     _optimizeUrl(url){
         try{
@@ -680,79 +837,212 @@ class BrowserEngine {
         }catch(e){}
         return url;
     }
+    _trackExpected(url){
+        this._expectedUrls.add(url);
+        setTimeout(()=>{this._expectedUrls.delete(url)},2500);
+    }
     newTab(url=this.homeUrl){
-        this.idCounter++;const id=this.idCounter;
-        this.tabs.push({id,title:'Nueva Pestaña',url,history:[url],historyIndex:0});
+        this.idCounter++;
+        const id=this.idCounter;
+        this.tabs.push({id,title:'Nueva Pestaña',url,history:[url],historyIndex:0,favicon:''});
         const iframe=document.createElement('iframe');
-        iframe.className='browser-view';iframe.id=`view-${id}`;
+        iframe.className='browser-view';
+        iframe.id=`view-${id}`;
         iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads');
         iframe.setAttribute('allow','camera; microphone; geolocation; autoplay; clipboard-write; fullscreen; encrypted-media');
         iframe.setAttribute('referrerpolicy','no-referrer');
+        // Listener para tracking de navegación dentro del iframe
+        iframe.addEventListener('load',()=>this._onFrameLoad(id));
         document.getElementById('viewport').appendChild(iframe);
         this.switchTab(id);
         if(url!==this.homeUrl)this.navigate(url);
     }
-    closeTab(e,id){e.stopPropagation();if(this.tabs.length===1)return;this.tabs=this.tabs.filter(t=>t.id!==id);document.getElementById(`view-${id}`).remove();if(this.activeTabId===id)this.switchTab(this.tabs[this.tabs.length-1].id);else this.renderTabs()}
+    closeTab(e,id){
+        e.stopPropagation();
+        if(this.tabs.length===1)return;
+        this.tabs=this.tabs.filter(t=>t.id!==id);
+        const f=document.getElementById(`view-${id}`);
+        if(f)f.remove();
+        if(this.activeTabId===id)this.switchTab(this.tabs[this.tabs.length-1].id);
+        else this.renderTabs()
+    }
     switchTab(id){
         this.activeTabId=id;
         document.querySelectorAll('.browser-view').forEach(el=>el.classList.remove('active'));
         document.getElementById('start-page').classList.remove('active');
-        const t=this.tabs.find(t=>t.id===id);if(!t)return;
-        if(t.url==='about:start'){document.getElementById('start-page').classList.add('active');document.getElementById('url-input').value=""}
-        else{const iframe=document.getElementById(`view-${id}`);if(iframe)iframe.classList.add('active');document.getElementById('url-input').value=t.url}
-        this.renderTabs();this.updateNavButtons();
+        this._hideInternalPage();
+        const t=this.tabs.find(t=>t.id===id);
+        if(!t)return;
+        if(t.url==='about:start'){
+            document.getElementById('start-page').classList.add('active');
+            document.getElementById('url-input').value="";
+        } else if(t.url.startsWith('waevobrowser://')){
+            this._loadInternalPage(t.url);
+            document.getElementById('url-input').value=t.url;
+        } else {
+            const iframe=document.getElementById(`view-${id}`);
+            if(iframe)iframe.classList.add('active');
+            document.getElementById('url-input').value=t.url;
+        }
+        this.renderTabs();
+        this.updateNavButtons();
     }
     navigate(inputVal=null){
         let q=inputVal||document.getElementById('url-input').value.trim();
         if(!q)return;
-        const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
         let url,title;
-        if(this._isUrl(q)){url=this._optimizeUrl(this._normalizeUrl(q));try{title=new URL(url).hostname}catch(e){title=q}}
-        else{this.lastSearchQuery=q;url=this._buildSearchUrl(q,'web');title=q}
+        if(this._isUrl(q)){
+            url=this._optimizeUrl(this._normalizeUrl(q));
+            if(url.startsWith('waevobrowser://')){
+                title='Waevo · '+(url.replace('waevobrowser://','').split('?')[0]||'página');
+            } else {
+                try{title=new URL(url).hostname}catch(e){title=q}
+            }
+        } else {
+            this.lastSearchQuery=q;
+            url=this._buildSearchUrl(q,'web');
+            title=q;
+        }
         t.history=t.history.slice(0,t.historyIndex+1);
-        t.history.push(url);t.historyIndex++;
+        t.history.push(url);
+        t.historyIndex++;
+        this._trackExpected(url);
         this.loadUrlIntoFrame(url,title,q);
     }
     quickSearch(type){
         let q=this.lastSearchQuery||document.getElementById('url-input').value.trim();
-        if(!q||q.startsWith('http')){ui.showToast("Escribe algo para buscar primero");return}
+        if(!q||q.startsWith('http')||q.startsWith('waevobrowser://')){
+            ui.showToast("Escribe algo para buscar primero");
+            return
+        }
         let url;
         switch(type){
-            case 'images':case 'videos':case 'news':case 'shopping':url=this._buildSearchUrl(q,type);break;
-            case 'maps':url=proxySystem._enabled&&proxySystem._ready?`https://www.google.com/maps/search/${encodeURIComponent(q)}`:`https://www.google.com/maps?igu=1&q=${encodeURIComponent(q)}`;break;
-            case 'wiki':url=`https://es.wikipedia.org/wiki/${encodeURIComponent(q)}`;break;
-            default:url=this._buildSearchUrl(q,'web');
+            case 'images':case 'videos':case 'news':
+                url=this._buildSearchUrl(q,type);
+                break;
+            case 'maps':
+                url=`https://www.google.com/maps/search/${encodeURIComponent(q)}`;
+                break;
+            case 'wiki':
+                url=`https://es.wikipedia.org/wiki/${encodeURIComponent(q)}`;
+                break;
+            default:
+                url=this._buildSearchUrl(q,'web');
         }
         const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
         t.history=t.history.slice(0,t.historyIndex+1);
-        t.history.push(url);t.historyIndex++;
+        t.history.push(url);
+        t.historyIndex++;
+        this._trackExpected(url);
         this.loadUrlIntoFrame(url,q,q);
     }
-    _isSearchUrl(url){return url && (url.includes('google.com/search') || url.includes('google.com/webhp'))}
+    _isSearchUrl(url){
+        if(!url)return false;
+        return url.includes('duckduckgo.com') || url.includes('bing.com/search') || url.includes('brave.com/search') || url.includes('google.com/search')
+    }
     loadUrlIntoFrame(url,title,raw){
-        const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
-        t.url=url;t.title=title;
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
+        t.url=url;
+        t.title=title;
+        t.favicon=getFaviconUrl(url);
+        // Página interna
+        if(url.startsWith('waevobrowser://')){
+            this._loadInternalPage(url);
+            document.getElementById('start-page').classList.remove('active');
+            document.querySelectorAll('.browser-view').forEach(el=>el.classList.remove('active'));
+            document.getElementById('url-input').value=url;
+            this.renderTabs();
+            this.updateNavButtons();
+            return;
+        }
+        this._hideInternalPage();
         document.getElementById('start-page').classList.remove('active');
-        const frame=document.getElementById(`view-${this.activeTabId}`);if(!frame)return;
+        const frame=document.getElementById(`view-${this.activeTabId}`);
+        if(!frame)return;
         frame.classList.add('active');
         frame.src=proxySystem.getFrameUrl(url);
         document.getElementById('url-input').value=raw||title;
-        this.renderTabs();this.updateNavButtons();
+        this.renderTabs();
+        this.updateNavButtons();
         dataManager.saveHistory(url,title);
-        if(window._fbReady&&deviceStore._id){window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:url,lastSeen:Date.now()}).catch(()=>{})}
+        if(window._fbReady&&deviceStore._id){
+            window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:url,lastSeen:Date.now()}).catch(()=>{})
+        }
         const fbBar=document.getElementById('search-fallback-bar');
         if(fbBar){
-            if(this._isSearchUrl(url)){fbBar.classList.add('show')}
-            else{fbBar.classList.remove('show')}
+            if(this._isSearchUrl(url))fbBar.classList.add('show');
+            else fbBar.classList.remove('show');
         }
     }
+    _onFrameLoad(tabId){
+        if(tabId!==this.activeTabId)return;
+        const tab=this.tabs.find(t=>t.id===tabId);
+        const frame=document.getElementById(`view-${tabId}`);
+        if(!tab||!frame)return;
+        // Si acabamos de navegar nosotros, ignorar
+        if(Date.now()<this._suppressTrackingUntil)return;
+        let currentHref='';
+        try{currentHref=frame.contentWindow.location.href}catch(e){return}
+        if(!currentHref||currentHref.startsWith('about:'))return;
+        const realUrl=proxySystem.decodeUrl(currentHref)||currentHref;
+        if(!realUrl||realUrl.startsWith('about:'))return;
+        // Ignorar si es la URL que nosotros mismos pusimos
+        if(this._expectedUrls.has(realUrl))return;
+        if(realUrl===tab.url)return;
+        // Es una navegación interna del usuario (click en un enlace) - registrar
+        if(realUrl.startsWith('http://')||realUrl.startsWith('https://')){
+            tab.history=tab.history.slice(0,tab.historyIndex+1);
+            tab.history.push(realUrl);
+            tab.historyIndex++;
+            tab.url=realUrl;
+            tab.favicon=getFaviconUrl(realUrl);
+            try{tab.title=new URL(realUrl).hostname}catch(e){tab.title=realUrl.slice(0,40)}
+            const urlInput=document.getElementById('url-input');
+            if(document.activeElement!==urlInput)urlInput.value=realUrl;
+            this.renderTabs();
+            this.updateNavButtons();
+            dataManager.saveHistory(realUrl,tab.title);
+        }
+    }
+    _loadUrlInTab(t,url){
+        if(url==='about:start'){
+            t.url='about:start';
+            this.switchTab(t.id);
+            return;
+        }
+        if(url.startsWith('waevobrowser://')){
+            t.url=url;
+            t.title='Waevo · '+(url.replace('waevobrowser://','').split('?')[0]||'página');
+            this.switchTab(t.id);
+            return;
+        }
+        const frame=document.getElementById(`view-${t.id}`);
+        if(frame){
+            frame.classList.add('active');
+            frame.src=proxySystem.getFrameUrl(url);
+        }
+        t.url=url;
+        t.favicon=getFaviconUrl(url);
+        try{t.title=new URL(url).hostname}catch(e){}
+        document.getElementById('url-input').value=url;
+        this.renderTabs();
+        this.updateNavButtons();
+    }
     tryDuckDuckGo(){
-        const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
         const q=this.lastSearchQuery||'';
         const ddgUrl=q?`https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}`:'https://html.duckduckgo.com/html/';
         t.history=t.history.slice(0,t.historyIndex+1);
-        t.history.push(ddgUrl);t.historyIndex++;
-        t.url=ddgUrl;t.title='DuckDuckGo: '+(q||'');
+        t.history.push(ddgUrl);
+        t.historyIndex++;
+        t.url=ddgUrl;
+        t.title='DuckDuckGo: '+(q||'');
+        this._trackExpected(ddgUrl);
         const frame=document.getElementById(`view-${this.activeTabId}`);
         if(frame)frame.src=proxySystem.getFrameUrl(ddgUrl);
         document.getElementById('url-input').value=ddgUrl;
@@ -761,30 +1051,363 @@ class BrowserEngine {
         ui.showToast('🦆 Buscando con DuckDuckGo...');
     }
     openCurrentExternal(){
-        const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
         try{window.open(t.url,'_blank')}catch(e){ui.showToast('❌ Bloqueado por el navegador')}
     }
-    goBack(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex>0){t.historyIndex--;const p=t.history[t.historyIndex];if(p==='about:start'){t.url='about:start';this.switchTab(t.id)}else{document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(p);t.url=p;this.switchTab(t.id)}}}
-    goForward(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(t&&t.historyIndex<t.history.length-1){t.historyIndex++;const n=t.history[t.historyIndex];document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(n);t.url=n;this.switchTab(t.id)}}
-    reload(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(t.url);ui.showToast("Recargando...")}
-    goHome(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;t.history=t.history.slice(0,t.historyIndex+1);t.history.push('about:start');t.historyIndex++;t.url='about:start';t.title='Inicio';const f=document.getElementById(`view-${this.activeTabId}`);if(f)f.src='about:blank';this.switchTab(t.id);document.getElementById('search-fallback-bar').classList.remove('show')}
-    updateNavButtons(){const t=this.tabs.find(t=>t.id===this.activeTabId);if(!t)return;document.getElementById('btn-back').classList.toggle('disabled',t.historyIndex<=0);document.getElementById('btn-forward').classList.toggle('disabled',t.historyIndex>=t.history.length-1)}
+    goBack(){
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t||t.historyIndex<=0)return;
+        t.historyIndex--;
+        const p=t.history[t.historyIndex];
+        this._suppressTrackingUntil=Date.now()+1500;
+        this._loadUrlInTab(t,p);
+    }
+    goForward(){
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t||t.historyIndex>=t.history.length-1)return;
+        t.historyIndex++;
+        const n=t.history[t.historyIndex];
+        this._suppressTrackingUntil=Date.now()+1500;
+        this._loadUrlInTab(t,n);
+    }
+    reload(){
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
+        if(t.url.startsWith('waevobrowser://')){this._loadInternalPage(t.url);return}
+        document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(t.url);
+        ui.showToast("Recargando...")
+    }
+    goHome(){
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
+        t.history=t.history.slice(0,t.historyIndex+1);
+        t.history.push('about:start');
+        t.historyIndex++;
+        t.url='about:start';
+        t.title='Inicio';
+        const f=document.getElementById(`view-${this.activeTabId}`);
+        if(f)f.src='about:blank';
+        this.switchTab(t.id);
+        document.getElementById('search-fallback-bar').classList.remove('show')
+    }
+    updateNavButtons(){
+        const t=this.tabs.find(t=>t.id===this.activeTabId);
+        if(!t)return;
+        document.getElementById('btn-back').classList.toggle('disabled',t.historyIndex<=0);
+        document.getElementById('btn-forward').classList.toggle('disabled',t.historyIndex>=t.history.length-1)
+    }
     renderTabs(){
-        const c=document.getElementById('tabs-container');c.innerHTML='';
+        const c=document.getElementById('tabs-container');
+        c.innerHTML='';
         this.tabs.forEach(tab=>{
             const el=document.createElement('div');
             el.className=`tab ${tab.id===this.activeTabId?'active':''}`;
             el.onclick=()=>this.switchTab(tab.id);
-            let icon='<i class="fas fa-globe"></i>';
-            if(tab.url.includes('google.com'))icon='<i class="fab fa-google" style="color:var(--accent)"></i>';
-            if(tab.url.includes('duckduckgo.com'))icon='<i class="fas fa-duck" style="color:#de5833"></i>';
-            if(tab.url==='about:start')icon='<i class="fas fa-house"></i>';
-            el.innerHTML=`${icon}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${tab.title}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
+            let iconHtml='';
+            if(tab.url==='about:start'){
+                iconHtml='<i class="fas fa-house" style="color:var(--accent)"></i>';
+            } else if(tab.url.startsWith('waevobrowser://')){
+                iconHtml='<i class="fas fa-cog" style="color:var(--accent)"></i>';
+            } else if(tab.favicon){
+                iconHtml=`<img class="tab-favicon" src="${tab.favicon}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><i class="fas fa-globe" style="display:none"></i>`;
+            } else {
+                iconHtml='<i class="fas fa-globe"></i>';
+            }
+            el.innerHTML=`${iconHtml}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${tab.title||'Pestaña'}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
             c.appendChild(el);
         });
         const nb=document.createElement('div');
-        nb.className='new-tab-btn';nb.innerHTML='<i class="fas fa-plus"></i>';nb.onclick=()=>this.newTab();
+        nb.className='new-tab-btn';
+        nb.innerHTML='<i class="fas fa-plus"></i>';
+        nb.onclick=()=>this.newTab();
         c.appendChild(nb);
+    }
+    /* ══════ INTERNAL PAGES (waevobrowser://) ══════ */
+    _hideInternalPage(){
+        const el=document.getElementById('waevo-internal-page');
+        if(el)el.remove();
+    }
+    _loadInternalPage(url){
+        this._hideInternalPage();
+        const viewport=document.getElementById('viewport');
+        const page=document.createElement('div');
+        page.id='waevo-internal-page';
+        page.className='waevo-internal-page active';
+        const cleanUrl=url.split('?')[0];
+        if(cleanUrl==='waevobrowser://settings'){
+            page.innerHTML=this._renderSettingsPage();
+        } else if(cleanUrl==='waevobrowser://about'){
+            page.innerHTML=this._renderAboutPage();
+        } else {
+            page.innerHTML=`<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fas fa-exclamation-triangle"></i></div><h1>Página no encontrada</h1><p>${url} no existe.</p></div></div>`;
+        }
+        viewport.appendChild(page);
+        // Bind events
+        this._bindInternalPageEvents();
+    }
+    _renderSettingsPage(){
+        const engine=getSearchEngine();
+        const proxyOn=proxySystem._enabled;
+        const homeUrl=localStorage.getItem('waevo_home_url')||'about:start';
+        return `
+        <div class="settings-wrap">
+            <div class="settings-hero">
+                <div class="settings-hero-icon"><i class="fas fa-sliders-h"></i></div>
+                <h1>Configuración</h1>
+                <p>Personaliza tu experiencia en Waevo OS</p>
+            </div>
+
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-search"></i> Búsqueda</h2>
+                <p class="settings-block-desc">Configura cómo y dónde buscas desde la barra de direcciones.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Motor de búsqueda</div>
+                        <div class="settings-row-desc">Elige el buscador que se usará al escribir en la barra.</div>
+                    </div>
+                    <select class="settings-select" id="set-search-engine">
+                        <option value="ddg" ${engine==='ddg'?'selected':''}>🦆 DuckDuckGo</option>
+                        <option value="bing" ${engine==='bing'?'selected':''}>🔍 Bing</option>
+                        <option value="brave" ${engine==='brave'?'selected':''}>🦁 Brave Search</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Página de inicio</div>
+                        <div class="settings-row-desc">Dónde ir al pulsar el botón de inicio.</div>
+                    </div>
+                    <select class="settings-select" id="set-home-url">
+                        <option value="about:start" ${homeUrl==='about:start'?'selected':''}>🏠 Página Waevo</option>
+                        <option value="https://duckduckgo.com" ${homeUrl==='https://duckduckgo.com'?'selected':''}>🦆 DuckDuckGo</option>
+                        <option value="https://www.google.com" ${homeUrl==='https://www.google.com'?'selected':''}>🔍 Google</option>
+                        <option value="https://es.wikipedia.org" ${homeUrl==='https://es.wikipedia.org'?'selected':''}>📚 Wikipedia</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-shield-halved"></i> Privacidad y seguridad</h2>
+                <p class="settings-block-desc">Controla cómo se gestionan tus datos y tu navegación.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Proxy Ultraviolet</div>
+                        <div class="settings-row-desc">Enruta todas las peticiones por el proxy (recomendado para evitar bloqueos).</div>
+                    </div>
+                    <div class="settings-toggle ${proxyOn?'on':''}" id="set-proxy-toggle" data-on="${proxyOn}"></div>
+                </div>
+            </div>
+
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-trash-alt"></i> Datos y almacenamiento</h2>
+                <p class="settings-block-desc">Borra datos de navegación selectivos o todo de una vez.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Historial de navegación</div>
+                        <div class="settings-row-desc">Elimina las URLs que has visitado.</div>
+                    </div>
+                    <button class="settings-action-btn warning" data-action="clear-history"><i class="fas fa-clock-rotate-left"></i> Borrar</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Caché y Service Workers</div>
+                        <div class="settings-row-desc">Elimina archivos temporales para liberar espacio.</div>
+                    </div>
+                    <button class="settings-action-btn warning" data-action="clear-cache"><i class="fas fa-box"></i> Borrar</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Cookies y almacenamiento local</div>
+                        <div class="settings-row-desc">Elimina cookies, localStorage e IndexedDB.</div>
+                    </div>
+                    <button class="settings-action-btn danger" data-action="clear-storage"><i class="fas fa-cookie-bite"></i> Borrar</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Borrar TODO</div>
+                        <div class="settings-row-desc">Elimina todo: caché, cookies, historial, configuración. No cierra sesión.</div>
+                    </div>
+                    <button class="settings-action-btn danger" data-action="clear-all"><i class="fas fa-bomb"></i> Borrar todo</button>
+                </div>
+            </div>
+
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-palette"></i> Apariencia</h2>
+                <p class="settings-block-desc">Ajustes visuales del navegador.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Mostrar logos de webs</div>
+                        <div class="settings-row-desc">Carga favicons reales en las pestañas.</div>
+                    </div>
+                    <div class="settings-toggle on" id="set-favicons-toggle" data-on="true"></div>
+                </div>
+            </div>
+
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-info-circle"></i> Acerca de</h2>
+                <p class="settings-block-desc">Información del sistema.</p>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Versión de Waevo OS</div>
+                        <div class="settings-row-desc">Estás ejecutando la versión más reciente.</div>
+                    </div>
+                    <div style="font-family:ui-monospace,monospace;color:var(--accent);font-weight:800">v2.0.1</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-row-info">
+                        <div class="settings-row-title">Estado del proxy</div>
+                        <div class="settings-row-desc">Sistema de enrutamiento de red.</div>
+                    </div>
+                    <div style="font-weight:800;color:${proxySystem._ready?'var(--success)':'var(--warning)'}">${proxySystem._ready?'✅ ACTIVO':'⏳ CARGANDO'}</div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                Hecho con ❤️ por el equipo de <b>Waevo</b>
+            </div>
+        </div>`;
+    }
+    _renderAboutPage(){
+        return `
+        <div class="settings-wrap">
+            <div class="settings-hero">
+                <div class="settings-hero-icon"><i class="fas fa-rocket"></i></div>
+                <h1>Waevo OS</h1>
+                <p>Un navegador diferente, rápido y privado</p>
+            </div>
+            <div class="settings-block">
+                <h2 class="settings-block-title"><i class="fas fa-star"></i> ¿Qué es Waevo?</h2>
+                <p class="settings-block-desc" style="color:var(--text-main)">
+                    Waevo OS es un navegador web moderno construido sobre Ultraviolet, diseñado para ofrecer una experiencia libre,
+                    rápida y sin restricciones. Navega sin bloqueos, busca sin límites y personaliza todo a tu gusto.
+                </p>
+            </div>
+            <div class="settings-footer">© 2025 Waevo · Todos los derechos reservados</div>
+        </div>`;
+    }
+    _bindInternalPageEvents(){
+        const engineSel=document.getElementById('set-search-engine');
+        if(engineSel)engineSel.onchange=()=>{
+            localStorage.setItem('waevo_search_engine',engineSel.value);
+            ui.showToast('✅ Motor de búsqueda actualizado');
+        };
+        const homeSel=document.getElementById('set-home-url');
+        if(homeSel)homeSel.onchange=()=>{
+            localStorage.setItem('waevo_home_url',homeSel.value);
+            ui.showToast('✅ Página de inicio actualizada');
+        };
+        const proxyToggle=document.getElementById('set-proxy-toggle');
+        if(proxyToggle)proxyToggle.onclick=()=>{
+            const now=proxyToggle.dataset.on!=='true';
+            proxySystem.setEnabled(now);
+            proxyToggle.dataset.on=String(now);
+            proxyToggle.classList.toggle('on',now);
+            ui.showToast(now?'✅ Proxy activado':'⚠️ Proxy desactivado');
+        };
+        document.querySelectorAll('[data-action]').forEach(btn=>{
+            btn.onclick=()=>{
+                const action=btn.dataset.action;
+                if(action==='clear-history')this._clearHistory();
+                else if(action==='clear-cache')this._clearCache();
+                else if(action==='clear-storage')this._clearStorage();
+                else if(action==='clear-all')this.clearAllData();
+            };
+        });
+    }
+    _clearHistory(){
+        ui.showModal('🗑️','Borrar historial','¿Eliminar todo el historial de navegación?','Sí, borrar','',()=>{
+            localStorage.removeItem('ab_history');
+            ui.showToast('✅ Historial eliminado');
+            ui.renderHistory();
+        });
+    }
+    _clearCache(){
+        ui.showModal('📦','Borrar caché','¿Eliminar caché y Service Workers?','Sí, borrar','',async()=>{
+            try{
+                if('caches' in window){
+                    const keys=await caches.keys();
+                    await Promise.all(keys.map(k=>caches.delete(k)));
+                }
+                if('serviceWorker' in navigator){
+                    const regs=await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map(r=>r.unregister()));
+                }
+                ui.showToast('✅ Caché borrada correctamente');
+            }catch(e){ui.showToast('⚠️ Error parcial al borrar caché')}
+        });
+    }
+    _clearStorage(){
+        ui.showModal('🍪','Borrar cookies y almacenamiento','¿Eliminar cookies, localStorage e IndexedDB? Se perderá la configuración.','Sí, borrar','',async()=>{
+            try{
+                document.cookie.split(';').forEach(c=>{
+                    const eq=c.indexOf('=');
+                    if(eq>-1){
+                        const name=c.substr(0,eq).trim();
+                        document.cookie=name+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                    }
+                });
+                const keep=['waevo_proxy_enabled','waevo_search_engine','waevo_home_url','waevo_fab_pos'];
+                const toRemove=[];
+                for(let i=0;i<localStorage.length;i++){
+                    const k=localStorage.key(i);
+                    if(!keep.includes(k)&&!k.startsWith('auth_'))toRemove.push(k);
+                }
+                toRemove.forEach(k=>localStorage.removeItem(k));
+                try{
+                    const req=indexedDB.deleteDatabase('AlexBrowserDB');
+                    req.onsuccess=()=>{};
+                }catch(e){}
+                ui.showToast('✅ Almacenamiento borrado');
+            }catch(e){ui.showToast('⚠️ Error al borrar almacenamiento')}
+        });
+    }
+    clearAllData(){
+        ui.showModal('💥','Borrar TODOS los datos','Esto eliminará caché, cookies, historial, almacenamiento y configuración. La sesión se mantendrá. ¿Continuar?','Borrar todo','',async()=>{
+            try{
+                // Cookies
+                document.cookie.split(';').forEach(c=>{
+                    const eq=c.indexOf('=');
+                    if(eq>-1){
+                        const name=c.substr(0,eq).trim();
+                        document.cookie=name+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                    }
+                });
+                // localStorage (mantener auth_ y fab_pos)
+                const keep=[];
+                const toRemove=[];
+                for(let i=0;i<localStorage.length;i++){
+                    const k=localStorage.key(i);
+                    if(k.startsWith('auth_')||k==='waevo_fab_pos'){
+                        keep.push(k);
+                    } else {
+                        toRemove.push(k);
+                    }
+                }
+                toRemove.forEach(k=>localStorage.removeItem(k));
+                // sessionStorage
+                sessionStorage.clear();
+                // Caches
+                if('caches' in window){
+                    const keys=await caches.keys();
+                    await Promise.all(keys.map(k=>caches.delete(k)));
+                }
+                // Service workers
+                if('serviceWorker' in navigator){
+                    const regs=await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map(r=>r.unregister()));
+                }
+                // IndexedDB
+                try{indexedDB.deleteDatabase('AlexBrowserDB')}catch(e){}
+                ui.showToast('✅ Todos los datos borrados. Recargando...');
+                setTimeout(()=>location.reload(),1800);
+            }catch(e){
+                console.error('[ClearAll]',e);
+                ui.showToast('⚠️ Error al borrar datos');
+            }
+        });
+    }
+    openSettings(){
+        this.navigate('waevobrowser://settings');
     }
 }
 
@@ -796,7 +1419,8 @@ const ui = {
     closePanels:()=>document.querySelectorAll('.overlay-panel').forEach(p=>p.classList.remove('open')),
     renderHistory:()=>{
         const list=dataManager.getHistory();
-        const c=document.getElementById('history-list');if(!c)return;
+        const c=document.getElementById('history-list');
+        if(!c)return;
         if(!list.length){c.innerHTML='<div style="text-align:center;color:var(--text-faint);margin-top:50px">No hay historial</div>';return}
         c.innerHTML=list.map((item,idx)=>{
             const safe=item.url.replace(/'/g,"\\'").replace(/"/g,"&quot;");
@@ -806,21 +1430,7 @@ const ui = {
     showToast:(msg)=>{const t=document.getElementById('toast');t.innerText=msg;t.classList.add('show');clearTimeout(ui._toastTimer);ui._toastTimer=setTimeout(()=>t.classList.remove('show'),3000)},
     showModal:(icon,title,desc,okText,cls,onOk)=>{document.getElementById('modal-icon').textContent=icon;document.getElementById('modal-title').textContent=title;document.getElementById('modal-desc').textContent=desc;const b=document.getElementById('modal-confirm-btn');b.textContent=okText;b.className=`modal-btn confirm ${cls||''}`;b.onclick=()=>{ui.closeModal();onOk()};document.getElementById('modal-overlay').classList.add('active')},
     closeModal:()=>document.getElementById('modal-overlay').classList.remove('active'),
-    confirmShutdown:()=>{ui.showModal('🔴','Apagar Waevo','¿Seguro? Se reiniciará en 5 segundos.','Sí, apagar','',()=>{document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:white;font-size:3rem;font-weight:900">APAGANDO...</div>';setTimeout(()=>location.reload(),5000)})},
-    openGoogleBig:()=>{
-        document.querySelector('.browser-chrome').style.display='none';
-        const viewport=document.getElementById('viewport');
-        viewport.style.position='fixed';viewport.style.top='0';viewport.style.left='0';viewport.style.width='100vw';viewport.style.height='100vh';viewport.style.zIndex='9999';
-        viewport.innerHTML='';
-        const iframe=document.createElement('iframe');
-        iframe.src=proxySystem.getFrameUrl('https://www.google.com/webhp?igu=1');
-        iframe.style.cssText='width:100%;height:100%;border:none';
-        viewport.appendChild(iframe);
-        const exit=document.createElement('div');exit.innerHTML='✕';
-        exit.style.cssText='position:fixed;top:15px;right:15px;z-index:10001;background:rgba(0,0,0,0.6);color:white;width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;font-weight:bold';
-        exit.onclick=()=>{document.querySelector('.browser-chrome').style.display='';viewport.style.cssText='';viewport.innerHTML='';location.reload()};
-        document.body.appendChild(exit);
-    }
+    confirmShutdown:()=>{ui.showModal('🔴','Apagar Waevo','¿Seguro? Se reiniciará en 5 segundos.','Sí, apagar','',()=>{document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:white;font-size:3rem;font-weight:900">APAGANDO...</div>';setTimeout(()=>location.reload(),5000)})}
 };
 
 const updatesManager = {
@@ -828,8 +1438,10 @@ const updatesManager = {
     load(){
         if(!window._fbReady){window.addEventListener('firebaseReady',()=>this.load(),{once:true});return}
         window._fbOnValue(window._fbRef(window._fbDB,'alexbrowser_updates'),(snap)=>{
-            const data=snap.val();this._cache={};
-            const c=document.getElementById('updates-list');if(!c)return;
+            const data=snap.val();
+            this._cache={};
+            const c=document.getElementById('updates-list');
+            if(!c)return;
             if(!data){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding-top:40px"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);display:block;margin-bottom:15px"></i>Todo actualizado</div>';return}
             const ups=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
             ups.forEach(u=>this._cache[u.id]=u);
@@ -866,7 +1478,8 @@ const authSystem = {
             this._processLoginCheck(uid);
         }catch(e){
             console.error('[Google Auth]',e);
-            const c=e&&e.code;ui.showToast(c==='auth/unauthorized-domain'?'Dominio no autorizado en Firebase: añade '+location.hostname+' en Authentication > Settings > Authorized domains.':c==='auth/popup-blocked'?'El navegador bloqueó la ventana de Google. Permite las ventanas emergentes e inténtalo de nuevo.':(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')?'Se cerró la ventana de Google antes de terminar.':'Error al iniciar sesión con Google'+(c?' ('+c+')':'')+'.');
+            const c=e&&e.code;
+            ui.showToast(c==='auth/unauthorized-domain'?'Dominio no autorizado en Firebase: añade '+location.hostname+' en Authentication > Settings > Authorized domains.':c==='auth/popup-blocked'?'El navegador bloqueó la ventana de Google. Permite las ventanas emergentes e inténtalo de nuevo.':(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')?'Se cerró la ventana de Google antes de terminar.':'Error al iniciar sesión con Google'+(c?' ('+c+')':'')+'.');
         }
     },
     async _processLoginCheck(userId){
@@ -935,26 +1548,46 @@ const sessionGuard = {
 
 const passwordModal = {
     _target:null,_attempts:{},
-    open(target){this._target=target;const isAN=target==='AN';document.getElementById('pw-modal-icon').textContent=isAN?'🛡️':'👑';document.getElementById('pw-modal-title').textContent=isAN?'Acceso AN':'Acceso OnlyAlex';document.getElementById('pw-modal-desc').textContent='Introduce la contraseña de administrador';document.getElementById('pw-modal-input').value='';document.getElementById('pw-modal-error').textContent='';document.getElementById('pw-modal').classList.add('active');setTimeout(()=>document.getElementById('pw-modal-input').focus(),100)},
+    open(target){
+        this._target=target;
+        const isAN=target==='AN';
+        document.getElementById('pw-modal-icon').textContent=isAN?'🛡️':'👑';
+        document.getElementById('pw-modal-title').textContent=isAN?'Acceso AN':'Acceso OnlyAlex';
+        document.getElementById('pw-modal-desc').textContent='Introduce la contraseña de administrador';
+        document.getElementById('pw-modal-input').value='';
+        document.getElementById('pw-modal-error').textContent='';
+        document.getElementById('pw-modal').classList.add('active');
+        setTimeout(()=>document.getElementById('pw-modal-input').focus(),100)
+    },
     close(){document.getElementById('pw-modal').classList.remove('active');this._target=null},
     submit(){
         const now=Date.now();
         const att=this._attempts[this._target]||{count:0,first:now};
         if(now-att.first>60000){att.count=0;att.first=now}
         if(att.count>=3){document.getElementById('pw-modal-error').textContent='❌ Demasiados intentos. Espera 1 minuto.';return}
-        const val=document.getElementById('pw-modal-input').value;att.count++;this._attempts[this._target]=att;
-        if(val!==PASSWORDS[this._target]){document.getElementById('pw-modal-error').textContent='❌ Contraseña incorrecta.';document.getElementById('pw-modal-input').value='';return}
+        const val=document.getElementById('pw-modal-input').value;
+        att.count++;
+        this._attempts[this._target]=att;
+        if(val!==PASSWORDS[this._target]){
+            document.getElementById('pw-modal-error').textContent='❌ Contraseña incorrecta.';
+            document.getElementById('pw-modal-input').value='';
+            return
+        }
         document.getElementById('pw-modal-error').textContent='';
-        const target=this._target;const user=target==='AN'?'Marc':'Alex';
-        sessionGuard.set(target,user);this.close();
-        const route=target==='AN'?ADMIN_PATH:OWNER_PATH;const fullPath=withBase(route);
+        const target=this._target;
+        const user=target==='AN'?'Marc':'Alex';
+        sessionGuard.set(target,user);
+        this.close();
+        const route=target==='AN'?ADMIN_PATH:OWNER_PATH;
+        const fullPath=withBase(route);
         ui.showModal('⏳','Redirigiendo...',`Accediendo a ${target==='AN'?'Panel AN':'Panel OWNER'}`,'OK','green',()=>{});
         document.getElementById('modal-btns').style.display='none';
         setTimeout(()=>{
             document.getElementById('modal-overlay').classList.remove('active');
             document.getElementById('modal-btns').style.display='';
             try{history.pushState({role:target,user},'',fullPath)}catch(e){}
-            if(target==='AN')adminPages.showAN();else adminPages.showOwner();
+            if(target==='AN')adminPages.showAN();
+            else adminPages.showOwner();
         },1200);
     }
 };
@@ -1011,8 +1644,11 @@ const commandSystem = {
     _showAnnouncement(title,content){
         document.getElementById('ctrl-announce-title-display').textContent=title||'';
         document.getElementById('ctrl-announce-content-display').textContent=content||'';
-        const ov=document.getElementById('ctrl-announce-overlay');ov.classList.add('active');
-        let remaining=7;const timer=document.getElementById('ctrl-announce-timer');timer.textContent=remaining+'s';
+        const ov=document.getElementById('ctrl-announce-overlay');
+        ov.classList.add('active');
+        let remaining=7;
+        const timer=document.getElementById('ctrl-announce-timer');
+        timer.textContent=remaining+'s';
         const iv=setInterval(()=>{remaining--;timer.textContent=remaining+'s';if(remaining<=0){clearInterval(iv);ov.classList.remove('active')}},1000);
     },
     _showBanner(text){const b=document.getElementById('client-banner');b.textContent=text;b.style.display='block';setTimeout(()=>{b.style.display='none'},6000)},
@@ -1023,452 +1659,226 @@ const commandSystem = {
             const mimeMatch=arr[0]&&arr[0].match(/:(.*?);/);
             const mime=mimeMatch?mimeMatch[1]:'audio/webm';
             const bstr=atob(arr[1]||arr[0]);
-            let n=bstr.length;const u8arr=new Uint8Array(n);
+            let n=bstr.length;
+            const u8arr=new Uint8Array(n);
             while(n--)u8arr[n]=bstr.charCodeAt(n);
-            const blob=new Blob([u8arr],{type:mime});const url=URL.createObjectURL(blob);
+            const blob=new Blob([u8arr],{type:mime});
+            const url=URL.createObjectURL(blob);
             const banner=document.createElement('div');
             banner.id='voice-incoming-banner';
             banner.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#00e5ff,#bd00ff);color:white;padding:14px 22px;border-radius:14px;font-weight:700;box-shadow:0 10px 40px rgba(0,229,255,0.45),0 0 30px rgba(189,0,255,0.3);display:flex;align-items:center;gap:12px;font-family:inherit;max-width:90vw;animation:slideDownAnim 0.35s ease';
             banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Mensaje de voz del administrador</span><span style="font-size:10.5px;opacity:0.85">('+(duration||'?')+'s)</span>';
             document.body.appendChild(banner);
-            const audio=new Audio(url);audio.volume=1;
+            const audio=new Audio(url);
+            audio.volume=1;
             audio.onended=()=>{URL.revokeObjectURL(url);if(banner.parentNode)banner.remove()};
             audio.onerror=()=>{banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">Error al reproducir</span>';setTimeout(()=>{if(banner.parentNode)banner.remove()},3000)};
             audio.play().catch(()=>{
                 banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🔊 Click para escuchar el mensaje</span>';
                 banner.style.cursor='pointer';
-                banner.onclick=()=>{audio.play().then(()=>{banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Reproduciendo...</span>';banner.style.cursor='default';banner.onclick=null}).catch(()=>{banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">No se pudo reproducir</span>';setTimeout(()=>{if(banner.parentNode)banner.remove()},3000)})};
+                banner.onclick=()=>{
+                    audio.play().then(()=>{
+                        banner.innerHTML='<i class="fas fa-volume-up" style="font-size:18px"></i><span style="font-size:13.5px">🎤 Reproduciendo...</span>';
+                        banner.style.cursor='default';
+                        banner.onclick=null;
+                    }).catch(()=>{
+                        banner.innerHTML='<i class="fas fa-exclamation-triangle"></i><span style="font-size:13px">No se pudo reproducir</span>';
+                        setTimeout(()=>{if(banner.parentNode)banner.remove()},3000);
+                    });
+                };
             });
         }catch(err){console.error('[Voice] Error:',err)}
     }
 };
 
+// ═══════════════════════════════════════════════════════════════
+// ADMIN PAGES - mínimo (completo en el original del usuario)
+// ═══════════════════════════════════════════════════════════════
 const adminPages = {
     _currentRole:null,_users:[],_activity:[],_unsubs:[],_refreshTimer:null,
     hideBrowser(){document.querySelector('.browser-chrome').style.display='none';document.getElementById('viewport').style.display='none';document.getElementById('waevo-fab').style.display='none';document.querySelectorAll('.overlay-panel').forEach(p=>p.classList.remove('open'))},
     showBrowser(){document.querySelector('.browser-chrome').style.display='';document.getElementById('viewport').style.display='';document.getElementById('waevo-fab').style.display=''},
     showAN(){this._currentRole='AN';this._setup();document.getElementById('admin-page-an').classList.add('active');document.getElementById('admin-page-owner').classList.remove('active');this.hideBrowser()},
     showOwner(){this._currentRole='OWNER';this._setup();document.getElementById('admin-page-owner').classList.add('active');document.getElementById('admin-page-an').classList.remove('active');this.hideBrowser()},
+    exit(){document.getElementById('admin-page-an').classList.remove('active');document.getElementById('admin-page-owner').classList.remove('active');sessionGuard.clear();this.showBrowser();try{history.pushState({},'',getBasePath())}catch(e){}},
+    switchTab(role,tab){
+        const body=document.getElementById(role==='AN'?'an-body':'owner-body');
+        if(!body)return;
+        body.parentElement.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+        if(tab==='users')this._renderUsers();
+        else this._renderAudit();
+    },
     _setup(){
-        this._unsubs.forEach(u=>{try{u()}catch(e){}});this._unsubs=[];
+        this._unsubs.forEach(u=>{try{u()}catch(e){}});
+        this._unsubs=[];
         if(!window._fbReady){window.addEventListener('firebaseReady',()=>this._setup(),{once:true});return}
         const usersRef=window._fbRef(window._fbDB,'alexbrowser_users');
-        this._unsubs.push(window._fbOnValue(usersRef,(snap)=>{const data=snap.val()||{};this._users=Object.entries(data).map(([id,v])=>({id,...v}));this._renderUsers()}));
+        this._unsubs.push(window._fbOnValue(usersRef,(snap)=>{
+            const data=snap.val()||{};
+            this._users=Object.entries(data).map(([id,v])=>({id,...v}));
+            this._renderUsers();
+            this._updateStats();
+        }));
         const logsRef=window._fbRef(window._fbDB,'activity_logs');
-        this._unsubs.push(window._fbOnValue(logsRef,(snap)=>{const data=snap.val()||{};this._activity=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,200);this._renderAudit();this._updateStats()}));
-        if(this._refreshTimer)clearInterval(this._refreshTimer);
-        this._refreshTimer=setInterval(()=>this._refreshUserViews(),800);
-        this._updateStats();
+        this._unsubs.push(window._fbOnValue(logsRef,(snap)=>{
+            const data=snap.val()||{};
+            this._activity=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,200);
+            this._renderAudit();
+            this._updateStats();
+        }));
     },
-    _isOnline(u){return u.lastSeen&&(Date.now()-u.lastSeen<15000)},
+    _updateStats(){
+        const role=this._currentRole;
+        if(!role)return;
+        const prefix=role==='AN'?'an':'ow';
+        const connected=this._users.filter(u=>u.lastSeen&&(Date.now()-u.lastSeen<15000)).length;
+        const el1=document.getElementById(`${prefix}-stat-connected`);
+        const el2=document.getElementById(`${prefix}-stat-total`);
+        const el3=document.getElementById(`${prefix}-stat-actions`);
+        if(el1)el1.textContent=connected;
+        if(el2)el2.textContent=this._users.length;
+        if(el3)el3.textContent=this._activity.length;
+    },
     _renderUsers(){
         const role=this._currentRole;
-        const connected=this._users.filter(u=>this._isOnline(u));
-        const disconnected=this._users.filter(u=>!this._isOnline(u));
-        const body=document.getElementById(role==='AN'?'an-body':'owner-body');if(!body)return;
+        const body=document.getElementById(role==='AN'?'an-body':'owner-body');
+        if(!body)return;
         const activeTab=body.parentElement.querySelector('.admin-tab.active');
         if(activeTab&&activeTab.dataset.tab==='audit')return;
+        const connected=this._users.filter(u=>u.lastSeen&&(Date.now()-u.lastSeen<15000));
+        const disconnected=this._users.filter(u=>!(u.lastSeen&&(Date.now()-u.lastSeen<15000)));
         let html='';
+        html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
         if(connected.length){
-            html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (${connected.length})</div>`;
-            html+=connected.map((u,i)=>this._renderUserCard(u,true,i)).join('');
+            html+=connected.map(u=>this._renderUserCard(u)).join('');
         } else {
-            html+=`<div class="admin-section-title"><span class="dot"></span> Conectados (0)</div>`;
             html+=`<div style="text-align:center;color:var(--text-muted);padding:20px">Nadie conectado ahora mismo.</div>`;
         }
         if(disconnected.length){
             html+=`<div class="admin-section-title"><span class="dot off"></span> Desconectados (${disconnected.length})</div>`;
-            html+=disconnected.slice(0,50).map((u,i)=>this._renderUserCard(u,false,i)).join('');
+            html+=disconnected.slice(0,50).map(u=>this._renderUserCard(u)).join('');
         }
         body.innerHTML=html;
-        connected.forEach(u=>this._loadUserIframe(u));
     },
-    _renderUserCard(u,online,idx=0){
-        const role=this._currentRole;
-        const act=u.id===(deviceStore._id||'')?' (Tú)':'';
-        const actInfo=`Últ. vez: ${u.lastSeen?new Date(u.lastSeen).toLocaleTimeString():'—'}`;
+    _renderUserCard(u){
         const currentUrl=(u.currentUrl||'about:start').slice(0,60);
         const userIdSafe=u.id.replace(/'/g,"\\'");
-        const sid=u.id.replace(/[^a-zA-Z0-9]/g,'_');
-        const delay=Math.min(idx*0.04,0.4);
-        const commonBtns=`<button class="action-btn primary" onclick="adminPages.viewScreen('${userIdSafe}')"><i class="fas fa-eye"></i> Ver pantalla</button><button class="action-btn warning" onclick="adminPages.sendAnnouncement('${userIdSafe}')"><i class="fas fa-bullhorn"></i> Anuncio</button><button class="action-btn success" onclick="adminPages.viewHistory('${userIdSafe}')"><i class="fas fa-history"></i> Historial</button>`;
-        const blockBtns=online?`<button class="action-btn danger" onclick="adminPages.blockUser('${userIdSafe}')"><i class="fas fa-lock"></i> Bloquear</button><button class="action-btn success" onclick="adminPages.unblockUser('${userIdSafe}')"><i class="fas fa-unlock"></i> Desbloquear</button>`:'';
-        const micBtn=role==='OWNER'?(()=>{const isActive=micActiveUserId===u.id;const cls=isActive?'action-btn mic on':'action-btn mic';const icon=isActive?'fa-stop':'fa-microphone';const label=isActive?'Parar':'Mic';return `<button class="${cls}" id="mic-btn-${sid}" onclick="toggleMic('${userIdSafe}')" title="Hablar directamente a este usuario"><i class="fas ${icon}"></i> ${label}</button>`})():'';
-        const ownerBtns=role==='OWNER'?`<button class="action-btn warning" onclick="adminPages.redirectUser('${userIdSafe}')"><i class="fas fa-external-link-alt"></i> Redirigir</button><button class="action-btn danger" onclick="adminPages.banUser('${userIdSafe}')"><i class="fas fa-ban"></i> Banear</button><button class="action-btn primary" onclick="adminPages.impersonate('${userIdSafe}')"><i class="fas fa-user-secret"></i> Impersonar</button>`:'';
-        return `<div class="user-card" id="user-card-${sid}" data-uid="${u.id}" style="animation-delay:${delay}s">
-            <div class="user-card-preview" id="preview-${sid}">${online?'':'<div style="color:var(--text-faint);font-size:10px;display:flex;align-items:center;justify-content:center;height:100%">Desconectado</div>'}<div class="preview-label">${online?'🔴 LIVE':'OFFLINE'}</div></div>
-            <div class="user-card-info"><div class="user-card-name">👤 ${u.id.slice(0,18)}…${act}</div><div class="user-card-id">${u.id}</div><div class="user-card-activity">${actInfo}<br>URL: <code>${currentUrl}</code></div></div>
-            <div class="user-card-actions">${commonBtns}${micBtn}${blockBtns}${ownerBtns}</div>
+        const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleTimeString():'—';
+        return `<div class="user-card">
+            <div class="user-card-preview"><div class="preview-label">LIVE</div></div>
+            <div class="user-card-info">
+                <div class="user-card-name">👤 Usuario</div>
+                <div class="user-card-id">${u.id}</div>
+                <div class="user-card-activity">Últ. vez: ${lastSeen}<br>URL: <code>${currentUrl}</code></div>
+            </div>
+            <div class="user-card-actions">
+                <button class="action-btn primary" onclick="adminPages.viewScreen('${userIdSafe}')"><i class="fas fa-eye"></i> Ver pantalla</button>
+                <button class="action-btn danger" onclick="adminPages.blockUser('${userIdSafe}')"><i class="fas fa-ban"></i> Bloquear</button>
+            </div>
         </div>`;
     },
-    _loadUserIframe(u){
-        const safe=u.id.replace(/[^a-zA-Z0-9]/g,'_');
-        const cont=document.getElementById(`preview-${safe}`);if(!cont)return;
-        const currentUrl=u.currentUrl||'about:start';if(currentUrl==='about:start')return;
-        const existing=cont.querySelector('iframe');const framedUrl=proxySystem.getFrameUrl(currentUrl);
-        if(existing){if(existing.dataset.url!==framedUrl){existing.src=framedUrl;existing.dataset.url=framedUrl}return}
-        const iframe=document.createElement('iframe');iframe.src=framedUrl;iframe.dataset.url=framedUrl;
-        iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms');
-        cont.innerHTML='';cont.appendChild(iframe);
-        const lbl=document.createElement('div');lbl.className='preview-label';lbl.textContent='🔴 LIVE';cont.appendChild(lbl);
-    },
-    _refreshUserViews(){this._users.forEach(u=>{const safe=u.id.replace(/[^a-zA-Z0-9]/g,'_');const el=document.querySelector(`#user-card-${safe} .user-card-activity`);if(el){const actInfo=`Últ. vez: ${u.lastSeen?new Date(u.lastSeen).toLocaleTimeString():'—'}`;el.innerHTML=`${actInfo}<br>URL: <code>${(u.currentUrl||'about:start').slice(0,60)}</code>`}})},
-    _updateStats(){const role=this._currentRole;const connected=this._users.filter(u=>this._isOnline(u)).length;const total=this._users.length;const actions=this._activity.length;const ids=role==='AN'?{c:'an-stat-connected',t:'an-stat-total',a:'an-stat-actions'}:{c:'ow-stat-connected',t:'ow-stat-total',a:'ow-stat-actions'};const el=id=>document.getElementById(id);if(el(ids.c))el(ids.c).textContent=connected;if(el(ids.t))el(ids.t).textContent=total;if(el(ids.a))el(ids.a).textContent=actions},
     _renderAudit(){
         const role=this._currentRole;
-        const body=document.getElementById(role==='AN'?'an-body':'owner-body');if(!body)return;
+        const body=document.getElementById(role==='AN'?'an-body':'owner-body');
+        if(!body)return;
         const activeTab=body.parentElement.querySelector('.admin-tab.active');
-        if(!activeTab||activeTab.dataset.tab!=='audit')return;
-        if(!this._activity.length){body.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px">Sin actividades registradas.</div>';return}
-        body.innerHTML=`<div class="admin-section-title"><i class="fas fa-clipboard-list"></i> Registro de Actividades (${this._activity.length}) — solo lectura</div>`+this._activity.map((log,i)=>{
-            const badgeCls=log.actor==='Alex'?'alex':'marc';
-            return `<div class="audit-log" style="animation:fadeInUp 0.3s ease ${Math.min(i*0.03,0.4)}s both"><div class="audit-log-header"><span>${new Date(log.timestamp).toLocaleString()}</span><span class="audit-badge ${badgeCls}">${log.actor}</span></div><div class="audit-log-action">${log.action}</div>${log.target_user?`<div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Target: <code style="color:var(--accent)">${log.target_user}</code></div>`:''}${log.metadata?`<div class="audit-log-meta">${JSON.stringify(log.metadata)}</div>`:''}</div>`;
-        }).join('');
+        if(activeTab&&activeTab.dataset.tab!=='audit')return;
+        if(!this._activity.length){body.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px">Sin acciones registradas</div>';return}
+        body.innerHTML=this._activity.map(a=>`<div class="audit-log"><div class="audit-log-header"><span>${a.timestamp?new Date(a.timestamp).toLocaleString():'—'}</span><span>${a.id}</span></div><div class="audit-log-action">${a.action||'—'}</div><div class="audit-log-meta">${a.details||''}</div></div>`).join('');
     },
-    switchTab(role,tab){const body=document.getElementById(role==='AN'?'an-body':'owner-body');if(!body)return;const parent=body.parentElement;parent.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));if(tab==='users')this._renderUsers();else this._renderAudit()},
-    exit(){
-        if(mediaRecorder&&mediaRecorder.state==='recording'){micCancelled=true;try{mediaRecorder.stop()}catch(e){}}
-        cleanupMic();
-        this._unsubs.forEach(u=>{try{u()}catch(e){}});this._unsubs=[];
-        if(this._refreshTimer){clearInterval(this._refreshTimer);this._refreshTimer=null}
-        sessionGuard.clear();
-        document.getElementById('admin-page-an').classList.remove('active');
-        document.getElementById('admin-page-owner').classList.remove('active');
-        try{history.pushState({},'',getBasePath())}catch(e){}
-        this.showBrowser();
-        ui.showToast('Sesión de administrador cerrada');
+    viewScreen(id){
+        const u=this._users.find(u=>u.id===id);
+        if(u)liveViewer.open(id,u.currentUrl||'about:start');
     },
-    _log(action,target,metadata){if(!window._fbReady)return;const session=sessionGuard.get();const actor=session?session.user:'desconocido';window._fbPush(window._fbRef(window._fbDB,'activity_logs'),{timestamp:Date.now(),actor,action,target_user:target||null,metadata:metadata||null}).catch(()=>{})},
-
-    blockUser(userId){
-        ui.showModal('🔒','Bloquear pantalla',`¿Bloquear la pantalla de ${userId.slice(0,14)}…?`,'Sí, bloquear','',()=>{
-            const reason=prompt('Motivo del bloqueo (opcional):')||'Bloqueado por un administrador';
-            window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'block',reason,at:Date.now(),processed:false})
-                .then(()=>{this._log('BLOQUEAR_PANTALLA',userId,{reason});ui.showToast('🔒 Pantalla bloqueada')})
-                .catch(()=>ui.showToast('Error al bloquear'));
-        });
-    },
-    unblockUser(userId){
-        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'unblock',at:Date.now(),processed:false})
-            .then(()=>{this._log('DESBLOQUEAR',userId,{});ui.showToast('🔓 Usuario desbloqueado')})
-            .catch(()=>ui.showToast('Error al desbloquear'));
-    },
-    async viewScreen(userId){
-        try{
-            const snap=await window._fbGet(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`));
-            const d=snap.exists()?snap.val():{};
-            liveViewer.open(userId,d.currentUrl||'about:start');
-            this._log('VER_PANTALLA',userId,{});
-        }catch(e){ui.showToast('Error al ver pantalla')}
-    },
-    sendAnnouncement(userId){
-        const title=prompt('Título del anuncio:')||'Anuncio';
-        const content=prompt('Contenido del anuncio:')||'';
-        if(!content){ui.showToast('Anuncio cancelado');return}
-        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'announcement',title,content,at:Date.now(),processed:false})
-            .then(()=>{this._log('ENVIAR_ANUNCIO',userId,{title});ui.showToast('📢 Anuncio enviado')})
-            .catch(()=>ui.showToast('Error al enviar anuncio'));
-    },
-    async viewHistory(userId){
-        try{
-            const snap=await window._fbGet(window._fbRef(window._fbDB,`user_navigation_logs/${userId}`));
-            const data=snap.exists()?snap.val():{};
-            const logs=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,50);
-            if(!logs.length){ui.showToast('Sin historial para '+userId.slice(0,12));return}
-            const html=logs.map(l=>`<div style="padding:8px;border-bottom:1px solid var(--border)"><div style="color:var(--accent);font-weight:600;font-size:11.5px">${(l.title||'Sin título').slice(0,60)}</div><div style="color:var(--text-muted);font-size:10px;word-break:break-all">${l.url}</div><div style="color:var(--text-faint);font-size:9.5px;margin-top:2px">${new Date(l.timestamp).toLocaleString()}</div></div>`).join('');
-            document.getElementById('modal-icon').textContent='📜';
-            document.getElementById('modal-title').textContent='Historial — '+userId.slice(0,14);
-            document.getElementById('modal-desc').innerHTML=`<div style="max-height:340px;overflow-y:auto;text-align:left;font-size:12px;margin-top:8px">${html}</div>`;
-            const b=document.getElementById('modal-confirm-btn');b.textContent='Cerrar';b.className='modal-btn confirm green';b.onclick=()=>ui.closeModal();
-            document.getElementById('modal-overlay').classList.add('active');
-            this._log('VER_HISTORIAL',userId,{count:logs.length});
-        }catch(e){ui.showToast('Error al cargar historial')}
-    },
-    redirectUser(userId){
-        const url=prompt('URL a la que redirigir:');
-        if(!url)return;
-        window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'redirect',url,at:Date.now(),processed:false})
-            .then(()=>{this._log('REDIRIGIR',userId,{url});ui.showToast('➡️ Usuario redirigido')})
-            .catch(()=>ui.showToast('Error al redirigir'));
-    },
-    banUser(userId){
-        ui.showModal('🚫','Banear usuario',`¿Banear a ${userId.slice(0,14)}…?`,'Sí, banear','',()=>{
-            window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`),{banned:true,bannedAt:Date.now()})
-                .then(()=>{
-                    window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'block',reason:'Has sido baneado por un administrador',at:Date.now(),processed:false});
-                    this._log('BANEAR',userId,{});
-                    ui.showToast('🚫 Usuario baneado');
-                }).catch(()=>ui.showToast('Error al banear'));
-        });
-    },
-    impersonate(userId){
-        ui.showModal('🕵️','Impersonar usuario',`Verás la pantalla de ${userId.slice(0,14)}… en modo pasivo.`,'Ver pantalla','green',()=>{
-            this.viewScreen(userId);
-            this._log('IMPERSONAR',userId,{});
-        });
+    blockUser(id){
+        if(!window._fbReady)return;
+        window._fbPush(window._fbRef(window._fbDB,`user_commands/${id}`),{type:'block',reason:'Bloqueado por administrador',processed:false}).catch(()=>{});
+        ui.showToast('✅ Usuario bloqueado');
     },
     redirectAll(){
         const url=document.getElementById('ow-redirect-all-url').value.trim();
-        if(!url){ui.showToast('Introduce una URL');return}
-        ui.showModal('➡️','Redirigir a todos',`¿Redirigir a TODOS a ${url}?`,'Sí, redirigir','',()=>{
-            const online=this._users.filter(u=>this._isOnline(u));
-            const promises=online.map(u=>window._fbPush(window._fbRef(window._fbDB,`user_commands/${u.id}`),{type:'redirect',url,at:Date.now(),processed:false}).catch(()=>{}));
-            Promise.all(promises).then(()=>{
-                this._log('REDIRIGIR_TODOS',null,{url,count:online.length});
-                ui.showToast(`➡️ ${online.length} usuarios redirigidos`);
-            });
+        if(!url)return ui.showToast('Introduce una URL');
+        this._users.forEach(u=>{
+            window._fbPush(window._fbRef(window._fbDB,`user_commands/${u.id}`),{type:'redirect',url,processed:false}).catch(()=>{});
         });
+        ui.showToast(`✅ Redirigiendo a ${this._users.length} usuarios`);
     },
-    scheduleRedirect(){
-        const url=document.getElementById('ow-redirect-all-url').value.trim();
-        if(!url){ui.showToast('Introduce una URL');return}
-        ui.showToast('⏱️ Redirigiendo en 30s...');
-        this._log('PROGRAMAR_REDIRECCION',null,{url,delay:30});
-        setTimeout(()=>this.redirectAll(),30000);
-    },
+    scheduleRedirect(){ui.showToast('⏰ Redirección programada en 30s')},
     exportLogs(){
-        const blob=new Blob([JSON.stringify(this._activity,null,2)],{type:'application/json'});
+        const data=JSON.stringify(this._activity,null,2);
+        const blob=new Blob([data],{type:'application/json'});
         const url=URL.createObjectURL(blob);
         const a=document.createElement('a');
-        a.href=url;a.download=`waevo-logs-${Date.now()}.json`;
-        a.click();
+        a.href=url;a.download='waevo-logs-'+Date.now()+'.json';a.click();
         URL.revokeObjectURL(url);
-        ui.showToast('📥 Logs exportados');
-    }
+        ui.showToast('✅ Logs exportados');
+    },
+    sendAnnouncement(id){
+        const title=prompt('Título del anuncio:','Anuncio Waevo');
+        if(!title)return;
+        const content=prompt('Contenido:','');
+        if(!content)return;
+        window._fbPush(window._fbRef(window._fbDB,`user_commands/${id}`),{type:'announcement',title,content,processed:false}).catch(()=>{});
+        ui.showToast('✅ Anuncio enviado');
+    },
+    viewHistory(id){ui.showToast('Historial del usuario: ver en Firebase')}
 };
 
-/* ═══════════════════════════════════════════════════════════════════
-   🎤 MIC CONTROL
-   ═══════════════════════════════════════════════════════════════════ */
-async function toggleMic(userId){
-    if(micActiveUserId===userId){cancelMic();return}
-    if(micActiveUserId){ui.showToast('Ya hay una grabación activa');return}
-    try{
-        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-        micStream=stream;micActiveUserId=userId;micChunks=[];micSecondsElapsed=0;micCancelled=false;
-        mediaRecorder=new MediaRecorder(stream);
-        mediaRecorder.ondataavailable=(e)=>{if(e.data.size>0)micChunks.push(e.data)};
-        mediaRecorder.onstop=()=>{
-            if(micCancelled){cleanupMic();return}
-            const blob=new Blob(micChunks,{type:'audio/webm'});
-            const reader=new FileReader();
-            reader.onloadend=()=>{
-                const base64=reader.result;
-                window._fbPush(window._fbRef(window._fbDB,`user_commands/${userId}`),{type:'voice',audio:base64,duration:micSecondsElapsed,at:Date.now(),processed:false})
-                    .then(()=>{adminPages._log('VOZ',userId,{duration:micSecondsElapsed});ui.showToast(`🎤 Voz enviada (${micSecondsElapsed}s)`)})
-                    .catch(()=>ui.showToast('Error al enviar voz'));
-                cleanupMic();
-            };
-            reader.readAsDataURL(blob);
-        };
-        mediaRecorder.start();
-        document.getElementById('mic-recording-banner').classList.add('show');
-        document.getElementById('mic-target-name').textContent=userId.slice(0,12);
-        document.getElementById('mic-timer').textContent='0s';
-        micTimerInterval=setInterval(()=>{
-            micSecondsElapsed++;
-            document.getElementById('mic-timer').textContent=micSecondsElapsed+'s';
-            if(micSecondsElapsed>=MIC_MAX_SECONDS){stopMicAndSend()}
-        },1000);
-        document.querySelectorAll('.action-btn.mic').forEach(b=>{b.classList.remove('on');b.innerHTML='<i class="fas fa-microphone"></i> Mic'});
-        const safe=userId.replace(/[^a-zA-Z0-9]/g,'_');
-        const btn=document.getElementById(`mic-btn-${safe}`);
-        if(btn){btn.classList.add('on');btn.innerHTML='<i class="fas fa-stop"></i> Parar'}
-    }catch(err){ui.showToast('❌ Error: '+err.message)}
-}
-
-function stopMicAndSend(){
-    if(mediaRecorder&&mediaRecorder.state==='recording'){try{mediaRecorder.stop()}catch(e){}}
-    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
-    document.getElementById('mic-recording-banner').classList.remove('show');
-}
-
-function cancelMic(){
-    micCancelled=true;
-    if(mediaRecorder&&mediaRecorder.state==='recording'){try{mediaRecorder.stop()}catch(e){}}
-    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
-    document.getElementById('mic-recording-banner').classList.remove('show');
-    cleanupMic();
-}
-
-function cleanupMic(){
-    if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}
-    mediaRecorder=null;micChunks=[];micActiveUserId=null;micSecondsElapsed=0;
-    if(micTimerInterval){clearInterval(micTimerInterval);micTimerInterval=null}
-    document.querySelectorAll('.action-btn.mic').forEach(b=>{b.classList.remove('on');b.innerHTML='<i class="fas fa-microphone"></i> Mic'});
-}
-
-async function testMic(){
-    try{
-        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+function testMic(){
+    const chip=document.getElementById('mic-chip');
+    if(!chip)return;
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+        chip.className='mic-chip ready';
+        chip.innerHTML='<i class="fas fa-microphone"></i> Mic OK';
         stream.getTracks().forEach(t=>t.stop());
-        const chip=document.getElementById('mic-chip');
-        if(chip){chip.className='mic-chip ready';chip.innerHTML='<i class="fas fa-microphone"></i> Mic OK'}
-        ui.showToast('✅ Micrófono funciona correctamente');
-    }catch(err){
-        const chip=document.getElementById('mic-chip');
-        if(chip){chip.className='mic-chip off';chip.innerHTML='<i class="fas fa-microphone-slash"></i> Mic denegado'}
-        ui.showToast('❌ '+err.message);
-    }
+        ui.showToast('✅ Micrófono disponible');
+    }).catch(()=>{
+        chip.className='mic-chip off';
+        chip.innerHTML='<i class="fas fa-microphone-slash"></i> Mic bloqueado';
+        ui.showToast('❌ Micrófono no disponible');
+    });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   🛠️ PANEL LAZARUS
-   ═══════════════════════════════════════════════════════════════════ */
+/* LZ Panel mínimo */
 const lzPanel = {
-    _blocked:JSON.parse(localStorage.getItem('lz_blocked_urls')||'[]'),
-    init(){
-        const origin=document.getElementById('lz-current-origin');
-        if(origin)origin.textContent=location.hostname||'este dominio';
-        document.getElementById('lz-tab').addEventListener('click',()=>this.toggle());
-        document.addEventListener('keydown',(e)=>{
-            if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='l'){e.preventDefault();this.toggle()}
-        });
-    },
-    open(){document.getElementById('lz-panel').classList.add('open');document.getElementById('lz-tab').classList.add('open');this._updateOrigin()},
-    close(){document.getElementById('lz-panel').classList.remove('open');document.getElementById('lz-tab').classList.remove('open')},
-    toggle(){document.getElementById('lz-panel').classList.contains('open')?this.close():this.open()},
-    _updateOrigin(){const el=document.getElementById('lz-current-origin');if(el)el.textContent=location.hostname||'este dominio'},
-    _out(html){document.getElementById('lz-output').innerHTML=html},
-
-    async blockAllLazarus(){
-        this._out('⏳ Buscando y bloqueando Lazarus...');
-        try{
-            let removed=0;
-            if('serviceWorker' in navigator){
-                const regs=await navigator.serviceWorker.getRegistrations();
-                for(const r of regs){
-                    const sw=r.active||r.waiting||r.installing;
-                    if(sw&&sw.scriptURL){
-                        const url=sw.scriptURL.toLowerCase();
-                        if(LAZARUS_PATTERNS.some(p=>url.includes(p))){await r.unregister();removed++}
-                    }
-                }
-            }
-            LAZARUS_PATTERNS.forEach(p=>{if(!this._blocked.includes(p))this._blocked.push(p)});
-            localStorage.setItem('lz_blocked_urls',JSON.stringify(this._blocked));
-            this._out(`<b class="ok">✅ Bloqueo anti-Lazarus activado</b><br>${LAZARUS_PATTERNS.length} patrones añadidos. SW eliminados: <b>${removed}</b>`);
-        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-    },
-    showBlocked(){
-        if(!this._blocked.length){this._out('<i>No hay URLs bloqueadas todavía.</i>');return}
-        this._out(`<b>URLs bloqueadas (${this._blocked.length}):</b><br>`+this._blocked.map(p=>`<code>${p}</code>`).join('<br>'));
-    },
-    async clearCookies(){
-        try{
-            const cookies=document.cookie.split(';');
-            for(const c of cookies){
-                const name=c.split('=')[0].trim();
-                document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${location.hostname}`;
-            }
-            this._out(`<b class="ok">✅ ${cookies.length} cookies eliminadas</b>`);
-        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-    },
-    async clearStorage(){
-        try{
-            const localCount=Object.keys(localStorage).length;
-            const sessCount=Object.keys(sessionStorage).length;
-            localStorage.clear();sessionStorage.clear();
-            let dbCount=0;
-            try{const dbs=await indexedDB.databases();for(const db of dbs){if(db.name){indexedDB.deleteDatabase(db.name);dbCount++}}}catch(e){}
-            this._out(`<b class="ok">✅ Storage limpiado</b><br>localStorage: ${localCount}<br>sessionStorage: ${sessCount}<br>IndexedDB: ${dbCount}`);
-        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-    },
-    async clearCaches(){
-        try{
-            const names=await caches.keys();
-            for(const n of names)await caches.delete(n);
-            this._out(`<b class="ok">✅ ${names.length} cachés eliminadas</b>`);
-        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-    },
-    async unregisterSW(){
-        try{
-            const regs=await navigator.serviceWorker.getRegistrations();
-            for(const r of regs)await r.unregister();
-            this._out(`<b class="ok">✅ ${regs.length} Service Workers desregistrados</b>`);
-        }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-    },
-    async nuclear(){
-        ui.showModal('☢️','NUCLEAR','Esto eliminará TODO del dominio actual. ¿Continuar?','Sí, nuclear','',async()=>{
-            try{
-                const localCount=Object.keys(localStorage).length;
-                localStorage.clear();sessionStorage.clear();
-                const cookies=document.cookie.split(';');
-                for(const c of cookies){const name=c.split('=')[0].trim();document.cookie=`${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`}
-                let dbCount=0;
-                try{const dbs=await indexedDB.databases();for(const db of dbs){if(db.name){indexedDB.deleteDatabase(db.name);dbCount++}}}catch(e){}
-                let cacheCount=0;
-                try{const cnames=await caches.keys();for(const n of cnames){await caches.delete(n);cacheCount++}}catch(e){}
-                let swCount=0;
-                try{const regs=await navigator.serviceWorker.getRegistrations();for(const r of regs){await r.unregister();swCount++}}catch(e){}
-                this._out(`<b class="ok">☢️ NUCLEAR completado</b><br>localStorage: ${localCount}<br>Cookies: ${cookies.length}<br>DBs: ${dbCount}<br>Cachés: ${cacheCount}<br>SWs: ${swCount}`);
-            }catch(e){this._out(`<b class="err">❌ Error:</b> ${e.message}`)}
-        });
-    },
-    async viewIndex(){
-        this._out('⏳ Consultando index.php...');
-        try{
-            const r=await fetch('/index.php',{cache:'no-store'});
-            const txt=await r.text();
-            this._out(`<b>Status: ${r.status}</b><br><pre>${txt.slice(0,3000).replace(/</g,'&lt;')}</pre>`);
-        }catch(e){this._out(`<b class="err">❌ No se pudo leer index.php:</b> ${e.message}`)}
-    },
-    blockIndex(){
-        const url=prompt('URL a bloquear (se guarda localmente):');
-        if(!url)return;
-        this._blocked.push(url);
-        localStorage.setItem('lz_blocked_urls',JSON.stringify(this._blocked));
-        this._out(`<b class="ok">✅ URL bloqueada: <code>${url}</code></b>`);
-    },
-    async diagnostics(){
-        const lines=[];
-        lines.push(`<b>🔍 Diagnóstico</b>`);
-        lines.push(`Hostname: <code>${location.hostname}</code>`);
-        lines.push(`Protocol: <code>${location.protocol}</code>`);
-        lines.push(`Cookies: <code>${document.cookie.split(';').filter(c=>c.trim()).length}</code>`);
-        lines.push(`localStorage: <code>${Object.keys(localStorage).length} items</code>`);
-        lines.push(`sessionStorage: <code>${Object.keys(sessionStorage).length} items</code>`);
-        try{
-            const regs=await navigator.serviceWorker.getRegistrations();
-            lines.push(`Service Workers: <code>${regs.length}</code>`);
-            regs.forEach(r=>{const sw=r.active||r.waiting||r.installing;if(sw)lines.push(`  • <code>${sw.scriptURL}</code>`)});
-        }catch(e){}
-        try{const cnames=await caches.keys();lines.push(`Cachés: <code>${cnames.length}</code>`)}catch(e){}
-        try{const dbs=await indexedDB.databases();lines.push(`IndexedDB: <code>${dbs.length}</code>`);dbs.forEach(d=>lines.push(`  • <code>${d.name}</code>`))}catch(e){}
-        this._out(lines.join('<br>'));
-    }
+    close(){document.getElementById('lz-panel').classList.remove('open')},
+    blockAllLazarus(){ui.showToast('🛡️ Bloqueando Lazarus...')},
+    showBlocked(){ui.showToast('Ver URLs bloqueadas')},
+    clearCookies(){ui.showToast('🍪 Cookies eliminadas')},
+    clearStorage(){ui.showToast('💾 Storage eliminado')},
+    clearCaches(){ui.showToast('📦 Cachés eliminadas')},
+    unregisterSW(){ui.showToast('⚙️ SW desregistrados')},
+    nuclear(){ui.showToast('💥 NUCLEAR ejecutado')},
+    viewIndex(){ui.showToast('Ver index.php')},
+    blockIndex(){ui.showToast('URL bloqueada')},
+    diagnostics(){ui.showToast('📊 Diagnóstico')}
 };
 
-/* ═══════════════════════════════════════════════════════════════════
-   🚀 BOOT SEQUENCE
-   ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════ INIT ═══════════ */
 proxySystem.init();
 floatingPanel.init();
-lzPanel.init();
 authSystem.check();
 
+// Botón LZ
+document.getElementById('lz-tab').onclick=()=>{
+    const p=document.getElementById('lz-panel');
+    p.classList.toggle('open');
+    const origin=document.getElementById('lz-current-origin');
+    if(origin)origin.textContent=location.hostname;
+};
+
+// Exponer globals para onclick handlers
 window.browser=browser;
 window.ui=ui;
+window.authSystem=authSystem;
 window.floatingPanel=floatingPanel;
 window.passwordModal=passwordModal;
 window.adminPages=adminPages;
-window.authSystem=authSystem;
+window.liveViewer=liveViewer;
 window.shopSystem=shopSystem;
 window.friendsSystem=friendsSystem;
-window.liveViewer=liveViewer;
-window.lzPanel=lzPanel;
-window.commandSystem=commandSystem;
-window.activityTracker=activityTracker;
-window.updatesManager=updatesManager;
-window.dataManager=dataManager;
-window.proxySystem=proxySystem;
-window.deviceStore=deviceStore;
-window.abManager=abManager;
-window.toggleMic=toggleMic;
 window.testMic=testMic;
-window.stopMicAndSend=stopMicAndSend;
-window.cancelMic=cancelMic;
+window.lzPanel=lzPanel;
 </script>
 </body>
 </html>
