@@ -2097,9 +2097,9 @@ const activityTracker = {
     _userId:null,_lastSend:0,_pending:null,_flushTimer:null,
     start(userId){
         this._userId=userId;
-        const send=()=>{if(!this._pending||!window._fbReady||!this._userId)return;window._fbUpdate(window._fbRef(window._fbDB,`user_activity/${this._userId}`),this._pending).catch(()=>{});this._pending=null};
+        const send=()=>{if(!this._pending||!window._fbReady||!this._userId)return;const clean=Object.fromEntries(Object.entries(this._pending).filter(([,value])=>value!==undefined));this._pending=null;if(!Object.keys(clean).length)return;window._fbUpdate(window._fbRef(window._fbDB,`user_activity/${this._userId}`),clean).catch(()=>{})};
         document.addEventListener('mousemove',(e)=>{const now=Date.now();if(now-this._lastSend<800)return;this._lastSend=now;this._pending={...this._pending,mouseX:e.clientX,mouseY:e.clientY,updatedAt:now};if(!this._flushTimer)this._flushTimer=setTimeout(()=>{send();this._flushTimer=null},850)});
-        document.addEventListener('keydown',(e)=>{if(!this._userId)return;this._pending={...this._pending,lastKey:e.key,lastKeyAt:Date.now()};if(!this._flushTimer)this._flushTimer=setTimeout(()=>{send();this._flushTimer=null},850)});
+        document.addEventListener('keydown',(e)=>{if(!this._userId)return;const update={lastKeyAt:Date.now()};if(typeof e.key==='string')update.lastKey=e.key;this._pending={...this._pending,...update};if(!this._flushTimer)this._flushTimer=setTimeout(()=>{send();this._flushTimer=null},850)});
         setInterval(()=>{if(!window._fbReady||!this._userId)return;window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${this._userId}`),{lastSeen:Date.now()}).catch(()=>{})},5000);
     }
 };
