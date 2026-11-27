@@ -435,6 +435,28 @@ iframe.browser-view{position:absolute;inset:0;width:100%;height:100%;box-sizing:
     .waevo-internal-page.google-page .google-cse-frame{padding:6px;border-radius:10px}
     .google-cse-frame .gsc-control-cse{padding:4px!important}
 }
+/* Tarjeta adaptable para el reproductor e inserciones oficiales de TikTok */
+.waevo-internal-page.tiktok-page{overflow:auto;padding:clamp(16px,3vw,36px);background:radial-gradient(circle at 15% 0%,rgba(0,229,255,.10),transparent 42%),radial-gradient(circle at 100% 100%,rgba(255,45,107,.10),transparent 45%),#09090e}
+.tiktok-wrap{width:100%;max-width:1000px;margin:0 auto}
+.tiktok-heading{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 22px;text-align:left}
+.tiktok-brand-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:linear-gradient(135deg,#111,#252530);color:#fff;font-size:24px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.tiktok-heading h1{margin:0 0 4px;font-size:clamp(1.4rem,3vw,2rem);color:#fff}
+.tiktok-heading p,.tiktok-caption{margin:0;color:#aab2c0;font-size:13px}
+.tiktok-content-card{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;padding:clamp(16px,3vw,28px);border:1px solid rgba(255,255,255,.10);border-radius:20px;background:rgba(20,20,28,.86);box-shadow:0 18px 48px rgba(0,0,0,.34);text-align:center}
+.tiktok-content-card>p{max-width:680px;line-height:1.65;color:#e3e8f0}
+.tiktok-player-shell{width:min(100%,420px);height:min(72vh,746px);min-height:360px;overflow:hidden;border-radius:18px;background:#000;box-shadow:0 14px 42px rgba(0,0,0,.4)}
+.tiktok-player-frame{display:block;width:100%;height:100%;border:0}
+.tiktok-profile-shell{width:100%;max-width:720px;min-height:360px;display:flex;justify-content:center;overflow:auto;border-radius:14px;background:#fff}
+.tiktok-profile-shell .tiktok-embed{width:100%;max-width:720px;min-width:288px;margin:0!important}
+.tiktok-open-button{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border:0;border-radius:12px;background:linear-gradient(110deg,#fe2c55,#25f4ee);color:#111;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.tiktok-open-button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+@media(max-width:768px){
+ .waevo-internal-page.tiktok-page{padding:14px 10px}
+ .tiktok-heading{margin-bottom:14px}
+ .tiktok-content-card{padding:16px 12px;border-radius:15px}
+ .tiktok-player-shell{width:min(100%,380px);height:min(68vh,680px);min-height:320px;border-radius:14px}
+ .tiktok-profile-shell{min-height:320px}
+}
 </style>
 <script src="./uv/uv.bundle.js" charset="UTF-8"></script>
 <script src="./uv/uv.config.js" charset="UTF-8"></script>
@@ -1141,6 +1163,10 @@ class BrowserEngine {
         }catch(e){}
         return 'waevobrowser://google-search?q='+encodeURIComponent(query)+'&mode='+mode
     }
+    _isTikTokUrl(url){
+        try{const host=new URL(url).hostname.toLowerCase();return host==='tiktok.com'||host.endsWith('.tiktok.com')}catch(e){return false}
+    }
+    _tiktokInternalRoute(url){return 'waevobrowser://tiktok?url='+encodeURIComponent(url)}
     openGoogleFullscreen(){
         this.navigate('waevobrowser://google-search');
     }
@@ -1247,6 +1273,7 @@ class BrowserEngine {
             this.navigate(this._googleSearchRoute(url));
             return
         }
+        if(this._isTikTokUrl(url)){url=this._tiktokInternalRoute(url);title='TikTok'}
         t.history=t.history.slice(0,t.historyIndex+1);
         t.history.push(url);
         t.historyIndex++;
@@ -1279,6 +1306,7 @@ class BrowserEngine {
             this.navigate(this._googleSearchRoute(url));
             return
         }
+        if(this._isTikTokUrl(url)){this.navigate(this._tiktokInternalRoute(url));return}
         t.history=t.history.slice(0,t.historyIndex+1);
         t.history.push(url);
         t.historyIndex++;
@@ -1356,6 +1384,7 @@ class BrowserEngine {
         }
     }
     _loadUrlInTab(t,url){
+        if(this._isTikTokUrl(url)){url=this._tiktokInternalRoute(url);t.history[t.historyIndex]=url;t.url=url;t.title='TikTok'}
         if(url==='about:start'){
             t.url='about:start';
             this.switchTab(t.id);
@@ -1485,9 +1514,9 @@ class BrowserEngine {
         const viewport=document.getElementById('viewport');
         const page=document.createElement('div');
         page.id='waevo-internal-page';
-        page.className='waevo-internal-page active'+(url.split('?')[0]==='waevobrowser://google-search'?' google-page':'');
+        page.className='waevo-internal-page active'+(url.split('?')[0]==='waevobrowser://google-search'?' google-page':'')+(url.split('?')[0]==='waevobrowser://tiktok'?' tiktok-page':'');
         const cleanUrl=url.split('?')[0];
-        let googleQuery='',googleMode='web';
+        let googleQuery='',googleMode='web',tiktokTarget='';
         if(cleanUrl==='waevobrowser://settings'){
             page.innerHTML=this._renderSettingsPage();
         } else if(cleanUrl==='waevobrowser://about'){
@@ -1497,12 +1526,41 @@ class BrowserEngine {
             googleQuery=params.get('q')||'';
             googleMode=params.get('mode')==='images'?'images':'web';
             page.innerHTML=this._renderGoogleSearchPage(googleQuery,googleMode);
+        } else if(cleanUrl==='waevobrowser://tiktok'){
+            const params=new URLSearchParams(url.split('?')[1]||'');
+            tiktokTarget=params.get('url')||'https://www.tiktok.com/';
+            page.innerHTML=this._renderTikTokPage(tiktokTarget);
         } else {
             page.innerHTML=`<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fas fa-exclamation-triangle"></i></div><h1>Página no encontrada</h1><p>${escapeHtml(url)} no existe.</p></div></div>`;
         }
         viewport.appendChild(page);
         if(cleanUrl==='waevobrowser://google-search')this._mountGoogleCse(googleQuery,googleMode);
+        if(cleanUrl==='waevobrowser://tiktok')this._mountTikTokPage(tiktokTarget);
         this._bindInternalPageEvents();
+    }
+    _renderTikTokPage(target){
+        let parsed;
+        try{parsed=new URL(target);const host=parsed.hostname.toLowerCase();if(!(host==='tiktok.com'||host.endsWith('.tiktok.com')))throw new Error('host invalido')}
+        catch(e){parsed=new URL('https://www.tiktok.com/')}
+        const videoMatch=parsed.pathname.match(/\/video\/(\d+)/)||parsed.pathname.match(/\/player\/v1\/(\d+)/);
+        const profileMatch=parsed.pathname.match(/^\/@([A-Za-z0-9._-]+)(?:\/|$)/);
+        let content='',heading='TikTok';
+        if(videoMatch){
+            const videoId=videoMatch[1];heading='Vídeo de TikTok';
+            content=`<div class="tiktok-player-shell"><iframe class="tiktok-player-frame" src="https://www.tiktok.com/player/v1/${videoId}?music_info=1&description=1" title="Vídeo de TikTok" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p class="tiktok-caption">Reproductor oficial de TikTok integrado en Waevo.</p>`;
+        } else if(profileMatch){
+            const handle=profileMatch[1];const profileUrl='https://www.tiktok.com/@'+handle;heading='Perfil de TikTok';
+            content=`<div class="tiktok-profile-shell"><blockquote class="tiktok-embed" cite="${profileUrl}" data-unique-id="${handle}" data-embed-type="creator" style="max-width:720px;min-width:288px"><section><a target="_blank" rel="noopener noreferrer" href="${profileUrl}">@${handle}</a></section></blockquote></div><p class="tiktok-caption">Perfil incrustado con el reproductor oficial de TikTok.</p>`;
+        } else {
+            content=`<p>La portada y el feed completo de TikTok no permiten mostrarse dentro del marco de Waevo.</p><button class="tiktok-open-button" type="button" data-tiktok-open data-url="${escapeHtml(parsed.href)}"><i class="fab fa-tiktok"></i> Abrir TikTok en otra pestaña</button><p class="tiktok-caption">Los vídeos y perfiles públicos compatibles pueden mostrarse aquí mediante los embeds oficiales.</p>`;
+        }
+        return `<div class="tiktok-wrap"><header class="tiktok-heading"><span class="tiktok-brand-icon"><i class="fab fa-tiktok"></i></span><div><h1>${heading}</h1><p>Contenido de TikTok dentro de Waevo</p></div></header><section class="tiktok-content-card">${content}</section></div>`;
+    }
+    _mountTikTokPage(target){
+        let parsed;try{parsed=new URL(target)}catch(e){return}
+        if(!/^\/@[A-Za-z0-9._-]+(?:\/|$)/.test(parsed.pathname)||/\/video\/\d+/.test(parsed.pathname))return;
+        const page=document.getElementById('waevo-internal-page');if(!page||!page.querySelector('.tiktok-embed'))return;
+        const script=document.createElement('script');script.async=true;script.src='https://www.tiktok.com/embed.js';page.appendChild(script);
     }
     _renderGoogleSearchPage(query,mode){
         const cxId=(localStorage.getItem('waevo_google_cse_id')||WAEVO_GOOGLE_CSE_ID).trim();
@@ -1718,6 +1776,8 @@ class BrowserEngine {
             localStorage.setItem('waevo_search_engine',engineSel.value);
             ui.showToast('✅ Motor de búsqueda actualizado');
         };
+        const tikTokOpen=document.querySelector('#waevo-internal-page [data-tiktok-open]');
+        if(tikTokOpen)tikTokOpen.onclick=()=>window.open(tikTokOpen.dataset.url,'_blank','noopener,noreferrer');
         const cseSave=document.getElementById('save-google-cse-id');
         if(cseSave)cseSave.onclick=()=>{
             const input=document.getElementById('set-google-cse-id');
