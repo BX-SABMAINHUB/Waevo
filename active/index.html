@@ -593,6 +593,7 @@ iframe.browser-view{position:absolute;inset:0;width:100%;height:100%;box-sizing:
             <div class="q-link" onclick="browser.navigate('https://101games.io')"><i class="fas fa-gamepad q-icon" style="color:#00e5ff"></i><span class="q-text">101games</span></div>
             <div class="q-link" onclick="browser.navigate('https://www.google.com')"><i class="fab fa-google q-icon" style="color:#4285f4"></i><span class="q-text">Google</span></div>
             <div class="q-link" onclick="browser.navigate('https://es.wikipedia.org')"><i class="fab fa-wikipedia-w q-icon" style="color:#ffffff"></i><span class="q-text">Wikipedia</span></div>
+            <div class="q-link" onclick="browser.navigate('https://web.cloudmoonapp.com/')"><i class="fas fa-cloud q-icon" style="color:#54d6ff"></i><span class="q-text">CloudMoon</span></div>
         </div>
     </div>
     <div id="search-fallback-bar">
@@ -1269,6 +1270,7 @@ class BrowserEngine {
             url=this._buildSearchUrl(q,'web');
             title=q;
         }
+        url=this._unwrapGoogleRedirect(url);
         if(this._isGoogleSearchRequest(url)){
             this.navigate(this._googleSearchRoute(url));
             return
@@ -1607,15 +1609,30 @@ class BrowserEngine {
             if(container.isConnected)container.innerHTML='<p>No se pudo cargar Google. Comprueba la conexion y el ID CX.</p>';
         });
     }
+    _unwrapGoogleRedirect(value){
+        let current=String(value||'').trim();
+        for(let i=0;i<3;i++){
+            let parsed;try{parsed=new URL(current,location.href)}catch(e){return current}
+            const host=parsed.hostname.toLowerCase();
+            if(!/(^|\.)google\.[a-z]{2,3}(\.[a-z]{2})?$/.test(host)||!/^\/(url|redirect)$/.test(parsed.pathname))return current;
+            const next=['url','q','target','dest','adurl'].map(key=>parsed.searchParams.get(key)).find(candidate=>candidate&&/^https?:\/\//i.test(candidate));
+            if(!next)return current;
+            current=next;
+        }
+        return current;
+    }
     _bindGoogleResultLinks(container){
         if(container.dataset.waevoLinksBound)return;
         container.dataset.waevoLinksBound='1';
         container.addEventListener('click',event=>{
             const link=event.target.closest('a.gs-title, .gs-title a');
-            if(!link||!link.href||!/^https?:/i.test(link.href))return;
+            if(!link)return;
+            const raw=link.getAttribute('data-cturl')||link.getAttribute('data-url')||link.href;
+            const target=this._unwrapGoogleRedirect(raw);
+            if(!target||!/^https?:/i.test(target))return;
             event.preventDefault();
             event.stopPropagation();
-            this.navigate(link.href);
+            this.navigate(target);
         },true);
     }
     _renderSettingsPage(){
