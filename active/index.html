@@ -249,7 +249,7 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .ban-text{font-size:19px;font-weight:800;margin-bottom:12px}
 .ban-timer{font-size:15px;color:var(--text-muted);font-family:ui-monospace,monospace}
 
-/* ═════════ WAEVO INTERNAL PAGES (settings, etc.) ═════════ */
+/* ═════════ WAEVO INTERNAL PAGES ═════════ */
 .waevo-internal-page{position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(0,229,255,0.08),transparent 50%),radial-gradient(circle at 100% 100%,rgba(189,0,255,0.09),transparent 55%),#07070c;display:none;overflow-y:auto;z-index:60;padding:40px 30px;color:var(--text-main)}
 .waevo-internal-page.active{display:block;animation:fadeInUp 0.35s ease}
 .waevo-internal-page .settings-wrap{max-width:900px;margin:0 auto}
@@ -267,7 +267,7 @@ iframe.browser-view.active{display:block;animation:fadeIn 0.3s}
 .settings-row-info{flex:1;min-width:200px}
 .settings-row-title{font-size:13.5px;font-weight:700;margin-bottom:3px}
 .settings-row-desc{font-size:11.5px;color:var(--text-muted);line-height:1.5}
-.settings-select{background:rgba(0,0,0,0.5);border:1px solid var(--border-strong);color:var(--text-main);padding:10px 14px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;min-width:180px}
+.settings-select{background:rgba(0,0,0,0.5);border:1px solid var(--border-strong);color:var(--text-main);padding:10px 14px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;min-width:220px;max-width:100%}
 .settings-select:focus{border-color:var(--accent);outline:none}
 .settings-toggle{position:relative;width:52px;height:28px;background:rgba(255,255,255,0.1);border-radius:20px;cursor:pointer;transition:all 0.3s;flex-shrink:0}
 .settings-toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:white;border-radius:50%;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 2px 6px rgba(0,0,0,0.3)}
@@ -614,8 +614,17 @@ window.dispatchEvent(new Event('firebaseReady'));
 </script>
 
 <script>
+/* ═══════ UTILITIES ═══════ */
+function escapeHtml(str){
+    return String(str==null?'':str).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function escapeJsStr(str){
+    return String(str==null?'':str).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/\r/g,'\\r');
+}
 function getBasePath(){let p=window.location.pathname;if(p.includes('/admin/yes/'))p=p.split('/admin/yes/')[0]+'/';else if(p.includes('/owner/YES/'))p=p.split('/owner/YES/')[0]+'/';if(p.endsWith('/index.html'))p=p.slice(0,-'index.html'.length);if(!p.endsWith('/')&&p.lastIndexOf('/')>=0&&p.slice(p.lastIndexOf('/')).includes('.')){p=p.substring(0,p.lastIndexOf('/')+1)}if(!p.endsWith('/'))p=p+'/';if(!p)p='/';return p}
 function withBase(r){const b=getBasePath();if(!r)return b;return b.replace(/\/$/,'')+r}
+
+/* ═══════ CONSTANTS ═══════ */
 const ADMIN_PATH='/admin/yes/yes/yes/conform/reports/admin/redesports/waevodech';
 const OWNER_PATH='/owner/YES/JFJDKMJMNMJJRIIIII83IFNCKSNFVJIIIIDJCJFCJMKKKKDNCJCJJJJDJVCUR8U348DNEUDFJGHJFJFDKIVJFKIDFRJVJFIIRKKFJKCKDLCKFLWELKDIKJDFORJDJCIFIIJNNDJSJHSDHHJHSJHDJWEJJDCMD/admin/secur/R/E/admind';
 const PASSWORDS={AN:'mya',OWNER:'Alex27Junio'};
@@ -630,7 +639,7 @@ const LAZARUS_PATTERNS = [
     'lazarusfilter','.lazarus.','/lazarus/','lazarus.app'
 ];
 
-/* ═══════ PROXY SYSTEM (con decodeUrl para tracking de URLs) ═══════ */
+/* ═══════ PROXY SYSTEM ═══════ */
 const proxySystem = {
     _enabled:true,_ready:false,_prefix:null,
     init(){
@@ -673,13 +682,12 @@ const proxySystem = {
         if(!this._ready||!proxiedUrl)return proxiedUrl;
         try{
             let path=proxiedUrl;
-            if(path.startsWith(location.origin)){
-                path=path.substring(location.origin.length);
-            }
+            if(path.startsWith(location.origin))path=path.substring(location.origin.length);
             if(path.startsWith(this._prefix)){
                 const encoded=path.substring(this._prefix.length);
                 if(self.__uv$config&&typeof self.__uv$config.decodeUrl==='function'){
-                    return self.__uv$config.decodeUrl(encoded)
+                    const d=self.__uv$config.decodeUrl(encoded);
+                    if(d)return d
                 }
             }
         }catch(e){}
@@ -695,10 +703,24 @@ const proxySystem = {
     }
 };
 
-/* ═══════ SEARCH ENGINES ═══════ */
+/* ═══════ SEARCH ENGINES — 16 total, Google por defecto ═══════ */
 const searchEngines = {
+    google:{
+        name:'Google',emoji:'🔍',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.google.com/search?q=${e}&tbm=isch`;
+                case 'videos':return `https://www.google.com/search?q=${e}&tbm=vid`;
+                case 'news':return `https://www.google.com/search?q=${e}&tbm=nws`;
+                case 'shopping':return `https://www.google.com/search?q=${e}&tbm=shop`;
+                case 'maps':return `https://www.google.com/maps/search/${e}`;
+                default:return `https://www.google.com/search?q=${e}`
+            }
+        }
+    },
     ddg:{
-        name:'DuckDuckGo',
+        name:'DuckDuckGo',emoji:'🦆',
         build(q,mode){
             const e=encodeURIComponent(q);
             switch(mode){
@@ -711,7 +733,7 @@ const searchEngines = {
         }
     },
     bing:{
-        name:'Bing',
+        name:'Bing',emoji:'🅱️',
         build(q,mode){
             const e=encodeURIComponent(q);
             switch(mode){
@@ -724,7 +746,7 @@ const searchEngines = {
         }
     },
     brave:{
-        name:'Brave',
+        name:'Brave',emoji:'🦁',
         build(q,mode){
             const e=encodeURIComponent(q);
             switch(mode){
@@ -734,21 +756,167 @@ const searchEngines = {
                 default:return `https://search.brave.com/search?q=${e}`
             }
         }
+    },
+    yahoo:{
+        name:'Yahoo',emoji:'🟣',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://images.search.yahoo.com/search/images?p=${e}`;
+                case 'videos':return `https://video.search.yahoo.com/search/video?p=${e}`;
+                case 'news':return `https://news.search.yahoo.com/search?p=${e}`;
+                default:return `https://search.yahoo.com/search?p=${e}`
+            }
+        }
+    },
+    yandex:{
+        name:'Yandex',emoji:'🔴',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://yandex.com/images/search?text=${e}`;
+                case 'videos':return `https://yandex.com/video/search?text=${e}`;
+                case 'news':return `https://yandex.com/news/search?text=${e}`;
+                default:return `https://yandex.com/search/?text=${e}`
+            }
+        }
+    },
+    ecosia:{
+        name:'Ecosia',emoji:'🌱',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.ecosia.org/images?q=${e}`;
+                case 'videos':return `https://www.ecosia.org/videos?q=${e}`;
+                case 'news':return `https://www.ecosia.org/news?q=${e}`;
+                default:return `https://www.ecosia.org/search?q=${e}`
+            }
+        }
+    },
+    qwant:{
+        name:'Qwant',emoji:'🔷',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.qwant.com/?q=${e}&t=images`;
+                case 'videos':return `https://www.qwant.com/?q=${e}&t=videos`;
+                case 'news':return `https://www.qwant.com/?q=${e}&t=news`;
+                default:return `https://www.qwant.com/?q=${e}&t=web`
+            }
+        }
+    },
+    startpage:{
+        name:'Startpage',emoji:'🛡️',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.startpage.com/sp/search?query=${e}&cat=images`;
+                case 'videos':return `https://www.startpage.com/sp/search?query=${e}&cat=video`;
+                case 'news':return `https://www.startpage.com/sp/search?query=${e}&cat=news`;
+                default:return `https://www.startpage.com/sp/search?query=${e}`
+            }
+        }
+    },
+    searx:{
+        name:'SearXNG',emoji:'🔎',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://searx.be/search?q=${e}&categories=images`;
+                case 'videos':return `https://searx.be/search?q=${e}&categories=videos`;
+                case 'news':return `https://searx.be/search?q=${e}&categories=news`;
+                default:return `https://searx.be/search?q=${e}`
+            }
+        }
+    },
+    mojeek:{
+        name:'Mojeek',emoji:'📯',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.mojeek.com/search?q=${e}&t=images`;
+                case 'news':return `https://www.mojeek.com/search?q=${e}&t=news`;
+                default:return `https://www.mojeek.com/search?q=${e}`
+            }
+        }
+    },
+    baidu:{
+        name:'Baidu',emoji:'🐾',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://image.baidu.com/search/index?tn=baiduimage&word=${e}`;
+                case 'videos':return `https://v.baidu.com/v?word=${e}`;
+                case 'news':return `https://news.baidu.com/ns?word=${e}`;
+                default:return `https://www.baidu.com/s?wd=${e}`
+            }
+        }
+    },
+    ask:{
+        name:'Ask',emoji:'❓',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://www.ask.com/web?q=${e}&image=1`;
+                case 'news':return `https://www.ask.com/news?q=${e}`;
+                default:return `https://www.ask.com/web?q=${e}`
+            }
+        }
+    },
+    aol:{
+        name:'AOL',emoji:'🌀',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://search.aol.com/aol/image?q=${e}`;
+                case 'videos':return `https://search.aol.com/aol/video?q=${e}`;
+                case 'news':return `https://search.aol.com/aol/news?q=${e}`;
+                default:return `https://search.aol.com/aol/search?q=${e}`
+            }
+        }
+    },
+    lycos:{
+        name:'Lycos',emoji:'🐺',
+        build(q,mode){return `https://search.lycos.com/web/?q=${encodeURIComponent(q)}`}
+    },
+    swisscows:{
+        name:'Swisscows',emoji:'🐄',
+        build(q,mode){
+            const e=encodeURIComponent(q);
+            switch(mode){
+                case 'images':return `https://swisscows.com/en/images?query=${e}`;
+                case 'videos':return `https://swisscows.com/en/video?query=${e}`;
+                default:return `https://swisscows.com/en/web?query=${e}`
+            }
+        }
     }
 };
+
 function getSearchEngine(){
-    return localStorage.getItem('waevo_search_engine')||'ddg';
+    const saved=localStorage.getItem('waevo_search_engine');
+    if(saved && searchEngines[saved]) return saved;
+    return 'google';
+}
+function getShowFavicons(){
+    return localStorage.getItem('waevo_show_favicons')!=='0';
 }
 function getFaviconUrl(url){
     try{
         const u=new URL(url);
         return `https://icons.duckduckgo.com/ip3/${u.hostname}.ico`
-    }catch(e){
-        return ''
-    }
+    }catch(e){return ''}
 }
 
-const shopSystem = {open(){document.getElementById('shop-overlay').classList.add('active')},close(){document.getElementById('shop-overlay').classList.remove('active')},buy(p){const pk={ab_pack_3:3,ab_pack_8:8,ab_pack_20:20};const ab=pk[p]||0;if(ab>0)ui.showToast(`✅ Compra simulada: +${ab} AB`)}};
+/* ═══════ SIMPLE SYSTEMS ═══════ */
+const shopSystem = {
+    open(){document.getElementById('shop-overlay').classList.add('active')},
+    close(){document.getElementById('shop-overlay').classList.remove('active')},
+    buy(p){
+        const pk={ab_pack_3:3,ab_pack_8:8,ab_pack_20:20};
+        const ab=pk[p]||0;
+        if(ab>0)ui.showToast(`✅ Compra simulada: +${ab} AB`)
+    }
+};
 
 const deviceStore = {
     _id:null,_DB_NAME:'AlexBrowserDB',_STORE:'meta',
@@ -762,26 +930,55 @@ const deviceStore = {
 
 const abManager = {
     _myAB:0,
-    async init(userId){if(!window._fbReady){window.addEventListener('firebaseReady',()=>this.init(userId),{once:true});return}const ref=window._fbRef(window._fbDB,`alexbrowser_users/${userId}`);const snap=await window._fbGet(ref);if(!snap.exists())await window._fbSet(ref,{ab:0,joined:Date.now(),id:userId});window._fbOnValue(ref,snap=>{const d=snap.val();this._myAB=d?(d.ab||0):0})},
+    async init(userId){
+        if(!window._fbReady){window.addEventListener('firebaseReady',()=>this.init(userId),{once:true});return}
+        const ref=window._fbRef(window._fbDB,`alexbrowser_users/${userId}`);
+        const snap=await window._fbGet(ref);
+        if(!snap.exists())await window._fbSet(ref,{ab:0,joined:Date.now(),id:userId});
+        window._fbOnValue(ref,snap=>{const d=snap.val();this._myAB=d?(d.ab||0):0})
+    },
     getAB(){return this._myAB}
 };
 
 const liveViewer = {
     _interval:null,_currentUserId:null,
-    open(userId,url){this._currentUserId=userId;document.getElementById('live-view-user-label').textContent=`Pantalla de ${userId}`;const iframe=document.getElementById('live-view-iframe');iframe.src=proxySystem.getFrameUrl(url);document.getElementById('live-view-overlay').classList.add('active');if(this._interval)clearInterval(this._interval);this._interval=setInterval(async()=>{const s=await window._fbGet(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`));if(s.exists()){const d=s.val();const n=d.currentUrl||'about:start';const px=proxySystem.getFrameUrl(n);if(iframe.src!==px)iframe.src=px}},800)},
-    close(){document.getElementById('live-view-overlay').classList.remove('active');document.getElementById('live-view-iframe').src='about:blank';if(this._interval){clearInterval(this._interval);this._interval=null}this._currentUserId=null}
+    open(userId,url){
+        this._currentUserId=userId;
+        document.getElementById('live-view-user-label').textContent=`Pantalla de ${userId}`;
+        const iframe=document.getElementById('live-view-iframe');
+        iframe.src=proxySystem.getFrameUrl(url);
+        document.getElementById('live-view-overlay').classList.add('active');
+        if(this._interval)clearInterval(this._interval);
+        this._interval=setInterval(async()=>{
+            const s=await window._fbGet(window._fbRef(window._fbDB,`alexbrowser_users/${userId}`));
+            if(s.exists()){
+                const d=s.val();
+                const n=d.currentUrl||'about:start';
+                const px=proxySystem.getFrameUrl(n);
+                if(iframe.src!==px)iframe.src=px
+            }
+        },800)
+    },
+    close(){
+        document.getElementById('live-view-overlay').classList.remove('active');
+        document.getElementById('live-view-iframe').src='about:blank';
+        if(this._interval){clearInterval(this._interval);this._interval=null}
+        this._currentUserId=null
+    }
 };
 
 const dataManager = {
     saveHistory:(url,title)=>{
-        if(!url||url==='about:start')return;
+        if(!url||url==='about:start'||url.startsWith('waevobrowser://'))return;
         let h=JSON.parse(localStorage.getItem('ab_history')||'[]');
         if(h.length && h[0].url===url) return;
         h.unshift({url,title,time:new Date().toLocaleTimeString()});
         if(h.length>100)h.pop();
         localStorage.setItem('ab_history',JSON.stringify(h));
         try{ui.renderHistory()}catch(e){}
-        if(window._fbReady&&deviceStore._id){window._fbPush(window._fbRef(window._fbDB,`user_navigation_logs/${deviceStore._id}`),{url,title,timestamp:Date.now()}).catch(()=>{})}
+        if(window._fbReady&&deviceStore._id){
+            window._fbPush(window._fbRef(window._fbDB,`user_navigation_logs/${deviceStore._id}`),{url,title,timestamp:Date.now()}).catch(()=>{})
+        }
     },
     getHistory:()=>JSON.parse(localStorage.getItem('ab_history')||'[]'),
     clearAll:()=>{localStorage.removeItem('ab_history');ui.showToast("Historial eliminado ✅");ui.renderHistory()}
@@ -796,8 +993,9 @@ class BrowserEngine {
         this.homeUrl='about:start';
         this.lastSearchQuery="";
         this._initialized=false;
-        this._expectedUrls=new Set(); // URLs que TÚ provocas (para no doble-trackear)
+        this._expectedUrls=new Set();
         this._suppressTrackingUntil=0;
+        this._pollInterval=null;
     }
     init(){
         if(this._initialized) return;
@@ -805,6 +1003,42 @@ class BrowserEngine {
         this.newTab();
         document.getElementById('url-input').addEventListener('keypress',e=>{if(e.key==='Enter')this.navigate()});
         try{ui.renderHistory()}catch(e){}
+        this._startUrlPolling();
+    }
+    _startUrlPolling(){
+        if(this._pollInterval)return;
+        this._pollInterval=setInterval(()=>{
+            if(!this.activeTabId)return;
+            const tab=this.tabs.find(t=>t.id===this.activeTabId);
+            if(!tab)return;
+            if(tab.url==='about:start'||tab.url.startsWith('waevobrowser://'))return;
+            const frame=document.getElementById(`view-${this.activeTabId}`);
+            if(!frame)return;
+            try{
+                const href=frame.contentWindow.location.href;
+                if(!href||href.startsWith('about:'))return;
+                const realUrl=proxySystem.decodeUrl(href);
+                if(!realUrl||realUrl.startsWith('about:')||!realUrl.startsWith('http'))return;
+                if(realUrl===tab.url)return;
+                if(this._expectedUrls.has(realUrl))return;
+                if(Date.now()<this._suppressTrackingUntil)return;
+                // SPA navigation detected
+                tab.history=tab.history.slice(0,tab.historyIndex+1);
+                tab.history.push(realUrl);
+                tab.historyIndex++;
+                tab.url=realUrl;
+                tab.favicon=getFaviconUrl(realUrl);
+                try{tab.title=new URL(realUrl).hostname}catch(e){}
+                const urlInput=document.getElementById('url-input');
+                if(document.activeElement!==urlInput)urlInput.value=realUrl;
+                this.renderTabs();
+                this.updateNavButtons();
+                dataManager.saveHistory(realUrl,tab.title);
+                if(window._fbReady&&deviceStore._id){
+                    window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:realUrl,lastSeen:Date.now()}).catch(()=>{})
+                }
+            }catch(e){}
+        },1000);
     }
     _isUrl(i){
         if(!i)return false;
@@ -821,7 +1055,8 @@ class BrowserEngine {
         return 'https://'+u;
     }
     _buildSearchUrl(q,mode='web'){
-        const engine=searchEngines[getSearchEngine()]||searchEngines.ddg;
+        const key=getSearchEngine();
+        const engine=searchEngines[key]||searchEngines.google;
         return engine.build(q,mode);
     }
     _optimizeUrl(url){
@@ -839,7 +1074,7 @@ class BrowserEngine {
     }
     _trackExpected(url){
         this._expectedUrls.add(url);
-        setTimeout(()=>{this._expectedUrls.delete(url)},2500);
+        setTimeout(()=>{this._expectedUrls.delete(url)},3000);
     }
     newTab(url=this.homeUrl){
         this.idCounter++;
@@ -851,7 +1086,6 @@ class BrowserEngine {
         iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads');
         iframe.setAttribute('allow','camera; microphone; geolocation; autoplay; clipboard-write; fullscreen; encrypted-media');
         iframe.setAttribute('referrerpolicy','no-referrer');
-        // Listener para tracking de navegación dentro del iframe
         iframe.addEventListener('load',()=>this._onFrameLoad(id));
         document.getElementById('viewport').appendChild(iframe);
         this.switchTab(id);
@@ -941,7 +1175,7 @@ class BrowserEngine {
     }
     _isSearchUrl(url){
         if(!url)return false;
-        return url.includes('duckduckgo.com') || url.includes('bing.com/search') || url.includes('brave.com/search') || url.includes('google.com/search')
+        return url.includes('duckduckgo.com') || url.includes('bing.com/search') || url.includes('brave.com/search') || url.includes('google.com/search') || url.includes('yahoo.com/search') || url.includes('yandex.com/search') || url.includes('ecosia.org/search') || url.includes('qwant.com') || url.includes('startpage.com') || url.includes('searx.') || url.includes('mojeek.com/search') || url.includes('baidu.com/s') || url.includes('ask.com/web') || url.includes('aol.com/aol/search') || url.includes('lycos.com') || url.includes('swisscows.com')
     }
     loadUrlIntoFrame(url,title,raw){
         const t=this.tabs.find(t=>t.id===this.activeTabId);
@@ -949,7 +1183,6 @@ class BrowserEngine {
         t.url=url;
         t.title=title;
         t.favicon=getFaviconUrl(url);
-        // Página interna
         if(url.startsWith('waevobrowser://')){
             this._loadInternalPage(url);
             document.getElementById('start-page').classList.remove('active');
@@ -983,29 +1216,27 @@ class BrowserEngine {
         const tab=this.tabs.find(t=>t.id===tabId);
         const frame=document.getElementById(`view-${tabId}`);
         if(!tab||!frame)return;
-        // Si acabamos de navegar nosotros, ignorar
         if(Date.now()<this._suppressTrackingUntil)return;
         let currentHref='';
         try{currentHref=frame.contentWindow.location.href}catch(e){return}
         if(!currentHref||currentHref.startsWith('about:'))return;
         const realUrl=proxySystem.decodeUrl(currentHref)||currentHref;
-        if(!realUrl||realUrl.startsWith('about:'))return;
-        // Ignorar si es la URL que nosotros mismos pusimos
+        if(!realUrl||realUrl.startsWith('about:')||!realUrl.startsWith('http'))return;
         if(this._expectedUrls.has(realUrl))return;
         if(realUrl===tab.url)return;
-        // Es una navegación interna del usuario (click en un enlace) - registrar
-        if(realUrl.startsWith('http://')||realUrl.startsWith('https://')){
-            tab.history=tab.history.slice(0,tab.historyIndex+1);
-            tab.history.push(realUrl);
-            tab.historyIndex++;
-            tab.url=realUrl;
-            tab.favicon=getFaviconUrl(realUrl);
-            try{tab.title=new URL(realUrl).hostname}catch(e){tab.title=realUrl.slice(0,40)}
-            const urlInput=document.getElementById('url-input');
-            if(document.activeElement!==urlInput)urlInput.value=realUrl;
-            this.renderTabs();
-            this.updateNavButtons();
-            dataManager.saveHistory(realUrl,tab.title);
+        tab.history=tab.history.slice(0,tab.historyIndex+1);
+        tab.history.push(realUrl);
+        tab.historyIndex++;
+        tab.url=realUrl;
+        tab.favicon=getFaviconUrl(realUrl);
+        try{tab.title=new URL(realUrl).hostname}catch(e){tab.title=realUrl.slice(0,40)}
+        const urlInput=document.getElementById('url-input');
+        if(document.activeElement!==urlInput)urlInput.value=realUrl;
+        this.renderTabs();
+        this.updateNavButtons();
+        dataManager.saveHistory(realUrl,tab.title);
+        if(window._fbReady&&deviceStore._id){
+            window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:realUrl,lastSeen:Date.now()}).catch(()=>{})
         }
     }
     _loadUrlInTab(t,url){
@@ -1031,6 +1262,9 @@ class BrowserEngine {
         document.getElementById('url-input').value=url;
         this.renderTabs();
         this.updateNavButtons();
+        if(window._fbReady&&deviceStore._id){
+            window._fbUpdate(window._fbRef(window._fbDB,`alexbrowser_users/${deviceStore._id}`),{currentUrl:url,lastSeen:Date.now()}).catch(()=>{})
+        }
     }
     tryDuckDuckGo(){
         const t=this.tabs.find(t=>t.id===this.activeTabId);
@@ -1060,7 +1294,7 @@ class BrowserEngine {
         if(!t||t.historyIndex<=0)return;
         t.historyIndex--;
         const p=t.history[t.historyIndex];
-        this._suppressTrackingUntil=Date.now()+1500;
+        this._suppressTrackingUntil=Date.now()+2000;
         this._loadUrlInTab(t,p);
     }
     goForward(){
@@ -1068,14 +1302,15 @@ class BrowserEngine {
         if(!t||t.historyIndex>=t.history.length-1)return;
         t.historyIndex++;
         const n=t.history[t.historyIndex];
-        this._suppressTrackingUntil=Date.now()+1500;
+        this._suppressTrackingUntil=Date.now()+2000;
         this._loadUrlInTab(t,n);
     }
     reload(){
         const t=this.tabs.find(t=>t.id===this.activeTabId);
         if(!t)return;
         if(t.url.startsWith('waevobrowser://')){this._loadInternalPage(t.url);return}
-        document.getElementById(`view-${this.activeTabId}`).src=proxySystem.getFrameUrl(t.url);
+        const f=document.getElementById(`view-${this.activeTabId}`);
+        if(f)f.src=proxySystem.getFrameUrl(t.url);
         ui.showToast("Recargando...")
     }
     goHome(){
@@ -1100,6 +1335,7 @@ class BrowserEngine {
     renderTabs(){
         const c=document.getElementById('tabs-container');
         c.innerHTML='';
+        const showFavicons=getShowFavicons();
         this.tabs.forEach(tab=>{
             const el=document.createElement('div');
             el.className=`tab ${tab.id===this.activeTabId?'active':''}`;
@@ -1109,12 +1345,12 @@ class BrowserEngine {
                 iconHtml='<i class="fas fa-house" style="color:var(--accent)"></i>';
             } else if(tab.url.startsWith('waevobrowser://')){
                 iconHtml='<i class="fas fa-cog" style="color:var(--accent)"></i>';
-            } else if(tab.favicon){
-                iconHtml=`<img class="tab-favicon" src="${tab.favicon}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><i class="fas fa-globe" style="display:none"></i>`;
+            } else if(tab.favicon && showFavicons){
+                iconHtml=`<img class="tab-favicon" src="${escapeHtml(tab.favicon)}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='inline'"><i class="fas fa-globe" style="display:none"></i>`;
             } else {
                 iconHtml='<i class="fas fa-globe"></i>';
             }
-            el.innerHTML=`${iconHtml}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${tab.title||'Pestaña'}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
+            el.innerHTML=`${iconHtml}<span style="max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${escapeHtml(tab.title||'Pestaña')}</span><div class="tab-close" onclick="browser.closeTab(event,${tab.id})">×</div>`;
             c.appendChild(el);
         });
         const nb=document.createElement('div');
@@ -1123,7 +1359,7 @@ class BrowserEngine {
         nb.onclick=()=>this.newTab();
         c.appendChild(nb);
     }
-    /* ══════ INTERNAL PAGES (waevobrowser://) ══════ */
+    /* INTERNAL PAGES */
     _hideInternalPage(){
         const el=document.getElementById('waevo-internal-page');
         if(el)el.remove();
@@ -1140,16 +1376,19 @@ class BrowserEngine {
         } else if(cleanUrl==='waevobrowser://about'){
             page.innerHTML=this._renderAboutPage();
         } else {
-            page.innerHTML=`<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fas fa-exclamation-triangle"></i></div><h1>Página no encontrada</h1><p>${url} no existe.</p></div></div>`;
+            page.innerHTML=`<div class="settings-wrap"><div class="settings-hero"><div class="settings-hero-icon"><i class="fas fa-exclamation-triangle"></i></div><h1>Página no encontrada</h1><p>${escapeHtml(url)} no existe.</p></div></div>`;
         }
         viewport.appendChild(page);
-        // Bind events
         this._bindInternalPageEvents();
     }
     _renderSettingsPage(){
         const engine=getSearchEngine();
         const proxyOn=proxySystem._enabled;
         const homeUrl=localStorage.getItem('waevo_home_url')||'about:start';
+        const showFavicons=getShowFavicons();
+        const enginesHtml=Object.entries(searchEngines).map(([key,cfg])=>
+            `<option value="${key}" ${engine===key?'selected':''}>${cfg.emoji} ${escapeHtml(cfg.name)}</option>`
+        ).join('');
         return `
         <div class="settings-wrap">
             <div class="settings-hero">
@@ -1160,17 +1399,13 @@ class BrowserEngine {
 
             <div class="settings-block">
                 <h2 class="settings-block-title"><i class="fas fa-search"></i> Búsqueda</h2>
-                <p class="settings-block-desc">Configura cómo y dónde buscas desde la barra de direcciones.</p>
+                <p class="settings-block-desc">Configura cómo y dónde buscas desde la barra de direcciones. Disponibles ${Object.keys(searchEngines).length} motores.</p>
                 <div class="settings-row">
                     <div class="settings-row-info">
                         <div class="settings-row-title">Motor de búsqueda</div>
                         <div class="settings-row-desc">Elige el buscador que se usará al escribir en la barra.</div>
                     </div>
-                    <select class="settings-select" id="set-search-engine">
-                        <option value="ddg" ${engine==='ddg'?'selected':''}>🦆 DuckDuckGo</option>
-                        <option value="bing" ${engine==='bing'?'selected':''}>🔍 Bing</option>
-                        <option value="brave" ${engine==='brave'?'selected':''}>🦁 Brave Search</option>
-                    </select>
+                    <select class="settings-select" id="set-search-engine">${enginesHtml}</select>
                 </div>
                 <div class="settings-row">
                     <div class="settings-row-info">
@@ -1179,8 +1414,8 @@ class BrowserEngine {
                     </div>
                     <select class="settings-select" id="set-home-url">
                         <option value="about:start" ${homeUrl==='about:start'?'selected':''}>🏠 Página Waevo</option>
-                        <option value="https://duckduckgo.com" ${homeUrl==='https://duckduckgo.com'?'selected':''}>🦆 DuckDuckGo</option>
                         <option value="https://www.google.com" ${homeUrl==='https://www.google.com'?'selected':''}>🔍 Google</option>
+                        <option value="https://duckduckgo.com" ${homeUrl==='https://duckduckgo.com'?'selected':''}>🦆 DuckDuckGo</option>
                         <option value="https://es.wikipedia.org" ${homeUrl==='https://es.wikipedia.org'?'selected':''}>📚 Wikipedia</option>
                     </select>
                 </div>
@@ -1239,7 +1474,7 @@ class BrowserEngine {
                         <div class="settings-row-title">Mostrar logos de webs</div>
                         <div class="settings-row-desc">Carga favicons reales en las pestañas.</div>
                     </div>
-                    <div class="settings-toggle on" id="set-favicons-toggle" data-on="true"></div>
+                    <div class="settings-toggle ${showFavicons?'on':''}" id="set-favicons-toggle" data-on="${showFavicons}"></div>
                 </div>
             </div>
 
@@ -1251,7 +1486,7 @@ class BrowserEngine {
                         <div class="settings-row-title">Versión de Waevo OS</div>
                         <div class="settings-row-desc">Estás ejecutando la versión más reciente.</div>
                     </div>
-                    <div style="font-family:ui-monospace,monospace;color:var(--accent);font-weight:800">v2.0.1</div>
+                    <div style="font-family:ui-monospace,monospace;color:var(--accent);font-weight:800">v2.1.0</div>
                 </div>
                 <div class="settings-row">
                     <div class="settings-row-info">
@@ -1304,6 +1539,15 @@ class BrowserEngine {
             proxyToggle.classList.toggle('on',now);
             ui.showToast(now?'✅ Proxy activado':'⚠️ Proxy desactivado');
         };
+        const faviconsToggle=document.getElementById('set-favicons-toggle');
+        if(faviconsToggle)faviconsToggle.onclick=()=>{
+            const now=faviconsToggle.dataset.on!=='true';
+            faviconsToggle.dataset.on=String(now);
+            faviconsToggle.classList.toggle('on',now);
+            localStorage.setItem('waevo_show_favicons',now?'1':'0');
+            ui.showToast(now?'✅ Favicons activados':'⚠️ Favicons desactivados');
+            this.renderTabs();
+        };
         document.querySelectorAll('[data-action]').forEach(btn=>{
             btn.onclick=()=>{
                 const action=btn.dataset.action;
@@ -1346,17 +1590,14 @@ class BrowserEngine {
                         document.cookie=name+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
                     }
                 });
-                const keep=['waevo_proxy_enabled','waevo_search_engine','waevo_home_url','waevo_fab_pos'];
+                const keep=['waevo_proxy_enabled','waevo_search_engine','waevo_home_url','waevo_fab_pos','waevo_show_favicons'];
                 const toRemove=[];
                 for(let i=0;i<localStorage.length;i++){
                     const k=localStorage.key(i);
                     if(!keep.includes(k)&&!k.startsWith('auth_'))toRemove.push(k);
                 }
                 toRemove.forEach(k=>localStorage.removeItem(k));
-                try{
-                    const req=indexedDB.deleteDatabase('AlexBrowserDB');
-                    req.onsuccess=()=>{};
-                }catch(e){}
+                try{indexedDB.deleteDatabase('AlexBrowserDB')}catch(e){}
                 ui.showToast('✅ Almacenamiento borrado');
             }catch(e){ui.showToast('⚠️ Error al borrar almacenamiento')}
         });
@@ -1364,7 +1605,6 @@ class BrowserEngine {
     clearAllData(){
         ui.showModal('💥','Borrar TODOS los datos','Esto eliminará caché, cookies, historial, almacenamiento y configuración. La sesión se mantendrá. ¿Continuar?','Borrar todo','',async()=>{
             try{
-                // Cookies
                 document.cookie.split(';').forEach(c=>{
                     const eq=c.indexOf('=');
                     if(eq>-1){
@@ -1372,31 +1612,21 @@ class BrowserEngine {
                         document.cookie=name+'=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
                     }
                 });
-                // localStorage (mantener auth_ y fab_pos)
-                const keep=[];
                 const toRemove=[];
                 for(let i=0;i<localStorage.length;i++){
                     const k=localStorage.key(i);
-                    if(k.startsWith('auth_')||k==='waevo_fab_pos'){
-                        keep.push(k);
-                    } else {
-                        toRemove.push(k);
-                    }
+                    if(!k.startsWith('auth_')&&k!=='waevo_fab_pos')toRemove.push(k);
                 }
                 toRemove.forEach(k=>localStorage.removeItem(k));
-                // sessionStorage
                 sessionStorage.clear();
-                // Caches
                 if('caches' in window){
                     const keys=await caches.keys();
                     await Promise.all(keys.map(k=>caches.delete(k)));
                 }
-                // Service workers
                 if('serviceWorker' in navigator){
                     const regs=await navigator.serviceWorker.getRegistrations();
                     await Promise.all(regs.map(r=>r.unregister()));
                 }
-                // IndexedDB
                 try{indexedDB.deleteDatabase('AlexBrowserDB')}catch(e){}
                 ui.showToast('✅ Todos los datos borrados. Recargando...');
                 setTimeout(()=>location.reload(),1800);
@@ -1413,6 +1643,7 @@ class BrowserEngine {
 
 const browser = new BrowserEngine();
 
+/* ═══════ UI ═══════ */
 const ui = {
     _toastTimer:null,
     togglePanel:(id)=>{const p=document.getElementById(`panel-${id}`);if(!p)return;const o=p.classList.contains('open');ui.closePanels();if(!o){p.classList.add('open');if(id==='history')ui.renderHistory()}},
@@ -1423,16 +1654,17 @@ const ui = {
         if(!c)return;
         if(!list.length){c.innerHTML='<div style="text-align:center;color:var(--text-faint);margin-top:50px">No hay historial</div>';return}
         c.innerHTML=list.map((item,idx)=>{
-            const safe=item.url.replace(/'/g,"\\'").replace(/"/g,"&quot;");
-            return `<div class="history-item" style="animation-delay:${Math.min(idx*0.04,0.4)}s" onclick="document.getElementById('url-input').value='${safe}';browser.navigate();ui.closePanels()"><i class="fas fa-link" style="color:var(--accent)"></i><div style="flex:1;overflow:hidden"><div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div><div style="font-size:10.5px;opacity:0.55">${item.url.slice(0,50)}</div></div><span class="h-time">${item.time}</span></div>`;
+            const safe=escapeJsStr(item.url);
+            return `<div class="history-item" style="animation-delay:${Math.min(idx*0.04,0.4)}s" onclick="document.getElementById('url-input').value='${safe}';browser.navigate();ui.closePanels()"><i class="fas fa-link" style="color:var(--accent)"></i><div style="flex:1;overflow:hidden"><div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.title)}</div><div style="font-size:10.5px;opacity:0.55">${escapeHtml(item.url.slice(0,50))}</div></div><span class="h-time">${escapeHtml(item.time)}</span></div>`;
         }).join('');
     },
-    showToast:(msg)=>{const t=document.getElementById('toast');t.innerText=msg;t.classList.add('show');clearTimeout(ui._toastTimer);ui._toastTimer=setTimeout(()=>t.classList.remove('show'),3000)},
+    showToast:(msg)=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(ui._toastTimer);ui._toastTimer=setTimeout(()=>t.classList.remove('show'),3000)},
     showModal:(icon,title,desc,okText,cls,onOk)=>{document.getElementById('modal-icon').textContent=icon;document.getElementById('modal-title').textContent=title;document.getElementById('modal-desc').textContent=desc;const b=document.getElementById('modal-confirm-btn');b.textContent=okText;b.className=`modal-btn confirm ${cls||''}`;b.onclick=()=>{ui.closeModal();onOk()};document.getElementById('modal-overlay').classList.add('active')},
     closeModal:()=>document.getElementById('modal-overlay').classList.remove('active'),
     confirmShutdown:()=>{ui.showModal('🔴','Apagar Waevo','¿Seguro? Se reiniciará en 5 segundos.','Sí, apagar','',()=>{document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:white;font-size:3rem;font-weight:900">APAGANDO...</div>';setTimeout(()=>location.reload(),5000)})}
 };
 
+/* ═══════ UPDATES ═══════ */
 const updatesManager = {
     _cache:{},
     load(){
@@ -1445,11 +1677,12 @@ const updatesManager = {
             if(!data){c.innerHTML='<div style="text-align:center;color:var(--text-muted);padding-top:40px"><i class="fas fa-check-circle" style="font-size:40px;color:var(--success);display:block;margin-bottom:15px"></i>Todo actualizado</div>';return}
             const ups=Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
             ups.forEach(u=>this._cache[u.id]=u);
-            c.innerHTML=ups.map((u,idx)=>`<div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:17px;margin-bottom:13px;animation:fadeInUp 0.35s ease ${Math.min(idx*0.05,0.4)}s both"><div style="font-size:10px;background:rgba(0,229,255,0.12);color:var(--accent);padding:3px 9px;border-radius:20px;font-weight:700;display:inline-block;margin-bottom:8px">${u.version||'Update'}</div><div style="font-size:13.5px;font-weight:700;margin-bottom:7px">${u.title||'Sin título'}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.55">${u.desc||''}</div></div>`).join('');
+            c.innerHTML=ups.map((u,idx)=>`<div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:17px;margin-bottom:13px;animation:fadeInUp 0.35s ease ${Math.min(idx*0.05,0.4)}s both"><div style="font-size:10px;background:rgba(0,229,255,0.12);color:var(--accent);padding:3px 9px;border-radius:20px;font-weight:700;display:inline-block;margin-bottom:8px">${escapeHtml(u.version||'Update')}</div><div style="font-size:13.5px;font-weight:700;margin-bottom:7px">${escapeHtml(u.title||'Sin título')}</div><div style="font-size:12px;color:var(--text-muted);line-height:1.55">${escapeHtml(u.desc||'')}</div></div>`).join('');
         });
     }
 };
 
+/* ═══════ FRIENDS ═══════ */
 const friendsSystem = {
     _myId:null,_friends:{},
     init(id){this._myId=id;if(!window._fbReady){window.addEventListener('firebaseReady',()=>this._startListeners(),{once:true})}else this._startListeners()},
@@ -1459,6 +1692,7 @@ const friendsSystem = {
     close(){}
 };
 
+/* ═══════ AUTH ═══════ */
 const authSystem = {
     _tempBenjiKey:'',
     async check(){
@@ -1521,6 +1755,7 @@ const authSystem = {
     }
 };
 
+/* ═══════ FLOATING PANEL ═══════ */
 const floatingPanel = {
     init(){
         const fab=document.getElementById('waevo-fab');
@@ -1533,19 +1768,24 @@ const floatingPanel = {
         fab.addEventListener('mousedown',onStart);fab.addEventListener('touchstart',onStart,{passive:true});
         document.addEventListener('mousemove',onMove);document.addEventListener('touchmove',onMove,{passive:true});
         document.addEventListener('mouseup',onEnd);document.addEventListener('touchend',onEnd);
-        document.addEventListener('keydown',(e)=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();floatingPanel.toggle()}if(e.key==='Escape')floatingPanel.close()});
+        document.addEventListener('keydown',(e)=>{
+            if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();floatingPanel.toggle()}
+            if(e.key==='Escape')floatingPanel.close()
+        });
     },
     toggle(){document.getElementById('waevo-drawer').classList.toggle('open');document.getElementById('drawer-overlay').classList.toggle('open')},
     open(){document.getElementById('waevo-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open')},
     close(){document.getElementById('waevo-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open')}
 };
 
+/* ═══════ SESSION GUARD ═══════ */
 const sessionGuard = {
     get(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')}catch(e){return null}},
     set(role,user){sessionStorage.setItem(SESSION_KEY,JSON.stringify({role,user,at:Date.now()}))},
     clear(){sessionStorage.removeItem(SESSION_KEY)}
 };
 
+/* ═══════ PASSWORD MODAL ═══════ */
 const passwordModal = {
     _target:null,_attempts:{},
     open(target){
@@ -1592,6 +1832,7 @@ const passwordModal = {
     }
 };
 
+/* ═══════ ACTIVITY TRACKER ═══════ */
 const activityTracker = {
     _userId:null,_lastSend:0,_pending:null,_flushTimer:null,
     start(userId){
@@ -1603,6 +1844,7 @@ const activityTracker = {
     }
 };
 
+/* ═══════ COMMAND SYSTEM ═══════ */
 const commandSystem = {
     _userId:null,_unsub:null,
     start(userId){
@@ -1691,16 +1933,29 @@ const commandSystem = {
     }
 };
 
-// ═══════════════════════════════════════════════════════════════
-// ADMIN PAGES - mínimo (completo en el original del usuario)
-// ═══════════════════════════════════════════════════════════════
+/* ═══════ ADMIN PAGES ═══════ */
 const adminPages = {
     _currentRole:null,_users:[],_activity:[],_unsubs:[],_refreshTimer:null,
-    hideBrowser(){document.querySelector('.browser-chrome').style.display='none';document.getElementById('viewport').style.display='none';document.getElementById('waevo-fab').style.display='none';document.querySelectorAll('.overlay-panel').forEach(p=>p.classList.remove('open'))},
-    showBrowser(){document.querySelector('.browser-chrome').style.display='';document.getElementById('viewport').style.display='';document.getElementById('waevo-fab').style.display=''},
+    hideBrowser(){
+        document.querySelector('.browser-chrome').style.display='none';
+        document.getElementById('viewport').style.display='none';
+        document.getElementById('waevo-fab').style.display='none';
+        document.querySelectorAll('.overlay-panel').forEach(p=>p.classList.remove('open'))
+    },
+    showBrowser(){
+        document.querySelector('.browser-chrome').style.display='';
+        document.getElementById('viewport').style.display='';
+        document.getElementById('waevo-fab').style.display=''
+    },
     showAN(){this._currentRole='AN';this._setup();document.getElementById('admin-page-an').classList.add('active');document.getElementById('admin-page-owner').classList.remove('active');this.hideBrowser()},
     showOwner(){this._currentRole='OWNER';this._setup();document.getElementById('admin-page-owner').classList.add('active');document.getElementById('admin-page-an').classList.remove('active');this.hideBrowser()},
-    exit(){document.getElementById('admin-page-an').classList.remove('active');document.getElementById('admin-page-owner').classList.remove('active');sessionGuard.clear();this.showBrowser();try{history.pushState({},'',getBasePath())}catch(e){}},
+    exit(){
+        document.getElementById('admin-page-an').classList.remove('active');
+        document.getElementById('admin-page-owner').classList.remove('active');
+        sessionGuard.clear();
+        this.showBrowser();
+        try{history.pushState({},'',getBasePath())}catch(e){}
+    },
     switchTab(role,tab){
         const body=document.getElementById(role==='AN'?'an-body':'owner-body');
         if(!body)return;
@@ -1762,14 +2017,14 @@ const adminPages = {
     },
     _renderUserCard(u){
         const currentUrl=(u.currentUrl||'about:start').slice(0,60);
-        const userIdSafe=u.id.replace(/'/g,"\\'");
+        const userIdSafe=escapeJsStr(u.id);
         const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleTimeString():'—';
         return `<div class="user-card">
             <div class="user-card-preview"><div class="preview-label">LIVE</div></div>
             <div class="user-card-info">
                 <div class="user-card-name">👤 Usuario</div>
-                <div class="user-card-id">${u.id}</div>
-                <div class="user-card-activity">Últ. vez: ${lastSeen}<br>URL: <code>${currentUrl}</code></div>
+                <div class="user-card-id">${escapeHtml(u.id)}</div>
+                <div class="user-card-activity">Últ. vez: ${escapeHtml(lastSeen)}<br>URL: <code>${escapeHtml(currentUrl)}</code></div>
             </div>
             <div class="user-card-actions">
                 <button class="action-btn primary" onclick="adminPages.viewScreen('${userIdSafe}')"><i class="fas fa-eye"></i> Ver pantalla</button>
@@ -1784,7 +2039,7 @@ const adminPages = {
         const activeTab=body.parentElement.querySelector('.admin-tab.active');
         if(activeTab&&activeTab.dataset.tab!=='audit')return;
         if(!this._activity.length){body.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:40px">Sin acciones registradas</div>';return}
-        body.innerHTML=this._activity.map(a=>`<div class="audit-log"><div class="audit-log-header"><span>${a.timestamp?new Date(a.timestamp).toLocaleString():'—'}</span><span>${a.id}</span></div><div class="audit-log-action">${a.action||'—'}</div><div class="audit-log-meta">${a.details||''}</div></div>`).join('');
+        body.innerHTML=this._activity.map(a=>`<div class="audit-log"><div class="audit-log-header"><span>${escapeHtml(a.timestamp?new Date(a.timestamp).toLocaleString():'—')}</span><span>${escapeHtml(a.id||'')}</span></div><div class="audit-log-action">${escapeHtml(a.action||'—')}</div><div class="audit-log-meta">${escapeHtml(a.details||'')}</div></div>`).join('');
     },
     viewScreen(id){
         const u=this._users.find(u=>u.id===id);
@@ -1809,7 +2064,9 @@ const adminPages = {
         const blob=new Blob([data],{type:'application/json'});
         const url=URL.createObjectURL(blob);
         const a=document.createElement('a');
-        a.href=url;a.download='waevo-logs-'+Date.now()+'.json';a.click();
+        a.href=url;
+        a.download='waevo-logs-'+Date.now()+'.json';
+        a.click();
         URL.revokeObjectURL(url);
         ui.showToast('✅ Logs exportados');
     },
@@ -1824,6 +2081,7 @@ const adminPages = {
     viewHistory(id){ui.showToast('Historial del usuario: ver en Firebase')}
 };
 
+/* ═══════ MIC TEST ═══════ */
 function testMic(){
     const chip=document.getElementById('mic-chip');
     if(!chip)return;
@@ -1839,7 +2097,7 @@ function testMic(){
     });
 }
 
-/* LZ Panel mínimo */
+/* ═══════ LZ PANEL ═══════ */
 const lzPanel = {
     close(){document.getElementById('lz-panel').classList.remove('open')},
     blockAllLazarus(){ui.showToast('🛡️ Bloqueando Lazarus...')},
@@ -1854,12 +2112,12 @@ const lzPanel = {
     diagnostics(){ui.showToast('📊 Diagnóstico')}
 };
 
-/* ═══════════ INIT ═══════════ */
+/* ═══════ INIT ═══════ */
 proxySystem.init();
 floatingPanel.init();
 authSystem.check();
 
-// Botón LZ
+/* LZ tab handler */
 document.getElementById('lz-tab').onclick=()=>{
     const p=document.getElementById('lz-panel');
     p.classList.toggle('open');
@@ -1867,7 +2125,7 @@ document.getElementById('lz-tab').onclick=()=>{
     if(origin)origin.textContent=location.hostname;
 };
 
-// Exponer globals para onclick handlers
+/* Global references para onclick handlers */
 window.browser=browser;
 window.ui=ui;
 window.authSystem=authSystem;
@@ -1879,6 +2137,10 @@ window.shopSystem=shopSystem;
 window.friendsSystem=friendsSystem;
 window.testMic=testMic;
 window.lzPanel=lzPanel;
+
+/* Mic stubs (para evitar errores si se llaman) */
+window.stopMicAndSend=function(){ui.showToast('Grabación cancelada')};
+window.cancelMic=function(){ui.showToast('Grabación cancelada')};
 </script>
 </body>
 </html>
